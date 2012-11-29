@@ -1,0 +1,8 @@
+#appname:kinvey-apps-testdrive-titanium
+#publisher:Kinvey
+#url:http://www.kinvey.com
+#image:appicon.png
+#appid:com.kinvey.testdrive
+#desc:Kinvey’s TestDrive for Titanium provides you with a blank template to get started with. It is great for learning and trying Kinvey, or to build your first application upon.
+#type:mobile
+#guid:<your-guid>
