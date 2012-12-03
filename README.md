@@ -8,10 +8,10 @@ After downloading or cloning the repository:
 * Open Titanium Studio.
 * Choose `File -> Import -> Existing folder as New Project`.
 * Choose `Titanium Mobile` as project type, and click `Finish`:
-![Import project](testdrive/import-project.png)
+![Import project](https://raw.github.com/KinveyApps/TestDrive-Titanium/master/screenshot-import-project.png)
 * Replace `<your-app-key>` and `<your-app-secret>` (lines 19–20 in `Resources/app.js`) with your applications credentials.
 * Optional: adjust the `Run Configurations` to suit your needs:
-![Adjust Run Configurations](testdrive/run-configurations.png)
+![Adjust Run Configurations](https://raw.github.com/KinveyApps/TestDrive-Titanium/master/screenshot-run-configurations.png)
 * Run the project on the platform of your choice. 
 
 ## Functionality
