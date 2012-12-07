@@ -124,15 +124,16 @@
      * @private
      * @return {Object} Authorization.
      */
-    var getAuth = function() {
+    var getAuth = function(forceAppc) {
       // Use master secret if specified.
-      if(null !== Kinvey.masterSecret) {
+      if(null !== Kinvey.masterSecret) {// undefined or null
         return 'Basic ' + this._base64(Kinvey.appKey + ':' + Kinvey.masterSecret);
       }
 
-      // Use Session Auth if there is a current user.
+      // Use Session Auth if there is a current user, and application credentials
+      // are not forced.
       var user = Kinvey.getCurrentUser();
-      if(null !== user) {
+      if(!forceAppc && null !== user) {
         return 'Kinvey ' + user.getToken();
       }
 
@@ -147,9 +148,9 @@
      * @return {string} Device information.
      */
     var getDeviceInfo = function() {
-      // Example: "Titanium mobileweb 2.0.1.GA2 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX".
+      // Example: "js-titanium/0.9.11 mobileweb 2.0.1.GA2 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX".
       return [
-        'Titanium',
+        'js-titanium/0.9.11',
         Titanium.Platform.osname,
         Titanium.Platform.version,
         Titanium.App.getGUID()// device ID.
@@ -178,7 +179,7 @@
 
       // For now, include authorization in this adapter. Ideally, it should
       // have some external interface.
-      if(null === Kinvey.getCurrentUser() && Kinvey.Store.AppData.USER_API !== this.api && null === Kinvey.masterSecret) {
+      if(null === Kinvey.getCurrentUser() && Kinvey.Store.AppData.USER_API !== this.api && null == Kinvey.masterSecret && !options.appc) {
         return Kinvey.User.create({}, merge(options, {
           success: bind(this, function() {
             this._send(method, url, body, options);
@@ -192,7 +193,7 @@
       // Headers.
       var headers = {
         Accept: 'application/json, text/javascript',
-        Authorization: this._getAuth(),
+        Authorization: this._getAuth(options.appc),
         'X-Kinvey-API-Version': Kinvey.API_VERSION,
         'X-Kinvey-Device-Information': this._getDeviceInfo()
       };
@@ -328,7 +329,7 @@
    * 
    * @constant
    */
-  Kinvey.SDK_VERSION = '0.9.10';
+  Kinvey.SDK_VERSION = '0.9.11';
 
   /**
    * Returns current user, or null if not set.
@@ -427,9 +428,6 @@
     NO_NETWORK: 'NoNetwork',
 
     /** @constant */
-    OPERATION_DENIED: 'OperationDenied',
-
-    /** @constant */
     REQUEST_FAILED: 'RequestFailed',
 
     /** @constant */
@@ -462,9 +460,6 @@
 
     /** @constant */
     USER_ALREADY_EXISTS: 'UserAlreadyExists',
-
-    /** @constant */
-    USER_UNAVAILABLE: 'UserUnavailable',
 
     /** @constant */
     DUPLICATE_END_USERS: 'DuplicateEndUsers',
@@ -522,9 +517,24 @@
 
     /** @constant */
     INPUT_VALIDATION_FAILED: 'InputValidationFailed',
-    
+
     /** @constant */
-    BLruntimeError: 'BLruntimeError'
+    BL_RUNTIME_ERROR: 'BLRuntimeError',
+
+    /** @constant */
+    BL_SYNTAX_ERROR: 'BLSyntaxError',
+
+    /** @constant */
+    BL_TIMEOUT_ERROR: 'BLTimeoutError',
+
+    /** @constant */
+    BL_VIOLATION_ERROR: 'BLViolationError',
+
+    /** @constant */
+    BL_INTERNAL_ERROR: 'BLInternalError',
+
+    /** @constant */
+    STALE_REQUEST: 'StaleRequest'
   };
 
   // Define the Kinvey Entity class.
@@ -671,7 +681,7 @@
       if(this._pending && options._ref) {
         this._pending = false;// Reset.
         options.error({
-          error: Kinvey.Error.OPERATION_DENIED,
+          error: Kinvey.Error.BAD_REQUEST,
           message: 'Circular reference detected, aborting save',
           debug: ''
         }, {});
@@ -1038,7 +1048,9 @@
 
       this.store.aggregate(aggregation.toJSON(), merge(options, {
         success: function(response, info) {
-          options.success && options.success(response[0].count, info);
+          // Aggregation can return an empty array, when the count is 0.
+          var count = response[0] ? response[0].count : 0;
+          options.success && options.success(count, info);
         }
       }));
     },
@@ -1161,6 +1173,20 @@
     },
 
     /**
+     * Returns whether the user email address was verified.
+     * 
+     * @return {boolean}
+     */
+    isVerified: function() {
+      // Obtain email verification status from metadata object.
+      var email = this.getMetadata().kmd.emailVerification;
+      if(email) {
+        return 'confirmed' === email.status;
+      }
+      return false;
+    },
+
+    /**
      * Logs in user.
      * 
      * @example <code> 
@@ -1253,7 +1279,7 @@
       options || (options = {});
       if(!this.isLoggedIn) {
         options.error && options.error({
-          code: Kinvey.Error.OPERATION_DENIED,
+          code: Kinvey.Error.BAD_REQUEST,
           description: 'This operation is not allowed',
           debug: 'Cannot save a user which is not logged in.'
         }, {});
@@ -1412,7 +1438,7 @@
 
     /**
      * Initializes a current user. Returns the current user, otherwise creates
-     * an anonymous user. This method is called internally when doing a network
+     * an implicit user. This method is called internally when doing a network
      * request. Manually invoking this function is however allowed.
      * 
      * @param {Object} [options]
@@ -1430,8 +1456,34 @@
         return user;
       }
 
-      // No cached user available, create anonymous user.
+      // No cached user available, create implicit user.
       return Kinvey.User.create({}, options);
+    },
+
+    /**
+     * Resets password for a user.
+     * 
+     * @param {string} username User name.
+     * @param {Object} [options]
+     * @param {function()} [options.success] Success callback.
+     * @param {function(error)} [options.error] Failure callback.
+     */
+    resetPassword: function(username, options) {
+      var store = new Kinvey.Store.Rpc();
+      store.resetPassword(username, options);
+    },
+
+    /**
+     * Verifies e-mail for a user.
+     * 
+     * @param {string} username User name.
+     * @param {Object} [options]
+     * @param {function()} [options.success] Success callback.
+     * @param {function(error)} [options.error] Failure callback.
+     */
+    verifyEmail: function(username, options) {
+      var store = new Kinvey.Store.Rpc();
+      store.verifyEmail(username, options);
     },
 
     /**
@@ -1484,7 +1536,7 @@
      */
     clear: function(options) {
       options && options.error && options.error({
-        code: Kinvey.Error.OPERATION_DENIED,
+        code: Kinvey.Error.BAD_REQUEST,
         description: 'This operation is not allowed',
         debug: ''
       });
@@ -1530,6 +1582,15 @@
       if(-1 === this.acl.w.indexOf(user)) {
         this.acl.w.push(user);
       }
+    },
+
+    /**
+     * Returns the entity owner, or null if not set.
+     * 
+     * @return {string} user User id.
+     */
+    creator: function() {
+      return this.acl.creator || null;
     },
 
     /**
@@ -1704,13 +1765,27 @@
      * 
      * @param {Object} file File.
      * @param {Object} [options] Options.
-     * @throws {Error} On invalid file.
+     * @throws {Error}
+     *           <ul>
+     *           <li>On invalid file.</li>
+     *           <li>On invalid file name.</li>
+     *           </ul>
      */
     upload: function(file, options) {
       // Validate file.
       if(null == file || null == file.name || null == file.data) {
         throw new Error('File should be an object containing name and data');
       }
+
+      // Validate characters in file name.
+      // This is required because XMLHttpRequest internally uses encodeURI. Percent-encoded
+      // characters don't seem to play well with the underlying blob storage.
+      // @link https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
+      if(file.name !== encodeURI(file.name) || file.name.match(/\#|\?|\//)) {
+        throw new Error('File name contains invalid characters');
+      }
+
+      // Upload.
       Kinvey.Resource._store || (Kinvey.Resource._store = Kinvey.Store.factory(Kinvey.Store.BLOB));
       Kinvey.Resource._store.save(file, options);
     },
@@ -2473,7 +2548,8 @@
         // Basic operators.
         // @see http://www.mongodb.org/display/DOCS/Advanced+Queries
         case Kinvey.Query.EQUAL:
-          this._set(field, value);
+          this.query || (this.query = {});
+          this.query[field] = value;
           break;
         case Kinvey.Query.EXIST:
           this._set(field, { $exists: value });
@@ -2614,16 +2690,12 @@
     },
 
     /**
-     * Helper function to add expression to field.
+     * Helper function to apply complex expression on field.
      * 
      * @private
      */
     _set: function(field, expression) {
       this.query || (this.query = {});
-      if(!(expression instanceof Object)) {// simple condition
-        this.query[field] = expression;
-        return;
-      }
 
       // Complex condition.
       this.query[field] instanceof Object || (this.query[field] = {});
@@ -2867,6 +2939,90 @@
     }
   };
 
+  // Define the Kinvey.Store.Rpc class.
+  Kinvey.Store.Rpc = Base.extend({
+    // Default options.
+    options: {
+      timeout: 10000,// Timeout in ms.
+
+      success: function() { },
+      error: function() { }
+    },
+
+    /**
+     * Constructor
+     * 
+     * @name Kinvey.Store.Rpc
+     * @constructor
+     * @param {Object} [options] Options.
+     */
+    constructor: function(options) {
+      options && this.configure(options);
+    },
+
+    /**
+     * Configures store.
+     * 
+     * @param {Object} options
+     * @param {function(response, info)} [options.success] Success callback.
+     * @param {function(error, info)} [options.error] Failure callback.
+     * @param {integer} [options.timeout] Request timeout (in milliseconds).
+     */
+    configure: function(options) {
+      'undefined' !== typeof options.timeout && (this.options.timeout = options.timeout);
+
+      options.success && (this.options.success = options.success);
+      options.error && (this.options.error = options.error);
+    },
+
+    /**
+     * Resets password for a user.
+     * 
+     * @param {string} username User name.
+     * @param {Object} [options] Options.
+     */
+    resetPassword: function(username, options) {
+      // Force use of application credentials by adding appc option.
+      var url = this._getUrl([username, 'user-password-reset-initiate']);
+      this._send('POST', url, null, merge(options, { appc: true }));
+    },
+
+    /**
+     * Verifies e-mail for a user.
+     * 
+     * @param {string} username User name.
+     * @param {Object} [options] Options.
+     */
+    verifyEmail: function(username, options) {
+      // Force use of application credentials by adding appc option.
+      var url = this._getUrl([username, 'user-email-verification-initiate']);
+      this._send('POST', url, null, merge(options, { appc: true }));
+    },
+
+    /**
+     * Constructs URL.
+     * 
+     * @private
+     * @param {Array} parts URL parts.
+     * @return {string} URL.
+     */
+    _getUrl: function(parts) {
+      var url = '/rpc/' + Kinvey.appKey;
+
+      // Add url parts.
+      parts.forEach(function(part) {
+        url += '/' + part;
+      });
+
+      // Android < 4.0 caches all requests aggressively. For now, work around
+      // by adding a cache busting query string.
+      return url + '?_=' + new Date().getTime();
+    }
+  });
+
+  // Apply mixin.
+  Xhr.call(Kinvey.Store.Rpc.prototype);
+
   // Define the Kinvey.Store.AppData class.
   Kinvey.Store.AppData = Base.extend({
     // Store name.
@@ -2954,6 +3110,9 @@
      */
     query: function(id, options) {
       options || (options = {});
+      
+      // Force use of application credentials if pinging.
+      null === id && (options.appc = true);
 
       var url = this._getUrl({ id: id, resolve: options.resolve });
       this._send('GET', url, null, options);

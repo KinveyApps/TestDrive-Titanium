@@ -12,7 +12,7 @@ if(Ti.version < 2.0) {
 }
 
 // Import Kinvey’s Titanium library.
-Ti.include('kinvey-titanium-0.9.10.js');
+Ti.include('kinvey-titanium-0.9.11.js');
 
 // Configure.
 Kinvey.init({
