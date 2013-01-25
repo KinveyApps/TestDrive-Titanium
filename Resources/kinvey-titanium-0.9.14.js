@@ -148,9 +148,9 @@
      * @return {string} Device information.
      */
     var getDeviceInfo = function() {
-      // Example: "js-titanium/0.9.13 mobileweb 2.0.1.GA2 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX".
+      // Example: "js-titanium/0.9.14 mobileweb 2.0.1.GA2 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX".
       return [
-        'js-titanium/0.9.13',
+        'js-titanium/0.9.14',
         Titanium.Platform.osname,
         Titanium.Platform.version,
         Titanium.App.getGUID()// device ID.
@@ -259,15 +259,8 @@
       options.success || (options.success = this.options.success);
       options.error || (options.error = this.options.error);
 
-      // Create the request. Titanium.Network.createHTTPClient is buggy for
-      // Mobile Web, so use the native implementation instead.
-      var request;
-      if('undefined' === typeof XMLHttpRequest) {
-        request = Titanium.Network.createHTTPClient();
-      }
-      else {
-        request = new XMLHttpRequest();
-      }
+      // Create the request.
+      var request = Titanium.Network.createHTTPClient();
       request.open(method, url);
       request.timeout = options.timeout;
 
@@ -276,6 +269,19 @@
         if(options.headers.hasOwnProperty(name)) {
           request.setRequestHeader(name, options.headers[name]);
         }
+      }
+      
+      // Timeouts do not invoke the error handler in mobileweb. Patch here.
+      // @link https://github.com/appcelerator/titanium_mobile/blob/master/mobileweb/titanium/Ti/Network/HTTPClient.js
+      if('mobileweb' === Titanium.Platform.name) {
+        var abort = request.abort;
+        request.abort = function() {
+          if(4 > request.readyState) {
+            request.onerror({});
+            request.onerror = function() { };// Avoid multiple invocations.
+          }
+          abort.apply(request, arguments);
+        };
       }
 
       // Attach handlers.
@@ -288,8 +294,9 @@
           options.error(this.responseText, { network: true });
         }
       };
-      request.onabort = request.onerror = request.ontimeout = function(event) {
-        options.error(event.type, { network: true });
+      request.onerror = function(event) {
+        // Titanium invokes onerror if the status is 4XX/5XX.
+        options.error(this.responseText || event.type, { network: true });
       };
 
       // Fire request.
@@ -329,7 +336,7 @@
    * 
    * @constant
    */
-  Kinvey.SDK_VERSION = '0.9.13';
+  Kinvey.SDK_VERSION = '0.9.14';
 
   /**
    * Returns current user, or null if not set.
