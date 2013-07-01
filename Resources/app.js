@@ -7,17 +7,17 @@
  */
 
 // Bootstrap and check dependencies.
-if(Ti.version < 2.0) {
-  alert('Sorry - this application template requires Titanium Mobile SDK 2.0 or later');
+if(Ti.version < '3.0') {
+  alert('Sorry - this application template requires Titanium Mobile SDK 3.0 or later');
 }
 
-// Import Kinvey’s Titanium library.
-Ti.include('kinvey-titanium-0.9.14.js');
+// Import the Kinvey module.
+var Kinvey = require('kinvey-titanium-1.0.0');
 
-// Configure.
+// Initialize Kinvey.
 Kinvey.init({
-  appKey: '<your-app-key>',
-  appSecret: '<your-app-secret>'
+  appKey    : 'App Key',
+  appSecret : 'App Secret'
 });
 
 // Open top-level UI component.
