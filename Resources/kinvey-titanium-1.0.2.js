@@ -15,11 +15,11 @@
     }
   };
   var File = function() { };;
-/*! IndexedDBShim - v0.1.2 - 2013-06-12 */
+/*! IndexedDBShim - v0.1.2 - 2013-06-22 */
 var idbModules={};(function(e){function t(e,t,n,o){n.target=t,"function"==typeof t[e]&&t[e].apply(t,[n]),"function"==typeof o&&o()}function n(t,n,o){var i=new DOMException.constructor(0,n);throw i.name=t,i.message=n,i.stack=arguments.callee.caller,e.DEBUG&&console.log(t,n,o,i),i}var o=function(){this.length=0,this._items=[],Object.defineProperty&&Object.defineProperty(this,"_items",{enumerable:!1})};if(o.prototype={contains:function(e){return-1!==this._items.indexOf(e)},item:function(e){return this._items[e]},indexOf:function(e){return this._items.indexOf(e)},push:function(e){this._items.push(e),this.length+=1;for(var t=0;this._items.length>t;t++)this[t]=this._items[t]},splice:function(){this._items.splice.apply(this._items,arguments),this.length=this._items.length;for(var e in this)e===parseInt(e,10)+""&&delete this[e];for(e=0;this._items.length>e;e++)this[e]=this._items[e]}},Object.defineProperty)for(var i in{indexOf:!1,push:!1,splice:!1})Object.defineProperty(o.prototype,i,{enumerable:!1});e.util={throwDOMException:n,callback:t,quote:function(e){return"'"+e+"'"},StringList:o}})(idbModules),function(e){var t=function(){return{encode:function(e){return JSON.stringify(e)},decode:function(e){return JSON.parse(e)}}}();e.Sca=t}(idbModules),function(e){var t=["","number","string","boolean","object","undefined"],n=function(){return{encode:function(e){return t.indexOf(typeof e)+"-"+JSON.stringify(e)},decode:function(e){return e===void 0?void 0:JSON.parse(e.substring(2))}}},o={number:n("number"),"boolean":n(),object:n(),string:{encode:function(e){return t.indexOf("string")+"-"+e},decode:function(e){return""+e.substring(2)}},undefined:{encode:function(){return t.indexOf("undefined")+"-undefined"},decode:function(){return void 0}}},i=function(){return{encode:function(e){return o[typeof e].encode(e)},decode:function(e){return o[t[e.substring(0,1)]].decode(e)}}}();e.Key=i}(idbModules),function(e){var t=function(e,t){return{type:e,debug:t,bubbles:!1,cancelable:!1,eventPhase:0,timeStamp:new Date}};e.Event=t}(idbModules),function(e){var t=function(){this.onsuccess=this.onerror=this.result=this.error=this.source=this.transaction=null,this.readyState="pending"},n=function(){this.onblocked=this.onupgradeneeded=null};n.prototype=t,e.IDBRequest=t,e.IDBOpenRequest=n}(idbModules),function(e,t){var n=function(e,t,n,o){this.lower=e,this.upper=t,this.lowerOpen=n,this.upperOpen=o};n.only=function(e){return new n(e,e,!0,!0)},n.lowerBound=function(e,o){return new n(e,t,o,t)},n.upperBound=function(e){return new n(t,e,t,open)},n.bound=function(e,t,o,i){return new n(e,t,o,i)},e.IDBKeyRange=n}(idbModules),function(e,t){function n(n,o,i,r,s,a){this.__range=n,this.source=this.__idbObjectStore=i,this.__req=r,this.key=t,this.direction=o,this.__keyColumnName=s,this.__valueColumnName=a,this.source.transaction.__active||e.util.throwDOMException("TransactionInactiveError - The transaction this IDBObjectStore belongs to is not active."),this.__offset=-1,this.__lastKeyContinued=t,this["continue"]()}n.prototype.__find=function(n,o,i,r){var s=this,a=["SELECT * FROM ",e.util.quote(s.__idbObjectStore.name)],u=[];a.push("WHERE ",s.__keyColumnName," NOT NULL"),s.__range&&(s.__range.lower||s.__range.upper)&&(a.push("AND"),s.__range.lower&&(a.push(s.__keyColumnName+(s.__range.lowerOpen?" >":" >= ")+" ?"),u.push(e.Key.encode(s.__range.lower))),s.__range.lower&&s.__range.upper&&a.push("AND"),s.__range.upper&&(a.push(s.__keyColumnName+(s.__range.upperOpen?" < ":" <= ")+" ?"),u.push(e.Key.encode(s.__range.upper)))),n!==t&&(s.__lastKeyContinued=n,s.__offset=0),s.__lastKeyContinued!==t&&(a.push("AND "+s.__keyColumnName+" >= ?"),u.push(e.Key.encode(s.__lastKeyContinued))),a.push("ORDER BY ",s.__keyColumnName),a.push("LIMIT 1 OFFSET "+s.__offset),e.DEBUG&&console.log(a.join(" "),u),o.executeSql(a.join(" "),u,function(n,o){if(1===o.rows.length){var r=e.Key.decode(o.rows.item(0)[s.__keyColumnName]),a="value"===s.__valueColumnName?e.Sca.decode(o.rows.item(0)[s.__valueColumnName]):e.Key.decode(o.rows.item(0)[s.__valueColumnName]);i(r,a)}else e.DEBUG&&console.log("Reached end of cursors"),i(t,t)},function(t,n){e.DEBUG&&console.log("Could not execute Cursor.continue"),r(n)})},n.prototype["continue"]=function(e){var n=this;this.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){n.__offset++,n.__find(e,o,function(e,o){n.key=e,n.value=o,r(n.key!==t?n:t,n.__req)},function(e){s(e)})})},n.prototype.advance=function(n){0>=n&&e.util.throwDOMException("Type Error - Count is invalid - 0 or negative",n);var o=this;this.__idbObjectStore.transaction.__addToTransactionQueue(function(e,i,r,s){o.__offset+=n,o.__find(t,e,function(e,n){o.key=e,o.value=n,r(o.key!==t?o:t,o.__req)},function(e){s(e)})})},n.prototype.update=function(n){var o=this;return this.__idbObjectStore.transaction.__addToTransactionQueue(function(i,r,s,a){o.__find(t,i,function(t){var r="UPDATE "+e.util.quote(o.__idbObjectStore.name)+" SET value = ? WHERE key = ?";e.DEBUG&&console.log(r,n,t),i.executeSql(r,[e.Sca.encode(n),e.Key.encode(t)],function(e,n){1===n.rowsAffected?s(t):a("No rowns with key found"+t)},function(e,t){a(t)})},function(e){a(e)})})},n.prototype["delete"]=function(){var n=this;return this.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){n.__find(t,o,function(i){var a="DELETE FROM  "+e.util.quote(n.__idbObjectStore.name)+" WHERE key = ?";e.DEBUG&&console.log(a,i),o.executeSql(a,[e.Key.encode(i)],function(e,n){1===n.rowsAffected?r(t):s("No rowns with key found"+i)},function(e,t){s(t)})},function(e){s(e)})})},e.IDBCursor=n}(idbModules),function(idbModules,undefined){function IDBIndex(e,t){this.indexName=this.name=e,this.__idbObjectStore=this.objectStore=this.source=t;var n=t.__storeProps&&t.__storeProps.indexList;n&&(n=JSON.parse(n)),this.keyPath=n&&n[e]&&n[e].keyPath||e,["multiEntry","unique"].forEach(function(t){this[t]=!!(n&&n[e]&&n[e].optionalParams&&n[e].optionalParams[t])},this)}IDBIndex.prototype.__createIndex=function(indexName,keyPath,optionalParameters){var me=this,transaction=me.__idbObjectStore.transaction;transaction.__addToTransactionQueue(function(tx,args,success,failure){me.__idbObjectStore.__getStoreProps(tx,function(){function error(){idbModules.util.throwDOMException(0,"Could not create new index",arguments)}2!==transaction.mode&&idbModules.util.throwDOMException(0,"Invalid State error, not a version transaction",me.transaction);var idxList=JSON.parse(me.__idbObjectStore.__storeProps.indexList);idxList[indexName]!==undefined&&idbModules.util.throwDOMException(0,"Index already exists on store",idxList);var columnName=indexName;idxList[indexName]={columnName:columnName,keyPath:keyPath,optionalParams:optionalParameters},me.__idbObjectStore.__storeProps.indexList=JSON.stringify(idxList);var sql=["ALTER TABLE",idbModules.util.quote(me.__idbObjectStore.name),"ADD",columnName,"BLOB"].join(" ");idbModules.DEBUG&&console.log(sql),tx.executeSql(sql,[],function(tx,data){tx.executeSql("SELECT * FROM "+idbModules.util.quote(me.__idbObjectStore.name),[],function(tx,data){(function initIndexForRow(i){if(data.rows.length>i)try{var value=idbModules.Sca.decode(data.rows.item(i).value),indexKey=eval("value['"+keyPath+"']");tx.executeSql("UPDATE "+idbModules.util.quote(me.__idbObjectStore.name)+" set "+columnName+" = ? where key = ?",[idbModules.Key.encode(indexKey),data.rows.item(i).key],function(){initIndexForRow(i+1)},error)}catch(e){initIndexForRow(i+1)}else idbModules.DEBUG&&console.log("Updating the indexes in table",me.__idbObjectStore.__storeProps),tx.executeSql("UPDATE __sys__ set indexList = ? where name = ?",[me.__idbObjectStore.__storeProps.indexList,me.__idbObjectStore.name],function(){me.__idbObjectStore.__setReadyState("createIndex",!0),success(me)},error)})(0)},error)},error)},"createObjectStore")})},IDBIndex.prototype.openCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this.source,n,this.indexName,"value"),n},IDBIndex.prototype.openKeyCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this.source,n,this.indexName,"key"),n},IDBIndex.prototype.__fetchIndexData=function(e,t){var n=this;return n.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){var a=["SELECT * FROM ",idbModules.util.quote(n.__idbObjectStore.name)," WHERE",n.indexName,"NOT NULL"],u=[];e!==undefined&&(a.push("AND",n.indexName," = ?"),u.push(idbModules.Key.encode(e))),idbModules.DEBUG&&console.log("Trying to fetch data for Index",a.join(" "),u),o.executeSql(a.join(" "),u,function(e,n){var o;o="count"==typeof t?n.rows.length:0===n.rows.length?undefined:"key"===t?idbModules.Key.decode(n.rows.item(0).key):idbModules.Sca.decode(n.rows.item(0).value),r(o)},s)})},IDBIndex.prototype.get=function(e){return this.__fetchIndexData(e,"value")},IDBIndex.prototype.getKey=function(e){return this.__fetchIndexData(e,"key")},IDBIndex.prototype.count=function(e){return this.__fetchIndexData(e,"count")},idbModules.IDBIndex=IDBIndex}(idbModules),function(idbModules){var IDBObjectStore=function(e,t,n){this.name=e,this.transaction=t,this.__ready={},this.__setReadyState("createObjectStore",n===void 0?!0:n),this.indexNames=new idbModules.util.StringList};IDBObjectStore.prototype.__setReadyState=function(e,t){this.__ready[e]=t},IDBObjectStore.prototype.__waitForReady=function(e,t){var n=!0;if(t!==void 0)n=this.__ready[t]===void 0?!0:this.__ready[t];else for(var o in this.__ready)this.__ready[o]||(n=!1);if(n)e();else{idbModules.DEBUG&&console.log("Waiting for to be ready",t);var i=this;window.setTimeout(function(){i.__waitForReady(e,t)},100)}},IDBObjectStore.prototype.__getStoreProps=function(e,t,n){var o=this;this.__waitForReady(function(){o.__storeProps?(idbModules.DEBUG&&console.log("Store properties - cached",o.__storeProps),t(o.__storeProps)):e.executeSql("SELECT * FROM __sys__ where name = ?",[o.name],function(e,n){1!==n.rows.length?t():(o.__storeProps={name:n.rows.item(0).name,indexList:n.rows.item(0).indexList,autoInc:n.rows.item(0).autoInc,keyPath:n.rows.item(0).keyPath},idbModules.DEBUG&&console.log("Store properties",o.__storeProps),t(o.__storeProps))},function(){t()})},n)},IDBObjectStore.prototype.__deriveKey=function(tx,value,key,callback){function getNextAutoIncKey(){tx.executeSql("SELECT * FROM sqlite_sequence where name like ?",[me.name],function(e,t){1!==t.rows.length?callback(0):callback(t.rows.item(0).seq)},function(e,t){idbModules.util.throwDOMException(0,"Data Error - Could not get the auto increment value for key",t)})}var me=this;me.__getStoreProps(tx,function(props){if(props||idbModules.util.throwDOMException(0,"Data Error - Could not locate defination for this table",props),props.keyPath)if(key!==void 0&&idbModules.util.throwDOMException(0,"Data Error - The object store uses in-line keys and the key parameter was provided",props),value)try{var primaryKey=eval("value['"+props.keyPath+"']");primaryKey?callback(primaryKey):"true"===props.autoInc?getNextAutoIncKey():idbModules.util.throwDOMException(0,"Data Error - Could not eval key from keyPath")}catch(e){idbModules.util.throwDOMException(0,"Data Error - Could not eval key from keyPath",e)}else idbModules.util.throwDOMException(0,"Data Error - KeyPath was specified, but value was not");else key!==void 0?callback(key):"false"===props.autoInc?idbModules.util.throwDOMException(0,"Data Error - The object store uses out-of-line keys and has no key generator and the key parameter was not provided. ",props):getNextAutoIncKey()})},IDBObjectStore.prototype.__insertData=function(tx,value,primaryKey,success,error){var paramMap={};primaryKey!==void 0&&(paramMap.key=idbModules.Key.encode(primaryKey));var indexes=JSON.parse(this.__storeProps.indexList);for(var key in indexes)try{paramMap[indexes[key].columnName]=idbModules.Key.encode(eval("value['"+indexes[key].keyPath+"']"))}catch(e){error(e)}var sqlStart=["INSERT INTO ",idbModules.util.quote(this.name),"("],sqlEnd=[" VALUES ("],sqlValues=[];for(key in paramMap)sqlStart.push(key+","),sqlEnd.push("?,"),sqlValues.push(paramMap[key]);sqlStart.push("value )"),sqlEnd.push("?)"),sqlValues.push(idbModules.Sca.encode(value));var sql=sqlStart.join(" ")+sqlEnd.join(" ");idbModules.DEBUG&&console.log("SQL for adding",sql,sqlValues),tx.executeSql(sql,sqlValues,function(){success(primaryKey)},function(e,t){error(t)})},IDBObjectStore.prototype.add=function(e,t){var n=this;return n.transaction.__addToTransactionQueue(function(o,i,r,s){n.__deriveKey(o,e,t,function(t){n.__insertData(o,e,t,r,s)})})},IDBObjectStore.prototype.put=function(e,t){var n=this;return n.transaction.__addToTransactionQueue(function(o,i,r,s){n.__deriveKey(o,e,t,function(t){var i="DELETE FROM "+idbModules.util.quote(n.name)+" where key = ?";o.executeSql(i,[idbModules.Key.encode(t)],function(o,i){idbModules.DEBUG&&console.log("Did the row with the",t,"exist? ",i.rowsAffected),n.__insertData(o,e,t,r,s)},function(e,t){s(t)})})})},IDBObjectStore.prototype.get=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o=idbModules.Key.encode(e);idbModules.DEBUG&&console.log("Fetching",t.name,o),n.executeSql("SELECT * FROM "+idbModules.util.quote(t.name)+" where key = ?",[o],function(e,t){idbModules.DEBUG&&console.log("Fetched data",t);try{if(0===t.rows.length)return i();i(idbModules.Sca.decode(t.rows.item(0).value))}catch(n){idbModules.DEBUG&&console.log(n),i(void 0)}},function(e,t){r(t)})})})},IDBObjectStore.prototype["delete"]=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o=idbModules.Key.encode(e);idbModules.DEBUG&&console.log("Fetching",t.name,o),n.executeSql("DELETE FROM "+idbModules.util.quote(t.name)+" where key = ?",[o],function(e,t){idbModules.DEBUG&&console.log("Deleted from database",t.rowsAffected),i()},function(e,t){r(t)})})})},IDBObjectStore.prototype.clear=function(){var e=this;return e.transaction.__addToTransactionQueue(function(t,n,o,i){e.__waitForReady(function(){t.executeSql("DELETE FROM "+idbModules.util.quote(e.name),[],function(e,t){idbModules.DEBUG&&console.log("Cleared all records from database",t.rowsAffected),o()},function(e,t){i(t)})})})},IDBObjectStore.prototype.count=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o="SELECT * FROM "+idbModules.util.quote(t.name)+(e!==void 0?" WHERE key = ?":""),s=[];e!==void 0&&s.push(idbModules.Key.encode(e)),n.executeSql(o,s,function(e,t){i(t.rows.length)},function(e,t){r(t)})})})},IDBObjectStore.prototype.openCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this,n,"key","value"),n},IDBObjectStore.prototype.index=function(e){var t=new idbModules.IDBIndex(e,this);return t},IDBObjectStore.prototype.createIndex=function(e,t,n){var o=this;n=n||{},o.__setReadyState("createIndex",!1);var i=new idbModules.IDBIndex(e,o);return o.__waitForReady(function(){i.__createIndex(e,t,n)},"createObjectStore"),o.indexNames.push(e),i},IDBObjectStore.prototype.deleteIndex=function(e){var t=new idbModules.IDBIndex(e,this,!1);return t.__deleteIndex(e),t},idbModules.IDBObjectStore=IDBObjectStore}(idbModules),function(e){var t=0,n=1,o=2,i=function(o,i,r){if("number"==typeof i)this.mode=i,2!==i&&e.DEBUG&&console.log("Mode should be a string, but was specified as ",i);else if("string"==typeof i)switch(i){case"readwrite":this.mode=n;break;case"readonly":this.mode=t;break;default:this.mode=t}this.storeNames="string"==typeof o?[o]:o;for(var s=0;this.storeNames.length>s;s++)r.objectStoreNames.contains(this.storeNames[s])||e.util.throwDOMException(0,"The operation failed because the requested database object could not be found. For example, an object store did not exist but was being opened.",this.storeNames[s]);this.__active=!0,this.__running=!1,this.__requests=[],this.__aborted=!1,this.db=r,this.error=null,this.onabort=this.onerror=this.oncomplete=null};i.prototype.__executeRequests=function(){if(this.__running&&this.mode!==o)return e.DEBUG&&console.log("Looks like the request set is already running",this.mode),void 0;this.__running=!0;var t=this;window.setTimeout(function(){2===t.mode||t.__active||e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished",t.__active),t.db.__db.transaction(function(n){function o(t,n){n&&(s.req=n),s.req.readyState="done",s.req.result=t,delete s.req.error;var o=e.Event("success");e.util.callback("onsuccess",s.req,o),a++,r()}function i(){s.req.readyState="done",s.req.error="DOMError";var t=e.Event("error",arguments);e.util.callback("onerror",s.req,t),a++,r()}function r(){return a>=t.__requests.length?(t.__active=!1,t.__requests=[],void 0):(s=t.__requests[a],s.op(n,s.args,o,i),void 0)}t.__tx=n;var s=null,a=0;try{r()}catch(u){e.DEBUG&&console.log("An exception occured in transaction",arguments),"function"==typeof t.onerror&&t.onerror()}},function(){e.DEBUG&&console.log("An error in transaction",arguments),"function"==typeof t.onerror&&t.onerror()},function(){e.DEBUG&&console.log("Transaction completed",arguments),"function"==typeof t.oncomplete&&t.oncomplete()})},1)},i.prototype.__addToTransactionQueue=function(t,n){this.__active||this.mode===o||e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished.",this.__mode);var i=new e.IDBRequest;return i.source=this.db,this.__requests.push({op:t,args:n,req:i}),this.__executeRequests(),i},i.prototype.objectStore=function(t){return new e.IDBObjectStore(t,this)},i.prototype.abort=function(){!this.__active&&e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished",this.__active)},i.prototype.READ_ONLY=0,i.prototype.READ_WRITE=1,i.prototype.VERSION_CHANGE=2,e.IDBTransaction=i}(idbModules),function(e){var t=function(t,n,o,i){this.__db=t,this.version=o,this.__storeProperties=i,this.objectStoreNames=new e.util.StringList;for(var r=0;i.rows.length>r;r++)this.objectStoreNames.push(i.rows.item(r).name);this.name=n,this.onabort=this.onerror=this.onversionchange=null};t.prototype.createObjectStore=function(t,n){var o=this;n=n||{},n.keyPath=n.keyPath||null;var i=new e.IDBObjectStore(t,o.__versionTransaction,!1),r=o.__versionTransaction;return r.__addToTransactionQueue(function(r,s,a){function u(){e.util.throwDOMException(0,"Could not create new object store",arguments)}o.__versionTransaction||e.util.throwDOMException(0,"Invalid State error",o.transaction);var c=["CREATE TABLE",e.util.quote(t),"(key BLOB",n.autoIncrement?", inc INTEGER PRIMARY KEY AUTOINCREMENT":"PRIMARY KEY",", value BLOB)"].join(" ");e.DEBUG&&console.log(c),r.executeSql(c,[],function(e){e.executeSql("INSERT INTO __sys__ VALUES (?,?,?,?)",[t,n.keyPath,n.autoIncrement?!0:!1,"{}"],function(){i.__setReadyState("createObjectStore",!0),a(i)},u)},u)}),o.objectStoreNames.push(t),i},t.prototype.deleteObjectStore=function(t){var n=function(){e.util.throwDOMException(0,"Could not delete ObjectStore",arguments)},o=this;!o.objectStoreNames.contains(t)&&n("Object Store does not exist"),o.objectStoreNames.splice(o.objectStoreNames.indexOf(t),1);var i=o.__versionTransaction;i.__addToTransactionQueue(function(){o.__versionTransaction||e.util.throwDOMException(0,"Invalid State error",o.transaction),o.__db.transaction(function(o){o.executeSql("SELECT * FROM __sys__ where name = ?",[t],function(o,i){i.rows.length>0&&o.executeSql("DROP TABLE "+e.util.quote(t),[],function(){o.executeSql("DELETE FROM __sys__ WHERE name = ?",[t],function(){},n)},n)})})})},t.prototype.close=function(){},t.prototype.transaction=function(t,n){var o=new e.IDBTransaction(t,n||1,this);return o},e.IDBDatabase=t}(idbModules),function(e){var t=4194304;if(window.openDatabase){var n=window.openDatabase("__sysdb__",1,"System Database",t);n.transaction(function(t){t.executeSql("SELECT * FROM dbVersions",[],function(){},function(){n.transaction(function(t){t.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);",[],function(){},function(){e.util.throwDOMException("Could not create table __sysdb__ to save DB versions")})})})},function(){e.DEBUG&&console.log("Error in sysdb transaction - when selecting from dbVersions",arguments)});var o={open:function(o,i){function r(){if(!u){var t=e.Event("error",arguments);a.readyState="done",a.error="DOMError",e.util.callback("onerror",a,t),u=!0}}function s(s){var u=window.openDatabase(o,1,o,t);a.readyState="done",i===void 0&&(i=s||1),(0>=i||s>i)&&e.util.throwDOMException(0,"An attempt was made to open a database using a lower version than the existing version.",i),u.transaction(function(t){t.executeSql("CREATE TABLE IF NOT EXISTS __sys__ (name VARCHAR(255), keyPath VARCHAR(255), autoInc BOOLEAN, indexList BLOB)",[],function(){t.executeSql("SELECT * FROM __sys__",[],function(t,c){var d=e.Event("success");a.source=a.result=new e.IDBDatabase(u,o,i,c),i>s?n.transaction(function(t){t.executeSql("UPDATE dbVersions set version = ? where name = ?",[i,o],function(){var t=e.Event("upgradeneeded");t.oldVersion=s,t.newVersion=i,a.transaction=a.result.__versionTransaction=new e.IDBTransaction([],2,a.source),e.util.callback("onupgradeneeded",a,t,function(){var t=e.Event("success");e.util.callback("onsuccess",a,t)})},r)},r):e.util.callback("onsuccess",a,d)},r)},r)},r)}var a=new e.IDBOpenRequest,u=!1;return n.transaction(function(e){e.executeSql("SELECT * FROM dbVersions where name = ?",[o],function(e,t){0===t.rows.length?e.executeSql("INSERT INTO dbVersions VALUES (?,?)",[o,i||1],function(){s(0)},r):s(t.rows.item(0).version)},r)},r),a},deleteDatabase:function(o){function i(t){if(!a){s.readyState="done",s.error="DOMError";var n=e.Event("error");n.message=t,n.debug=arguments,e.util.callback("onerror",s,n),a=!0}}function r(){n.transaction(function(t){t.executeSql("DELETE FROM dbVersions where name = ? ",[o],function(){s.result=void 0;var t=e.Event("success");t.newVersion=null,t.oldVersion=u,e.util.callback("onsuccess",s,t)},i)},i)}var s=new e.IDBOpenRequest,a=!1,u=null;return n.transaction(function(n){n.executeSql("SELECT * FROM dbVersions where name = ?",[o],function(n,a){if(0===a.rows.length){s.result=void 0;var c=e.Event("success");return c.newVersion=null,c.oldVersion=u,e.util.callback("onsuccess",s,c),void 0}u=a.rows.item(0).version;var d=window.openDatabase(o,1,o,t);d.transaction(function(t){t.executeSql("SELECT * FROM __sys__",[],function(t,n){var o=n.rows;(function s(n){n>=o.length?t.executeSql("DROP TABLE __sys__",[],function(){r()},i):t.executeSql("DROP TABLE "+e.util.quote(o.item(n).name),[],function(){s(n+1)},function(){s(n+1)})})(0)},function(){r()})},i)})},i),s},cmp:function(t,n){return e.Key.encode(t)>e.Key.encode(n)?1:t===n?0:-1}};e.shimIndexedDB=o}}(idbModules),function(e,t){e.openDatabase!==void 0&&(e.shimIndexedDB=t.shimIndexedDB,e.shimIndexedDB&&(e.shimIndexedDB.__useShim=function(){e.indexedDB=t.shimIndexedDB,e.IDBDatabase=t.IDBDatabase,e.IDBTransaction=t.IDBTransaction,e.IDBCursor=t.IDBCursor,e.IDBKeyRange=t.IDBKeyRange},e.shimIndexedDB.__debug=function(e){t.DEBUG=e})),e.indexedDB=e.indexedDB||e.webkitIndexedDB||e.mozIndexedDB||e.oIndexedDB||e.msIndexedDB,e.indexedDB===void 0&&e.openDatabase!==void 0?e.shimIndexedDB.__useShim():(e.IDBDatabase=e.IDBDatabase||e.webkitIDBDatabase,e.IDBTransaction=e.IDBTransaction||e.webkitIDBTransaction,e.IDBCursor=e.IDBCursor||e.webkitIDBCursor,e.IDBKeyRange=e.IDBKeyRange||e.webkitIDBKeyRange,e.IDBTransaction||(e.IDBTransaction={}),e.IDBTransaction.READ_ONLY=e.IDBTransaction.READ_ONLY||"readonly",e.IDBTransaction.READ_WRITE=e.IDBTransaction.READ_WRITE||"readwrite")}(window,idbModules);
 //@ sourceMappingURL=http://nparashuram.com/IndexedDBShim/dist/IndexedDBShim.min.map;
 /** @license MIT - ©2013 Ruben Verborgh */
-(function(){function e(){var c=function(u,f,i){if(u!==c){var v=e();return c.c.push({d:v,resolve:u,reject:f}),v.promise}for(var s=f?"resolve":"reject",a=0,p=c.c.length;p>a;a++){var h=c.c[a],l=h.d,j=h[s];typeof j!==t?l[s](i):n(j,i,l)}c=r(o,i,f)},o={then:function(e,r){return c(e,r)}};return c.c=[],{promise:o,resolve:function(e){c.c&&c(c,!0,e)},reject:function(e){c.c&&c(c,!1,e)}}}function r(r,c,o){return function(u,f){var i,v=o?u:f;return typeof v!==t?r:(n(v,c,i=e()),i.promise)}}function n(e,r,n){setTimeout(function(){try{var c=e(r);c&&typeof c.then===t?c.then(n.resolve,n.reject):n.resolve(c)}catch(o){n.reject(o)}})}var t="function";window.promiscuous={resolve:function(e){var n={};return n.then=r(n,e,!0),n},reject:function(e){var n={};return n.then=r(n,e,!1),n},deferred:e}})();;
+!function(){function e(){var c=function(u,f,i){if(u!==c){var v=e();return c.c.push({d:v,resolve:u,reject:f}),v.promise}for(var s=f?"resolve":"reject",a=0,p=c.c.length;p>a;a++){var h=c.c[a],l=h.d,j=h[s];typeof j!==t?l[s](i):n(j,i,l)}c=r(o,i,f)},o={then:function(e,r){return c(e,r)}};return c.c=[],{promise:o,resolve:function(e){c.c&&c(c,!0,e)},reject:function(e){c.c&&c(c,!1,e)}}}function r(r,c,o){return function(u,f){var i,v=o?u:f;return typeof v!==t?r:(n(v,c,i=e()),i.promise)}}function n(e,r,n){setTimeout(function(){try{var c=e(r);c&&typeof c.then===t?c.then(n.resolve,n.reject):n.resolve(c)}catch(o){n.reject(o)}})}var t="function";window.promiscuous={resolve:function(e){var n={};return n.then=r(n,e,!0),n},reject:function(e){var n={};return n.then=r(n,e,!1),n},deferred:e}}();;
 (function(){var l=new function(){function d(a){return a?0:-1}var f=this.priority=function(a,b){for(var c=a.exprs,e=0,f=0,d=c.length;f<d;f++){var g=c[f];if(!~(g=g.e(g.v,b instanceof Date?b.getTime():b,b)))return-1;e+=g}return e},e=this.parse=function(a,b){a||(a={$eq:a});var c=[];if(a.constructor==Object)for(var d in a){var m=k[d]?d:"$trav",j=a[d],g=j;if(h[m]){if(~d.indexOf(".")){g=d.split(".");d=g.shift();for(var n={},l=n,p=0,s=g.length-1;p<s;p++)l=l[g[p]]={};l[g[p]]=j;g=j=n}if(j instanceof Array){g=
 [];for(n=j.length;n--;)g.push(e(j[n]))}else g=e(j,d)}c.push(r(m,d,g))}else c.push(r("$eq",d,a));var q={exprs:c,k:b,test:function(a){return!!~q.priority(a)},priority:function(a){return f(q,a)}};return q},h=this.traversable={$and:!0,$or:!0,$nor:!0,$trav:!0,$not:!0},k=this.testers={$eq:function(a,b){return d(a.test(b))},$ne:function(a,b){return d(!a.test(b))},$lt:function(a,b){return a>b?0:-1},$gt:function(a,b){return a<b?0:-1},$lte:function(a,b){return a>=b?0:-1},$gte:function(a,b){return a<=b?0:-1},
 $exists:function(a,b){return a===(null!=b)?0:-1},$in:function(a,b){if(b instanceof Array)for(var c=b.length;c--;){if(~a.indexOf(b[c]))return c}else return d(~a.indexOf(b));return-1},$not:function(a,b){if(!a.test)throw Error("$not test should include an expression, not a value. Use $ne instead.");return d(!a.test(b))},$type:function(a,b,c){return c?c instanceof a||c.constructor==a?0:-1:-1},$nin:function(a,b){return~k.$in(a,b)?-1:0},$mod:function(a,b){return b%a[0]==a[1]?0:-1},$all:function(a,b){for(var c=
@@ -28,8 +28,8 @@ RegExp?a:{test:a instanceof Function?a:function(b){return b instanceof Array?~b.
 e.sort(function(a,b){return a.priority>b.priority?-1:1});d=Array(e.length);for(c=e.length;c--;)d[c]=e[c].value;return d};e.test=k.test;e.score=k.priority;e.query=d;return f?e(f):e};h.use=function(d){d.operators&&h.useOperators(d.operators)};h.useOperators=function(d){for(var f in d)h.useOperator(f,d[f])};h.useOperator=function(d,f){var e={},e="object"==typeof f?f:{test:f},h="$"+d;l.testers[h]=e.test;if(e.traversable||e.traverse)l.traversable[h]=!0};"undefined"!=typeof module&&"undefined"!=typeof module.exports?
 module.exports=h:"undefined"!=typeof window&&(window.sift=h)})();
 ;
-var exports=exports||this;exports.OAuth=function(a){function b(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(!(this instanceof c))return new c(a);for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function c(){}function d(a){var d,f,g,h,i,j,k,b=arguments,c=b.callee,l=/^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/,m=this;return this instanceof c?(m.scheme="",m.host="",m.port="",m.path="",m.query=new e,m.anchor="",null!==a&&(d=a.match(l),f=d[1],g=d[2],h=d[3],i=d[4],j=d[5],k=d[6],f=void 0!==f?f.replace("://","").toLowerCase():"http",h=h?h.replace(":",""):"https"===f?"443":"80",f="http"==f&&"443"===h?"https":f,j=j?j.replace("?",""):"",k=k?k.replace("#",""):"",("https"===f&&"443"!==h||"http"===f&&"80"!==h)&&(g=g+":"+h),m.scheme=f,m.host=g,m.port=h,m.path=i||"/",m.query.setQueryParams(j),m.anchor=k||""),void 0):new c(a)}function e(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(g.urlDecode,!(this instanceof c))return new c(a);if(void 0!=a)for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function g(a){return this instanceof g?this.init(a):new g(a)}function h(a){var c,d,b=[];for(c in a)a[c]&&void 0!==a[c]&&""!==a[c]&&("realm"===c?d=c+'="'+a[c]+'"':b.push(c+'="'+g.urlEncode(a[c]+"")+'"'));return b.sort(),d&&b.unshift(d),b.join(", ")}function i(a,b,c,d){var f,e=[],h=g.urlEncode;for(f in c)void 0!==c[f]&&""!==c[f]&&e.push([g.urlEncode(f),g.urlEncode(c[f]+"")]);for(f in d)void 0!==d[f]&&""!==d[f]&&(c[f]||e.push([h(f),h(d[f]+"")]));return e=e.sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:a[1]>b[1]?1:0}).map(function(a){return a.join("=")}),[a,h(b),h(e.join("&"))].join("&")}function j(){return parseInt(+new Date/1e3,10)}function k(a){function b(){return Math.floor(Math.random()*h.length)}a=a||64;var g,c=a/8,d="",e=c/4,f=c%4,h=["20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F","30","31","32","33","34","35","36","37","38","39","3A","3B","3C","3D","3E","3F","40","41","42","43","44","45","46","47","48","49","4A","4B","4C","4D","4E","4F","50","51","52","53","54","55","56","57","58","59","5A","5B","5C","5D","5E","5F","60","61","62","63","64","65","66","67","68","69","6A","6B","6C","6D","6E","6F","70","71","72","73","74","75","76","77","78","79","7A","7B","7C","7D","7E"];for(g=0;e>g;g++)d+=h[b()]+h[b()]+h[b()]+h[b()];for(g=0;f>g;g++)d+=h[b()];return d}function l(){var b;if("undefined"!=typeof a.Titanium&&"undefined"!=typeof a.Titanium.Network.createHTTPClient)b=a.Titanium.Network.createHTTPClient();else if("undefined"!=typeof require)try{b=new require("xhr").XMLHttpRequest()}catch(c){if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}else{if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}return b}function m(a){var b=new Array(++a);return b.join(0).split("")}function n(a){var c,d,b=[];for(d=0;d<a.length;d++)c=a.charCodeAt(d),128>c?b.push(c):2048>c?b.push(192+(c>>6),128+(63&c)):65536>c?b.push(224+(c>>12),128+(63&c>>6),128+(63&c)):2097152>c&&b.push(240+(c>>18),128+(63&c>>12),128+(63&c>>6),128+(63&c));return b}function o(a){var c,b=[];for(c=0;c<32*a.length;c+=8)b.push(255&a[c>>>5]>>>24-c%32);return b}function p(a){var d,b=[],c=a.length;for(d=0;c>d;d++)b.push((a[d]>>>4).toString(16)),b.push((15&a[d]).toString(16));return b.join("")}function q(a){var d,b="",c=a.length;for(d=0;c>d;d++)b+=String.fromCharCode(a[d]);return b}function r(a,b){return a<<b|a>>>32-b}function s(a){if(void 0!==a){var c,d,b=a;return b.constructor===String&&(b=n(b)),c=this instanceof s?this:new s(a),d=c.hash(b),p(d)}return this instanceof s?this:new s}function t(a,b,c,d){var h,i,j,k,e=n(b),f=n(c),g=e.length;for(g>a.blocksize&&(e=a.hash(e),g=e.length),e=e.concat(m(a.blocksize-g)),i=e.slice(0),j=e.slice(0),k=0;k<a.blocksize;k++)i[k]^=92,j[k]^=54;return h=a.hash(i.concat(a.hash(j.concat(f)))),d?p(h):q(h)}c.prototype={join:function(a){return a=a||"",this.values().join(a)},keys:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(a);return b},values:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(c[a]);return b},shift:function(){throw"not implimented"},unshift:function(){throw"not implimented"},push:function(){throw"not implimented"},pop:function(){throw"not implimented"},sort:function(){throw"not implimented"},ksort:function(a){var d,e,f,b=this,c=b.keys();for(void 0==a?c.sort():c.sort(a),d=0;d<c.length;d++)f=c[d],e=b[f],delete b[f],b[f]=e;return b},toObject:function(){var b,a={},c=this;for(b in c)c.hasOwnProperty(b)&&(a[b]=c[b]);return a}},b.prototype=new c,d.prototype={scheme:"",host:"",port:"",path:"",query:"",anchor:"",toString:function(){var a=this,b=a.query+"";return a.scheme+"://"+a.host+a.path+(""!=b?"?"+b:"")+(""!==a.anchor?"#"+a.anchor:"")}},e.prototype=new b,e.prototype.toString=function(){var a,b=this,c=[],d="",e="",f=g.urlEncode;b.ksort();for(a in b)b.hasOwnProperty(a)&&void 0!=a&&void 0!=b[a]&&(e=f(a)+"="+f(b[a]),c.push(e));return c.length>0&&(d=c.join("&")),d},e.prototype.setQueryParams=function(a){var d,e,f,i,b=arguments,c=b.length,h=this,j=g.urlDecode;if(1==c){if("object"==typeof a)for(d in a)a.hasOwnProperty(d)&&(h[d]=j(a[d]));else if("string"==typeof a)for(e=a.split("&"),d=0,f=e.length;f>d;d++)i=e[d].split("="),""!=i[0]&&(h[i[0]]=j(i[1]))}else for(d=0;c>d;d+=2)h[b[d]]=j(b[d+1])};var f="1.0";return g.prototype={realm:"",requestTokenUrl:"",authorizationUrl:"",accessTokenUrl:"",init:function(a){var b="",c={enablePrivilege:a.enablePrivilege||!1,proxyUrl:a.proxyUrl,callbackUrl:a.callbackUrl||"oob",consumerKey:a.consumerKey,consumerSecret:a.consumerSecret,accessTokenKey:a.accessTokenKey||b,accessTokenSecret:a.accessTokenSecret||b,verifier:b,signatureMethod:a.signatureMethod||"HMAC-SHA1"};return this.realm=a.realm||b,this.requestTokenUrl=a.requestTokenUrl||b,this.authorizationUrl=a.authorizationUrl||b,this.accessTokenUrl=a.accessTokenUrl||b,this.getAccessToken=function(){return[c.accessTokenKey,c.accessTokenSecret]},this.getAccessTokenKey=function(){return c.accessTokenKey},this.getAccessTokenSecret=function(){return c.accessTokenSecret},this.setAccessToken=function(a,b){b&&(a=[a,b]),c.accessTokenKey=a[0],c.accessTokenSecret=a[1]},this.getVerifier=function(){return c.verifier},this.setVerifier=function(a){c.verifier=a},this.setCallbackUrl=function(a){c.callbackUrl=a},this.request=function(a){var b,e,m,n,o,p,q,r,s,t,u,v,x,z,A,B,w=[],y={};b=a.method||"GET",e=d(a.url),m=a.data||{},n=a.headers||{},o=a.success||function(){},p=a.failure||function(){},A=function(){var a=!1;for(var b in m)(m[b]instanceof File||"undefined"!=typeof m[b].fileName)&&(a=!0);return a}(),x=a.appendQueryString?a.appendQueryString:!1,c.enablePrivilege&&netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite"),q=l(),q.onreadystatechange=function(){if(4===q.readyState){var e,a=/^(.*?):\s*(.*?)\r?$/gm,b=n,c={},d="";if(q.getAllResponseHeaders)for(d=q.getAllResponseHeaders();e=a.exec(d);)c[e[1]]=e[2];else if(q.getResponseHeaders){d=q.getResponseHeaders();for(var f=0,g=d.length;g>f;++f)c[d[f][0]]=d[f][1]}var h=!1;"Content-Type"in c&&"text/xml"==c["Content-Type"]&&(h=!0);var i={text:q.responseText,xml:h?q.responseXML:"",requestHeaders:b,responseHeaders:c};q.status>=200&&q.status<=226||304==q.status||0===q.status?o(i):q.status>=400&&0!==q.status&&p(i)}},s={oauth_callback:c.callbackUrl,oauth_consumer_key:c.consumerKey,oauth_token:c.accessTokenKey,oauth_signature_method:c.signatureMethod,oauth_timestamp:j(),oauth_nonce:k(),oauth_verifier:c.verifier,oauth_version:f},t=c.signatureMethod,z=e.query.toObject();for(r in z)y[r]=z[r];if(!("Content-Type"in n&&"application/x-www-form-urlencoded"!=n["Content-Type"]||A))for(r in m)y[r]=m[r];if(B=e.scheme+"://"+e.host+e.path,u=i(b,B,s,y),v=g.signatureMethod[t](c.consumerSecret,c.accessTokenSecret,u),s.oauth_signature=v,this.realm&&(s.realm=this.realm),c.proxyUrl&&(e=d(c.proxyUrl+e.path)),x||"GET"==b)e.query.setQueryParams(m),w=null;else if(A){if(A){w=new FormData;for(r in m)w.append(r,m[r])}}else if("string"==typeof m)w=m,"Content-Type"in n||(n["Content-Type"]="text/plain");else{for(r in m)w.push(g.urlEncode(r)+"="+g.urlEncode(m[r]+""));w=w.sort().join("&"),"Content-Type"in n||(n["Content-Type"]="application/x-www-form-urlencoded")}q.open(b,e+"",!0),q.setRequestHeader("Authorization","OAuth "+h(s)),q.setRequestHeader("X-Requested-With","XMLHttpRequest");for(r in n)q.setRequestHeader(r,n[r]);q.send(w)},this},get:function(a,b,c){this.request({url:a,success:b,failure:c})},post:function(a,b,c,d){this.request({method:"POST",url:a,data:b,success:c,failure:d})},getJSON:function(a,b,c){this.get(a,function(a){b(JSON.parse(a.text))},c)},postJSON:function(a,b,c,d){this.request({method:"POST",url:a,data:JSON.stringify(b),success:function(a){c(JSON.parse(a.text))},failure:d,headers:{"Content-Type":"application/json"}})},parseTokenRequest:function(a,b){switch(b){case"text/xml":var c=a.xml.getElementsByTagName("token"),d=a.xml.getElementsByTagName("secret");i[g.urlDecode(c[0])]=g.urlDecode(d[0]);break;default:for(var e=0,f=a.text.split("&"),h=f.length,i={};h>e;++e){var j=f[e].split("=");i[g.urlDecode(j[0])]=g.urlDecode(j[1])}}return i},fetchRequestToken:function(a,b){var c=this;c.setAccessToken("","");var d=c.authorizationUrl;this.get(this.requestTokenUrl,function(b){var e=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([e.oauth_token,e.oauth_token_secret]),a(d+"?"+b.text)},b)},fetchAccessToken:function(a,b){var c=this;this.get(this.accessTokenUrl,function(b){var d=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([d.oauth_token,d.oauth_token_secret]),c.setVerifier(""),a(b)},b)}},g.signatureMethod={"HMAC-SHA1":function(b,c,d){var e,f,h=g.urlEncode;return b=h(b),c=h(c||""),e=b+"&"+c,f=t(s.prototype,e,d),a.btoa(f)}},g.urlEncode=function(a){function b(a){var b=a.toString(16).toUpperCase();return b.length<2&&(b=0+b),"%"+b}if(!a)return"";a+="";var e,g,c=/[ \r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,d=a.length,f=a.split("");for(e=0;d>e;e++)(g=f[e].match(c))&&(g=g[0].charCodeAt(0),128>g?f[e]=b(g):2048>g?f[e]=b(192+(g>>6))+b(128+(63&g)):65536>g?f[e]=b(224+(g>>12))+b(128+(63&g>>6))+b(128+(63&g)):2097152>g&&(f[e]=b(240+(g>>18))+b(128+(63&g>>12))+b(128+(63&g>>6))+b(128+(63&g))));return f.join("")},g.urlDecode=function(a){return a?a.replace(/%[a-fA-F0-9]{2}/gi,function(a){return String.fromCharCode(parseInt(a.replace("%",""),16))}):""},s.prototype=new s,s.prototype.blocksize=64,s.prototype.hash=function(a){function A(a,b,c,d){switch(a){case 0:return b&c|~b&d;case 1:case 3:return b^c^d;case 2:return b&c|b&d|c&d}return-1}var d,e,f,g,h,i,j,k,l,p,q,s,t,u,v,w,x,y,z,b=[1732584193,4023233417,2562383102,271733878,3285377520],c=[1518500249,1859775393,2400959708,3395469782];for(a.constructor===String&&(a=n(a.encodeUTF8())),f=a.length,g=Math.ceil((f+9)/this.blocksize)*this.blocksize-(f+9),e=Math.floor(f/4294967296),d=Math.floor(f%4294967296),h=[255&8*e>>24,255&8*e>>16,255&8*e>>8,255&8*e,255&8*d>>24,255&8*d>>16,255&8*d>>8,255&8*d],a=a.concat([128],m(g),h),i=Math.ceil(a.length/this.blocksize),j=0;i>j;j++){for(k=a.slice(j*this.blocksize,(j+1)*this.blocksize),l=k.length,p=[],q=0;l>q;q++)p[q>>>2]|=k[q]<<24-8*(q-4*(q>>2));for(s=b[0],t=b[1],u=b[2],v=b[3],w=b[4],x=0;80>x;x++)x>=16&&(p[x]=r(p[x-3]^p[x-8]^p[x-14]^p[x-16],1)),y=Math.floor(x/20),z=r(s,5)+A(y,t,u,v)+w+c[y]+p[x],w=v,v=u,u=r(t,30),t=s,s=z;b[0]+=s,b[1]+=t,b[2]+=u,b[3]+=v,b[4]+=w}return o(b)},g}(exports);var exports=exports||this;!function(a){var b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";a.btoa=a.btoa||function(a){for(var e,f,c=0,d=a.length,g="";d>c;c+=3)e=[a.charCodeAt(c),a.charCodeAt(c+1),a.charCodeAt(c+2)],f=[e[0]>>2,(3&e[0])<<4|e[1]>>4,(15&e[1])<<2|e[2]>>6,63&e[2]],isNaN(e[1])&&(f[2]=64),isNaN(e[2])&&(f[3]=64),g+=b.charAt(f[0])+b.charAt(f[1])+b.charAt(f[2])+b.charAt(f[3]);return g}}(exports);;
-var exports=exports||this;exports.Google=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1!==n.url.indexOf("https://accounts.google.com/o/oauth2/approval")){o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a),s||o.close();var u=n.source.evalJS("document.getElementsByTagName('title')[0].innerText").split("=")[1];t.post("https://accounts.google.com/o/oauth2/token",{grant_type:"authorization_code",client_id:e.consumerKey,client_secret:e.consumerSecret,code:u,redirect_uri:e.callbackUrl},function(n){var i=JSON.parse(n.text);t.setAccessToken([i.access_token]),e.accessTokenKey=i.access_token,e.refreshTokenKey=i.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:i.expires_in}),e.authorized=!0,s&&o.close()})}else o.remove(i),r.hide(),o.leftNavButton!==c&&(o.leftNavButton=c)})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Google Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.accessTokenKey=e.accessTokenKey,s.refreshTokenKey=e.refreshTokenKey,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.refreshTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"urn:ietf:wg:oauth:2.0:oob",e.requestTokenUrl=e.requestTokenUrl||"https://accounts.google.com/o/oauth2/auth",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?this.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:this.consumerKey,client_secret:this.consumerSecret,refresh_token:this.refreshTokenKey},function(e){var s=JSON.parse(e.text);t.oauthClient.setAccessToken([s.access_token]),t.accessTokenKey=s.access_token,t.refreshTokenKey=s.refresh_token,t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.oauthClient.getAccessTokenKey(),refreshTokenKey:t.refreshTokenKey,expiresIn:s.expires_in})},function(){t.oauthClient.setAccessToken([null]),t.accessTokenKey=null,t.refreshTokenKey=null,t.fireEvent("login",{success:!1,error:!0})}):(e.call(this),this.oauthClient.setAccessToken("",""),t.webView.url=this.oauthClient.requestTokenUrl+"?client_id="+this.consumerKey+"&redirect_uri="+this.callbackUrl+"&scope="+this.scope+"&response_type=code")},n.prototype.request=function(e,t,s,o,n){var i=this,r=this.oauthClient,c=e;s.Authorization="OAuth "+r.getAccessTokenKey(),r.request({method:o,url:c,data:t,headers:s,success:function(e){n.call(i,{success:!0,error:!1,result:e})},failure:function(e){n.call(i,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.refreshTokenKey=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;s.length>o;o++)s[o].call(this,t)},n.prototype.refreshAccessToken=function(){var e=this;e.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:e.consumerKey,client_secret:e.consumerSecret,refresh_token:e.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("refresh",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(){e.fireEvent("refresh",{success:!1,error:!0})})},n}(this);var exports=exports||this;exports.Linkedin=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementsByClassName('access-code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.linkedin.com/uas/oauth/accessToken?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Linkedin Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://www.linkedin.com/uas/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"oob",e.requestTokenUrl=e.requestTokenUrl||"https://api.linkedin.com/uas/oauth/requestToken",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.linkedin.com/"+e,t.access_token=this.accessTokenKey,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;s.length>o;o++)s[o].call(this,t)},n}(this);var exports=exports||this;exports.Twitter=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementById('oauth_pin').getElementsByTagName('code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.twitter.com/oauth/access_token?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Twitter Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://api.twitter.com/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.accessTokenSecret&&(s.authorized=!0),e.requestTokenUrl=e.requestTokenUrl||"https://api.twitter.com/oauth/request_token",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.twitter.com/"+e,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;s.length>o;o++)s[o].call(this,t)},n}(this);;
+var exports=exports||this;exports.OAuth=function(a){function b(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(!(this instanceof c))return new c(a);for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function c(){}function d(a){var d,f,g,h,i,j,k,b=arguments,c=b.callee,l=/^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/,m=this;return this instanceof c?(m.scheme="",m.host="",m.port="",m.path="",m.query=new e,m.anchor="",null!==a&&(d=a.match(l),f=d[1],g=d[2],h=d[3],i=d[4],j=d[5],k=d[6],f=void 0!==f?f.replace("://","").toLowerCase():"http",h=h?h.replace(":",""):"https"===f?"443":"80",f="http"==f&&"443"===h?"https":f,j=j?j.replace("?",""):"",k=k?k.replace("#",""):"",("https"===f&&"443"!==h||"http"===f&&"80"!==h)&&(g=g+":"+h),m.scheme=f,m.host=g,m.port=h,m.path=i||"/",m.query.setQueryParams(j),m.anchor=k||""),void 0):new c(a)}function e(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(g.urlDecode,!(this instanceof c))return new c(a);if(void 0!=a)for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function g(a){return this instanceof g?this.init(a):new g(a)}function h(a){var c,d,b=[];for(c in a)a[c]&&void 0!==a[c]&&""!==a[c]&&("realm"===c?d=c+'="'+a[c]+'"':b.push(c+'="'+g.urlEncode(a[c]+"")+'"'));return b.sort(),d&&b.unshift(d),b.join(", ")}function i(a,b,c,d){var f,e=[],h=g.urlEncode;for(f in c)void 0!==c[f]&&""!==c[f]&&e.push([g.urlEncode(f),g.urlEncode(c[f]+"")]);for(f in d)void 0!==d[f]&&""!==d[f]&&(c[f]||e.push([h(f),h(d[f]+"")]));return e=e.sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:a[1]>b[1]?1:0}).map(function(a){return a.join("=")}),[a,h(b),h(e.join("&"))].join("&")}function j(){return parseInt(+new Date/1e3,10)}function k(a){function b(){return Math.floor(Math.random()*h.length)}a=a||64;var g,c=a/8,d="",e=c/4,f=c%4,h=["20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F","30","31","32","33","34","35","36","37","38","39","3A","3B","3C","3D","3E","3F","40","41","42","43","44","45","46","47","48","49","4A","4B","4C","4D","4E","4F","50","51","52","53","54","55","56","57","58","59","5A","5B","5C","5D","5E","5F","60","61","62","63","64","65","66","67","68","69","6A","6B","6C","6D","6E","6F","70","71","72","73","74","75","76","77","78","79","7A","7B","7C","7D","7E"];for(g=0;e>g;g++)d+=h[b()]+h[b()]+h[b()]+h[b()];for(g=0;f>g;g++)d+=h[b()];return d}function l(){var b;if("undefined"!=typeof a.Titanium&&"undefined"!=typeof a.Titanium.Network.createHTTPClient)b=a.Titanium.Network.createHTTPClient();else if("undefined"!=typeof require)try{b=new require("xhr").XMLHttpRequest()}catch(c){if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}else{if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}return b}function m(a){var b=new Array(++a);return b.join(0).split("")}function n(a){var c,d,b=[];for(d=0;d<a.length;d++)c=a.charCodeAt(d),128>c?b.push(c):2048>c?b.push(192+(c>>6),128+(63&c)):65536>c?b.push(224+(c>>12),128+(63&c>>6),128+(63&c)):2097152>c&&b.push(240+(c>>18),128+(63&c>>12),128+(63&c>>6),128+(63&c));return b}function o(a){var c,b=[];for(c=0;c<32*a.length;c+=8)b.push(255&a[c>>>5]>>>24-c%32);return b}function p(a){var d,b=[],c=a.length;for(d=0;c>d;d++)b.push((a[d]>>>4).toString(16)),b.push((15&a[d]).toString(16));return b.join("")}function q(a){var d,b="",c=a.length;for(d=0;c>d;d++)b+=String.fromCharCode(a[d]);return b}function r(a,b){return a<<b|a>>>32-b}function s(a){if(void 0!==a){var c,d,b=a;return b.constructor===String&&(b=n(b)),c=this instanceof s?this:new s(a),d=c.hash(b),p(d)}return this instanceof s?this:new s}function t(a,b,c,d){var h,i,j,k,e=n(b),f=n(c),g=e.length;for(g>a.blocksize&&(e=a.hash(e),g=e.length),e=e.concat(m(a.blocksize-g)),i=e.slice(0),j=e.slice(0),k=0;k<a.blocksize;k++)i[k]^=92,j[k]^=54;return h=a.hash(i.concat(a.hash(j.concat(f)))),d?p(h):q(h)}c.prototype={join:function(a){return a=a||"",this.values().join(a)},keys:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(a);return b},values:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(c[a]);return b},shift:function(){throw"not implimented"},unshift:function(){throw"not implimented"},push:function(){throw"not implimented"},pop:function(){throw"not implimented"},sort:function(){throw"not implimented"},ksort:function(a){var d,e,f,b=this,c=b.keys();for(void 0==a?c.sort():c.sort(a),d=0;d<c.length;d++)f=c[d],e=b[f],delete b[f],b[f]=e;return b},toObject:function(){var b,a={},c=this;for(b in c)c.hasOwnProperty(b)&&(a[b]=c[b]);return a}},b.prototype=new c,d.prototype={scheme:"",host:"",port:"",path:"",query:"",anchor:"",toString:function(){var a=this,b=a.query+"";return a.scheme+"://"+a.host+a.path+(""!=b?"?"+b:"")+(""!==a.anchor?"#"+a.anchor:"")}},e.prototype=new b,e.prototype.toString=function(){var a,b=this,c=[],d="",e="",f=g.urlEncode;b.ksort();for(a in b)b.hasOwnProperty(a)&&void 0!=a&&void 0!=b[a]&&(e=f(a)+"="+f(b[a]),c.push(e));return c.length>0&&(d=c.join("&")),d},e.prototype.setQueryParams=function(a){var d,e,f,i,b=arguments,c=b.length,h=this,j=g.urlDecode;if(1==c){if("object"==typeof a)for(d in a)a.hasOwnProperty(d)&&(h[d]=j(a[d]));else if("string"==typeof a)for(e=a.split("&"),d=0,f=e.length;f>d;d++)i=e[d].split("="),""!=i[0]&&(h[i[0]]=j(i[1]))}else for(d=0;c>d;d+=2)h[b[d]]=j(b[d+1])};var f="1.0";return g.prototype={realm:"",requestTokenUrl:"",authorizationUrl:"",accessTokenUrl:"",init:function(a){var b="",c={enablePrivilege:a.enablePrivilege||!1,proxyUrl:a.proxyUrl,callbackUrl:a.callbackUrl||"oob",consumerKey:a.consumerKey,consumerSecret:a.consumerSecret,accessTokenKey:a.accessTokenKey||b,accessTokenSecret:a.accessTokenSecret||b,verifier:b,signatureMethod:a.signatureMethod||"HMAC-SHA1"};return this.realm=a.realm||b,this.requestTokenUrl=a.requestTokenUrl||b,this.authorizationUrl=a.authorizationUrl||b,this.accessTokenUrl=a.accessTokenUrl||b,this.getAccessToken=function(){return[c.accessTokenKey,c.accessTokenSecret]},this.getAccessTokenKey=function(){return c.accessTokenKey},this.getAccessTokenSecret=function(){return c.accessTokenSecret},this.setAccessToken=function(a,b){b&&(a=[a,b]),c.accessTokenKey=a[0],c.accessTokenSecret=a[1]},this.getVerifier=function(){return c.verifier},this.setVerifier=function(a){c.verifier=a},this.setCallbackUrl=function(a){c.callbackUrl=a},this.request=function(a){var b,e,m,n,o,p,q,r,s,t,u,v,x,z,A,B,w=[],y={};b=a.method||"GET",e=d(a.url),m=a.data||{},n=a.headers||{},o=a.success||function(){},p=a.failure||function(){},A=function(){var a=!1;for(var b in m)(m[b]instanceof File||"undefined"!=typeof m[b].fileName)&&(a=!0);return a}(),x=a.appendQueryString?a.appendQueryString:!1,c.enablePrivilege&&netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite"),q=l(),q.onreadystatechange=function(){if(4===q.readyState){var e,a=/^(.*?):\s*(.*?)\r?$/gm,b=n,c={},d="";if(q.getAllResponseHeaders)for(d=q.getAllResponseHeaders();e=a.exec(d);)c[e[1]]=e[2];else if(q.getResponseHeaders){d=q.getResponseHeaders();for(var f=0,g=d.length;g>f;++f)c[d[f][0]]=d[f][1]}var h=!1;"Content-Type"in c&&"text/xml"==c["Content-Type"]&&(h=!0);var i={text:q.responseText,xml:h?q.responseXML:"",requestHeaders:b,responseHeaders:c};q.status>=200&&q.status<=226||304==q.status||0===q.status?o(i):q.status>=400&&0!==q.status&&p(i)}},s={oauth_callback:c.callbackUrl,oauth_consumer_key:c.consumerKey,oauth_token:c.accessTokenKey,oauth_signature_method:c.signatureMethod,oauth_timestamp:j(),oauth_nonce:k(),oauth_verifier:c.verifier,oauth_version:f},t=c.signatureMethod,z=e.query.toObject();for(r in z)y[r]=z[r];if(!("Content-Type"in n&&"application/x-www-form-urlencoded"!=n["Content-Type"]||A))for(r in m)y[r]=m[r];if(B=e.scheme+"://"+e.host+e.path,u=i(b,B,s,y),v=g.signatureMethod[t](c.consumerSecret,c.accessTokenSecret,u),s.oauth_signature=v,this.realm&&(s.realm=this.realm),c.proxyUrl&&(e=d(c.proxyUrl+e.path)),x||"GET"==b)e.query.setQueryParams(m),w=null;else if(A){if(A){w=new FormData;for(r in m)w.append(r,m[r])}}else if("string"==typeof m)w=m,"Content-Type"in n||(n["Content-Type"]="text/plain");else{for(r in m)w.push(g.urlEncode(r)+"="+g.urlEncode(m[r]+""));w=w.sort().join("&"),"Content-Type"in n||(n["Content-Type"]="application/x-www-form-urlencoded")}q.open(b,e+"",!0),q.setRequestHeader("Authorization","OAuth "+h(s)),q.setRequestHeader("X-Requested-With","XMLHttpRequest");for(r in n)q.setRequestHeader(r,n[r]);q.send(w)},this},get:function(a,b,c){this.request({url:a,success:b,failure:c})},post:function(a,b,c,d){this.request({method:"POST",url:a,data:b,success:c,failure:d})},getJSON:function(a,b,c){this.get(a,function(a){b(JSON.parse(a.text))},c)},postJSON:function(a,b,c,d){this.request({method:"POST",url:a,data:JSON.stringify(b),success:function(a){c(JSON.parse(a.text))},failure:d,headers:{"Content-Type":"application/json"}})},parseTokenRequest:function(a,b){switch(b){case"text/xml":var c=a.xml.getElementsByTagName("token"),d=a.xml.getElementsByTagName("secret");i[g.urlDecode(c[0])]=g.urlDecode(d[0]);break;default:for(var e=0,f=a.text.split("&"),h=f.length,i={};h>e;++e){var j=f[e].split("=");i[g.urlDecode(j[0])]=g.urlDecode(j[1])}}return i},fetchRequestToken:function(a,b){var c=this;c.setAccessToken("","");var d=c.authorizationUrl;this.get(this.requestTokenUrl,function(b){var e=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([e.oauth_token,e.oauth_token_secret]),a(d+"?"+b.text)},b)},fetchAccessToken:function(a,b){var c=this;this.get(this.accessTokenUrl,function(b){var d=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([d.oauth_token,d.oauth_token_secret]),c.setVerifier(""),a(b)},b)}},g.signatureMethod={"HMAC-SHA1":function(b,c,d){var e,f,h=g.urlEncode;return b=h(b),c=h(c||""),e=b+"&"+c,f=t(s.prototype,e,d),a.btoa(f)}},g.urlEncode=function(a){function b(a){var b=a.toString(16).toUpperCase();return b.length<2&&(b=0+b),"%"+b}if(!a)return"";a+="";var e,g,c=/[ \t\r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,d=a.length,f=a.split("");for(e=0;d>e;e++)(g=f[e].match(c))&&(g=g[0].charCodeAt(0),128>g?f[e]=b(g):2048>g?f[e]=b(192+(g>>6))+b(128+(63&g)):65536>g?f[e]=b(224+(g>>12))+b(128+(63&g>>6))+b(128+(63&g)):2097152>g&&(f[e]=b(240+(g>>18))+b(128+(63&g>>12))+b(128+(63&g>>6))+b(128+(63&g))));return f.join("")},g.urlDecode=function(a){return a?a.replace(/%[a-fA-F0-9]{2}/gi,function(a){return String.fromCharCode(parseInt(a.replace("%",""),16))}):""},s.prototype=new s,s.prototype.blocksize=64,s.prototype.hash=function(a){function A(a,b,c,d){switch(a){case 0:return b&c|~b&d;case 1:case 3:return b^c^d;case 2:return b&c|b&d|c&d}return-1}var d,e,f,g,h,i,j,k,l,p,q,s,t,u,v,w,x,y,z,b=[1732584193,4023233417,2562383102,271733878,3285377520],c=[1518500249,1859775393,2400959708,3395469782];for(a.constructor===String&&(a=n(a.encodeUTF8())),f=a.length,g=Math.ceil((f+9)/this.blocksize)*this.blocksize-(f+9),e=Math.floor(f/4294967296),d=Math.floor(f%4294967296),h=[255&8*e>>24,255&8*e>>16,255&8*e>>8,255&8*e,255&8*d>>24,255&8*d>>16,255&8*d>>8,255&8*d],a=a.concat([128],m(g),h),i=Math.ceil(a.length/this.blocksize),j=0;i>j;j++){for(k=a.slice(j*this.blocksize,(j+1)*this.blocksize),l=k.length,p=[],q=0;l>q;q++)p[q>>>2]|=k[q]<<24-8*(q-4*(q>>2));for(s=b[0],t=b[1],u=b[2],v=b[3],w=b[4],x=0;80>x;x++)x>=16&&(p[x]=r(p[x-3]^p[x-8]^p[x-14]^p[x-16],1)),y=Math.floor(x/20),z=r(s,5)+A(y,t,u,v)+w+c[y]+p[x],w=v,v=u,u=r(t,30),t=s,s=z;b[0]+=s,b[1]+=t,b[2]+=u,b[3]+=v,b[4]+=w}return o(b)},g}(exports);var exports=exports||this;!function(a){var b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";a.btoa=a.btoa||function(a){for(var e,f,c=0,d=a.length,g="";d>c;c+=3)e=[a.charCodeAt(c),a.charCodeAt(c+1),a.charCodeAt(c+2)],f=[e[0]>>2,(3&e[0])<<4|e[1]>>4,(15&e[1])<<2|e[2]>>6,63&e[2]],isNaN(e[1])&&(f[2]=64),isNaN(e[2])&&(f[3]=64),g+=b.charAt(f[0])+b.charAt(f[1])+b.charAt(f[2])+b.charAt(f[3]);return g}}(exports);;
+var exports=exports||this;exports.Google=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1!==n.url.indexOf("https://accounts.google.com/o/oauth2/approval")){o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a),s||o.close();var u=n.source.evalJS("document.getElementsByTagName('title')[0].innerText").split("=")[1];t.post("https://accounts.google.com/o/oauth2/token",{grant_type:"authorization_code",client_id:e.consumerKey,client_secret:e.consumerSecret,code:u,redirect_uri:e.callbackUrl},function(n){var i=JSON.parse(n.text);t.setAccessToken([i.access_token]),e.accessTokenKey=i.access_token,e.refreshTokenKey=i.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:i.expires_in}),e.authorized=!0,s&&o.close()})}else o.remove(i),r.hide(),o.leftNavButton!==c&&(o.leftNavButton=c)})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Google Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.accessTokenKey=e.accessTokenKey,s.refreshTokenKey=e.refreshTokenKey,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.refreshTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"urn:ietf:wg:oauth:2.0:oob",e.requestTokenUrl=e.requestTokenUrl||"https://accounts.google.com/o/oauth2/auth",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?this.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:this.consumerKey,client_secret:this.consumerSecret,refresh_token:this.refreshTokenKey},function(e){var s=JSON.parse(e.text);t.oauthClient.setAccessToken([s.access_token]),t.accessTokenKey=s.access_token,t.refreshTokenKey=s.refresh_token,t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.oauthClient.getAccessTokenKey(),refreshTokenKey:t.refreshTokenKey,expiresIn:s.expires_in})},function(){t.oauthClient.setAccessToken([null]),t.accessTokenKey=null,t.refreshTokenKey=null,t.fireEvent("login",{success:!1,error:!0})}):(e.call(this),this.oauthClient.setAccessToken("",""),t.webView.url=this.oauthClient.requestTokenUrl+"?client_id="+this.consumerKey+"&redirect_uri="+this.callbackUrl+"&scope="+this.scope+"&response_type=code")},n.prototype.request=function(e,t,s,o,n){var i=this,r=this.oauthClient,c=e;s.Authorization="OAuth "+r.getAccessTokenKey(),r.request({method:o,url:c,data:t,headers:s,success:function(e){n.call(i,{success:!0,error:!1,result:e})},failure:function(e){n.call(i,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.refreshTokenKey=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n.prototype.refreshAccessToken=function(){var e=this;e.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:e.consumerKey,client_secret:e.consumerSecret,refresh_token:e.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("refresh",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(){e.fireEvent("refresh",{success:!1,error:!0})})},n}(this);var exports=exports||this;exports.Linkedin=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementsByClassName('access-code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.linkedin.com/uas/oauth/accessToken?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Linkedin Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://www.linkedin.com/uas/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"oob",e.requestTokenUrl=e.requestTokenUrl||"https://api.linkedin.com/uas/oauth/requestToken",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.linkedin.com/"+e,t.access_token=this.accessTokenKey,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);var exports=exports||this;exports.Twitter=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementById('oauth_pin').getElementsByTagName('code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.twitter.com/oauth/access_token?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Twitter Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://api.twitter.com/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.accessTokenSecret&&(s.authorized=!0),e.requestTokenUrl=e.requestTokenUrl||"https://api.twitter.com/oauth/request_token",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.twitter.com/"+e,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);;
 }.call(this));;
 /*!
  * Copyright (c) 2013 Kinvey, Inc. All rights reserved.
@@ -143,7 +143,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.0.0';
+    Kinvey.SDK_VERSION = '1.0.2';
 
     // Properties.
     // -----------
@@ -198,8 +198,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       var promise = Storage.get('activeUser');
 
       // If there is an authtoken, restore the active user from disk.
-      return promise.then(function(authtoken) {
-        if(null != authtoken) {
+      return promise.then(function(user) {
+        if(null != user) {
           // Debug.
           if(KINVEY_DEBUG) {
             log('Restoring the active user.');
@@ -207,8 +207,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // Set the active user to a near-empty user with only the authtoken set.
           var previous = Kinvey.setActiveUser({
+            _id: user[0],
             _kmd: {
-              authtoken: authtoken
+              authtoken: user[1]
             }
           });
 
@@ -264,7 +265,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
       // Update disk state in the background.
       if(null != user) { // Save the active user.
-        Storage.save('activeUser', user._kmd.authtoken);
+        Storage.save('activeUser', [user._id, user._kmd.authtoken]);
       }
       else { // Delete the active user.
         Storage.destroy('activeUser');
@@ -1493,19 +1494,20 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.0.0'];
+      var parts = ['js-titanium/1.0.2'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
       return parts.concat(
-      [
+        [
           platform,
           version,
           manufacturer,
           id
-      ].map(function(part) {
-        return null != part ? part.toString().replace(/\s/g, '_').toLowerCase() : 'unknown';
-      })).join(' ');
+        ].map(function(part) {
+          return null != part ? part.toString().replace(/\s/g, '_').toLowerCase() : 'unknown';
+        })
+      ).join(' ');
     };
 
     // ACL.
@@ -2025,7 +2027,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         'function(doc, out) {' +
         '  out.result = (out.result * out.count + doc["' + field + '"]) / (out.count + 1);' +
         '  out.count += 1;' +
-        '}');
+        '}'
+      );
       return agg;
     };
 
@@ -3403,6 +3406,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           collection: '_me',
           auth: Auth.Session,
           local: {
+            req: true,
             res: true
           }
         }, options).then(function(user) {
@@ -5562,8 +5566,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Object} adapter Object implementing the `Database` interface.
        */
       use: use([
-          'batch', 'clean', 'count', 'destroy', 'destruct', 'find', 'findAndModify',
-          'get', 'group', 'save', 'update'
+        'batch', 'clean', 'count', 'destroy', 'destruct', 'find', 'findAndModify',
+        'get', 'group', 'save', 'update'
       ])
     };
 
@@ -5645,10 +5649,26 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Normalize “collections” of the user namespace.
         var collection = USERS === request.namespace ? USERS : request.collection;
 
-        // The read request can be a count, query, or simple get. Neither change
-        // any application data, and therefore none are subject to synchronization.
+        // The read request can be a count, me, query, or simple get. Neither
+        // change any application data, and therefore none are subject to
+        // synchronization.
         if('_count' === request.id) { // Count.
           return Database.count(collection, request.query, options);
+        }
+        if('_me' === request.collection) { // Me.
+          // If there is an active user, attempt to retrieve its details.
+          var user = Kinvey.getActiveUser();
+          if(null !== user) {
+            return Database.get(collection, user._id, options).then(null, function(error) {
+              // If `ENTITY_NOT_FOUND`, return all we know about the active user.
+              if(error.name === Kinvey.Error.ENTITY_NOT_FOUND) {
+                return user;
+              }
+              return Kinvey.Defer.reject(error);
+            });
+          }
+          var error = clientError(Kinvey.Error.NO_ACTIVE_USER);
+          return Kinvey.Defer.reject(error);
         }
 
         // Query the collection, or retrieve a single document.
@@ -5940,7 +5960,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           if(flags.hasOwnProperty(key)) {
             var value = isString(flags[key]) ? flags[key] : JSON.stringify(flags[key]);
             params.push(
-              Kinvey.Persistence.Net.encode(key) + '=' + Kinvey.Persistence.Net.encode(value));
+              Kinvey.Persistence.Net.encode(key) + '=' + Kinvey.Persistence.Net.encode(value)
+            );
           }
         }
 
@@ -5999,7 +6020,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             url,
             request.data,
             headers,
-            options).then(function(response) {
+            options
+          ).then(function(response) {
             // Parse the response.
             return JSON.parse(response);
           }, function(response) {
@@ -6244,8 +6266,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Step 1: obtain the documents from local and net.
         var promises = [
-            Kinvey.Persistence.Local.read(request, options),
-            Kinvey.Persistence.Net.read(request, options)
+          Kinvey.Persistence.Local.read(request, options),
+          Kinvey.Persistence.Net.read(request, options)
         ];
         return Kinvey.Defer.all(promises).then(function(responses) {
           // `responses` is a list of documents. Re-format as object
@@ -6266,12 +6288,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           var promises = identifiers.map(function(id) {
             return Sync._document(
               collection, {
-              id: id,
-              timestamp: documents[id]
-            }, // The document metadata.
-            response.local[id] || null, // The local document.
-            response.net[id] || null, // The net document.
-            options).then(null, function(response) {
+                id: id,
+                timestamp: documents[id]
+              }, // The document metadata.
+              response.local[id] || null, // The local document.
+              response.net[id] || null, // The net document.
+              options
+            ).then(null, function(response) {
               // Rejection occurs when a conflict could not be resolved. Append the
               // id to the errors, and resolve.
               result.error.push(response.id);
@@ -6290,8 +6313,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // Save and destroy all documents in parallel.
           var promises = [
-              Sync._save(collection, created, options),
-              Sync._destroy(collection, destroyed, options)
+            Sync._save(collection, created, options),
+            Sync._destroy(collection, destroyed, options)
           ];
           return Kinvey.Defer.all(promises);
         }).then(function(responses) {
@@ -6352,8 +6375,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Delete from local and net in parallel. Deletion is an atomic action,
         // therefore the documents will either all be part of `success` or `error`.
         var promises = [
-            Kinvey.Persistence.Local.destroy(request, options),
-            Kinvey.Persistence.Net.destroy(request, options)
+          Kinvey.Persistence.Local.destroy(request, options),
+          Kinvey.Persistence.Net.destroy(request, options)
         ];
         return Kinvey.Defer.all(promises).then(function() {
           return {
@@ -7812,91 +7835,92 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Kinvey.Backbone.CollectionMixin = _.extend({},
         SyncMixin,
-      /** @lends Kinvey.Backbone.CollectionMixin */
-      {
-        /**
-         * The collections’ query, applied to the clean and fetch methods.
-         *
-         * @type {Kinvey.Query}
-         */
-        query: null,
+        /** @lends Kinvey.Backbone.CollectionMixin */
+        {
+          /**
+           * The collections’ query, applied to the clean and fetch methods.
+           *
+           * @type {Kinvey.Query}
+           */
+          query: null,
 
-        /**
-         * Cleans the collection.
-         *
-         * @param {Object} [options] Options.
-         * @returns {Promise} The response, status, and xhr objects.
-         */
-        clean: function(options) {
-          // Cast arguments.
-          options = options ? _.clone(options) : {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          backboneWrapCallbacks(this, options);
+          /**
+           * Cleans the collection.
+           *
+           * @param {Object} [options] Options.
+           * @returns {Promise} The response, status, and xhr objects.
+           */
+          clean: function(options) {
+            // Cast arguments.
+            options = options ? _.clone(options) : {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            backboneWrapCallbacks(this, options);
 
-          // Invoke the persistence layer.
-          return this.sync('delete', this, options);
-        },
+            // Invoke the persistence layer.
+            return this.sync('delete', this, options);
+          },
 
-        /**
-         * Counts the number of documents in the collection.
-         *
-         * @param {Object} options Options.
-         * @returns {Promise} The response, status, and xhr objects.
-         */
-        count: function(options) {
-          // Cast arguments.
-          options = _.clone(options) || {};
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options, false);
+          /**
+           * Counts the number of documents in the collection.
+           *
+           * @param {Object} options Options.
+           * @returns {Promise} The response, status, and xhr objects.
+           */
+          count: function(options) {
+            // Cast arguments.
+            options = _.clone(options) || {};
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options, false);
 
-          // Prepare the response.
-          var collection = _.result(this, 'url');
-          var query = options.query || this.query;
-          var promise;
-          if(USERS === collection) {
-            promise = Kinvey.User.count(query, options);
+            // Prepare the response.
+            var collection = _.result(this, 'url');
+            var query = options.query || this.query;
+            var promise;
+            if(USERS === collection) {
+              promise = Kinvey.User.count(query, options);
+            }
+            else {
+              promise = Kinvey.DataStore.count(collection, query, options);
+            }
+
+            // Return the response.
+            return kinveyToBackbonePromise(promise, options);
+          },
+
+          /**
+           * Performs a group operation.
+           *
+           * @param {Kinvey.Aggregation} aggregation The aggregation.
+           * @param {Object} options Options.
+           * @returns {Promise} The response, status, and xhr objects.
+           */
+          group: function(aggregation, options) {
+            // Cast arguments.
+            options = _.clone(options) || {};
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options, false);
+
+            // Apply query.
+            var query = options.query || this.query;
+            if(null != query) {
+              aggregation.query(query);
+            }
+
+            // Prepare the response.
+            var collection = _.result(this, 'url');
+            var promise;
+            if(USERS === collection) {
+              promise = Kinvey.User.group(aggregation, options);
+            }
+            else {
+              promise = Kinvey.DataStore.group(collection, aggregation, options);
+            }
+
+            // Return the response.
+            return kinveyToBackbonePromise(promise, options);
           }
-          else {
-            promise = Kinvey.DataStore.count(collection, query, options);
-          }
-
-          // Return the response.
-          return kinveyToBackbonePromise(promise, options);
-        },
-
-        /**
-         * Performs a group operation.
-         *
-         * @param {Kinvey.Aggregation} aggregation The aggregation.
-         * @param {Object} options Options.
-         * @returns {Promise} The response, status, and xhr objects.
-         */
-        group: function(aggregation, options) {
-          // Cast arguments.
-          options = _.clone(options) || {};
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options, false);
-
-          // Apply query.
-          var query = options.query || this.query;
-          if(null != query) {
-            aggregation.query(query);
-          }
-
-          // Prepare the response.
-          var collection = _.result(this, 'url');
-          var promise;
-          if(USERS === collection) {
-            promise = Kinvey.User.group(aggregation, options);
-          }
-          else {
-            promise = Kinvey.DataStore.group(collection, aggregation, options);
-          }
-
-          // Return the response.
-          return kinveyToBackbonePromise(promise, options);
         }
-      });
+      );
 
       // Metadata.
       // ---------
@@ -7997,144 +8021,145 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Kinvey.Backbone.UserMixin = _.extend({},
         Kinvey.Backbone.ModelMixin, UserMixin,
-      /** @lends Kinvey.Backbone.UserMixin */
-      {
-        /**
-         * Links a social identity to the user.
-         *
-         * @param {string} provider The provider.
-         * @param {Object} [options] Options.
-         * @returns {Promise} The model, response, and options objects.
-         */
-        connect: function(provider, options) {
-          // Cast arguments.
-          options = options ? _.clone(options) : {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options);
+        /** @lends Kinvey.Backbone.UserMixin */
+        {
+          /**
+           * Links a social identity to the user.
+           *
+           * @param {string} provider The provider.
+           * @param {Object} [options] Options.
+           * @returns {Promise} The model, response, and options objects.
+           */
+          connect: function(provider, options) {
+            // Cast arguments.
+            options = options ? _.clone(options) : {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options);
 
-          // Return the response.
-          var promise = Kinvey.Social.connect(this.attributes, provider, options);
-          return kinveyToBackbonePromise(promise, options);
-        },
+            // Return the response.
+            var promise = Kinvey.Social.connect(this.attributes, provider, options);
+            return kinveyToBackbonePromise(promise, options);
+          },
 
-        /**
-         * Removes a social identity from the user.
-         *
-         * @param {string} provider The provider.
-         * @param {Object} [options] Options.
-         * @returns {Promise} The model, response, and options objects.
-         */
-        disconnect: function(provider, options) {
-          // Cast arguments.
-          options = options ? _.clone(options) : {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options);
+          /**
+           * Removes a social identity from the user.
+           *
+           * @param {string} provider The provider.
+           * @param {Object} [options] Options.
+           * @returns {Promise} The model, response, and options objects.
+           */
+          disconnect: function(provider, options) {
+            // Cast arguments.
+            options = options ? _.clone(options) : {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options);
 
-          // Return the response.
-          var promise = Kinvey.Social.disconnect(this.attributes, provider, options);
-          return kinveyToBackbonePromise(promise, options);
-        },
+            // Return the response.
+            var promise = Kinvey.Social.disconnect(this.attributes, provider, options);
+            return kinveyToBackbonePromise(promise, options);
+          },
 
-        /**
-         * Returns the email verification status.
-         *
-         * @method
-         * @returns {?Object} The email verification status, or `null` if not set.
-         */
-        getEmailVerification: backboneWrapMetadata(Kinvey.Metadata.prototype.getEmailVerification),
+          /**
+           * Returns the email verification status.
+           *
+           * @method
+           * @returns {?Object} The email verification status, or `null` if not set.
+           */
+          getEmailVerification: backboneWrapMetadata(Kinvey.Metadata.prototype.getEmailVerification),
 
-        /**
-         * Returns whether the user is logged in.
-         *
-         * @returns {boolean}
-         */
-        isLoggedIn: function() {
-          var user = Kinvey.getActiveUser();
-          if(null !== user) {
-            var kmd = this.get('_kmd');
-            return null != kmd && kmd.authtoken === user._kmd.authtoken;
+          /**
+           * Returns whether the user is logged in.
+           *
+           * @returns {boolean}
+           */
+          isLoggedIn: function() {
+            var user = Kinvey.getActiveUser();
+            if(null !== user) {
+              var kmd = this.get('_kmd');
+              return null != kmd && kmd.authtoken === user._kmd.authtoken;
+            }
+            return false;
+          },
+
+          /**
+           * Logs in an existing user.
+           *
+           * @param {Object|string} usernameOrData Username, or user data.
+           * @param {string} [password] Password.
+           * @param {Object} [options] Options.
+           * @returns {Promise} The model, response, and options objects.
+           */
+          login: function(usernameOrData, password, options) {
+            // Cast arguments.
+            options = _.clone(isObject(usernameOrData) ? password : options) || {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options);
+
+            // Return the response.
+            var promise = Kinvey.User.login(usernameOrData, password, options);
+            return kinveyToBackbonePromise(promise, options);
+          },
+
+          /**
+           * Logs out the user.
+           *
+           * @param {Object} [options] Options.
+           * @returns {Promise} The model, response, and options objects.
+           */
+          logout: function(options) {
+            // Cast arguments.
+            options = options ? _.clone(options) : {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options);
+
+            // Validate preconditions.
+            var promise;
+            if(!this.isLoggedIn()) {
+              var error = clientError(Kinvey.Error.NOT_LOGGED_IN);
+              promise = Kinvey.Defer.reject(error);
+              wrapCallbacks(promise, options);
+            }
+            else {
+              promise = Kinvey.User.logout(options);
+            }
+
+            // Return the response.
+            return kinveyToBackbonePromise(promise, options);
+          },
+
+          /**
+           * Retrieves information on the user.
+           *
+           * @param {Options} [options] Options.
+           * @returns {Promise} The model, response, and options objects.
+           */
+          me: function(options) {
+            // Cast arguments.
+            options = options ? _.clone(options) : {};
+            options.parse = 'undefined' === typeof options.parse ? true : options.parse;
+            options.subject = this; // Used by the persistence layer.
+            backboneWrapCallbacks(this, options);
+
+            // Validate preconditions.
+            var promise;
+            if(!this.isLoggedIn()) {
+              var error = clientError(Kinvey.Error.NOT_LOGGED_IN);
+              promise = Kinvey.Defer.reject(error);
+              wrapCallbacks(promise, options);
+            }
+            else {
+              promise = Kinvey.User.me(options);
+            }
+
+            // Return the response.
+            return kinveyToBackbonePromise(promise, options);
           }
-          return false;
-        },
-
-        /**
-         * Logs in an existing user.
-         *
-         * @param {Object|string} usernameOrData Username, or user data.
-         * @param {string} [password] Password.
-         * @param {Object} [options] Options.
-         * @returns {Promise} The model, response, and options objects.
-         */
-        login: function(usernameOrData, password, options) {
-          // Cast arguments.
-          options = _.clone(isObject(usernameOrData) ? password : options) || {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options);
-
-          // Return the response.
-          var promise = Kinvey.User.login(usernameOrData, password, options);
-          return kinveyToBackbonePromise(promise, options);
-        },
-
-        /**
-         * Logs out the user.
-         *
-         * @param {Object} [options] Options.
-         * @returns {Promise} The model, response, and options objects.
-         */
-        logout: function(options) {
-          // Cast arguments.
-          options = options ? _.clone(options) : {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options);
-
-          // Validate preconditions.
-          var promise;
-          if(!this.isLoggedIn()) {
-            var error = clientError(Kinvey.Error.NOT_LOGGED_IN);
-            promise = Kinvey.Defer.reject(error);
-            wrapCallbacks(promise, options);
-          }
-          else {
-            promise = Kinvey.User.logout(options);
-          }
-
-          // Return the response.
-          return kinveyToBackbonePromise(promise, options);
-        },
-
-        /**
-         * Retrieves information on the user.
-         *
-         * @param {Options} [options] Options.
-         * @returns {Promise} The model, response, and options objects.
-         */
-        me: function(options) {
-          // Cast arguments.
-          options = options ? _.clone(options) : {};
-          options.parse = 'undefined' === typeof options.parse ? true : options.parse;
-          options.subject = this; // Used by the persistence layer.
-          backboneWrapCallbacks(this, options);
-
-          // Validate preconditions.
-          var promise;
-          if(!this.isLoggedIn()) {
-            var error = clientError(Kinvey.Error.NOT_LOGGED_IN);
-            promise = Kinvey.Defer.reject(error);
-            wrapCallbacks(promise, options);
-          }
-          else {
-            promise = Kinvey.User.me(options);
-          }
-
-          // Return the response.
-          return kinveyToBackbonePromise(promise, options);
         }
-      });
+      );
 
       /**
        * @memberof! <global>
@@ -8230,7 +8255,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Kinvey.Backbone.UserCollectionMixin = _.extend(
         _.omit(Kinvey.Backbone.CollectionMixin, 'clean'), // Users cannot be cleaned.
-      UserMixin);
+        UserMixin
+      );
 
       // Persistence.
       // ------------
@@ -8350,8 +8376,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // document id or data, together with `options`. `Kinvey.DataStore`, however,
         // requires an initial collection argument.
         var args = [
-            query ? options.query : ('read' === method || 'delete' === method ? id : data),
-            options
+          query ? options.query : ('read' === method || 'delete' === method ? id : data),
+          options
         ];
         if(USERS !== collection) {
           args.unshift(collection);
@@ -8461,44 +8487,45 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @mixes Kinvey.Backbone.CollectionMixin
        */
       Kinvey.Backbone.Collection = Backbone.Collection.extend(
-      // The mixin does not have access to the parent class, therefore the
-      // functionality below is only available on `Kinvey.Backbone.Collection`.
-      _.extend({}, Kinvey.Backbone.CollectionMixin, /** @lends Kinvey.Backbone.Collection# */ {
-        /**
-         * The model class that the collection contains.
-         * See [Backbone.js](http://backbonejs.org/#Collection-model).
-         *
-         * @default
-         * @type {Kinvey.Backbone.Model}
-         */
-        model: Kinvey.Backbone.Model,
+        // The mixin does not have access to the parent class, therefore the
+        // functionality below is only available on `Kinvey.Backbone.Collection`.
+        _.extend({}, Kinvey.Backbone.CollectionMixin, /** @lends Kinvey.Backbone.Collection# */ {
+          /**
+           * The model class that the collection contains.
+           * See [Backbone.js](http://backbonejs.org/#Collection-model).
+           *
+           * @default
+           * @type {Kinvey.Backbone.Model}
+           */
+          model: Kinvey.Backbone.Model,
 
-        /**
-         * Initializes the collection.
-         * See [Backbone.js](http://backbonejs.org/#Collection-constructor).
-         *
-         * @param {Array} [models] List of models.
-         * @param {Object} [options] Options.
-         * @param {Kinvey.Query} [options.query] The collection query.
-         * @throws {Kinvey.Error} `options.query` must be of type: `Kinvey.Query`.
-         */
-        initialize: function(models, options) {
-          // Call parent.
-          var result = Backbone.Collection.prototype.initialize.apply(this, arguments);
+          /**
+           * Initializes the collection.
+           * See [Backbone.js](http://backbonejs.org/#Collection-constructor).
+           *
+           * @param {Array} [models] List of models.
+           * @param {Object} [options] Options.
+           * @param {Kinvey.Query} [options.query] The collection query.
+           * @throws {Kinvey.Error} `options.query` must be of type: `Kinvey.Query`.
+           */
+          initialize: function(models, options) {
+            // Call parent.
+            var result = Backbone.Collection.prototype.initialize.apply(this, arguments);
 
-          // Cast arguments.
-          options = options || {};
+            // Cast arguments.
+            options = options || {};
 
-          // Validate arguments.
-          if(null != options.query && !(options.query instanceof Kinvey.Query)) {
-            throw new Kinvey.Error('options.query argument must be of type: Kinvey.Query.');
+            // Validate arguments.
+            if(null != options.query && !(options.query instanceof Kinvey.Query)) {
+              throw new Kinvey.Error('options.query argument must be of type: Kinvey.Query.');
+            }
+            this.query = options.query;
+
+            // Return the parent’s response.
+            return result;
           }
-          this.query = options.query;
-
-          // Return the parent’s response.
-          return result;
-        }
-      }));
+        })
+      );
 
 
       // Define the `Kinvey.Backbone` classes.
@@ -8513,7 +8540,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Kinvey.Backbone.User = backboneModel.extend(
         Kinvey.Backbone.UserMixin, // Class properties.
-      Kinvey.Backbone.StaticUserMixin // Static properties.
+        Kinvey.Backbone.StaticUserMixin // Static properties.
       );
 
       /**
@@ -8525,31 +8552,32 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @mixes Kinvey.Backbone.UserCollectionMixin
        */
       Kinvey.Backbone.UserCollection = Backbone.Collection.extend(
-      // The mixin does not have access to the parent class, therefore the
-      // functionality below is only available on `Kinvey.Backbone.UserCollection`.
-      _.extend({}, Kinvey.Backbone.UserCollectionMixin, /** @lends Kinvey.Backbone.UserCollection# */ {
-        /**
-         * The model class that the collection contains.
-         * See [Backbone.js](http://backbonejs.org/#Collection-model).
-         *
-         * @default
-         * @type {Kinvey.Backbone.User}
-         */
-        model: Kinvey.Backbone.User,
+        // The mixin does not have access to the parent class, therefore the
+        // functionality below is only available on `Kinvey.Backbone.UserCollection`.
+        _.extend({}, Kinvey.Backbone.UserCollectionMixin, /** @lends Kinvey.Backbone.UserCollection# */ {
+          /**
+           * The model class that the collection contains.
+           * See [Backbone.js](http://backbonejs.org/#Collection-model).
+           *
+           * @default
+           * @type {Kinvey.Backbone.User}
+           */
+          model: Kinvey.Backbone.User,
 
-        /**
-         * Initializes the collection.
-         * See [Backbone.js](http://backbonejs.org/#Collection-constructor).
-         * NOTE `initialize` is identical for both the entity and user collection.
-         *
-         * @method
-         * @param {Array} [models] List of users.
-         * @param {Object} [options] Options.
-         * @param {Kinvey.Query} [options.query] The collection query.
-         * @throws {Kinvey.Error} `options.query` must be of type: `Kinvey.Query`.
-         */
-        initialize: Kinvey.Backbone.Collection.prototype.initialize
-      }));
+          /**
+           * Initializes the collection.
+           * See [Backbone.js](http://backbonejs.org/#Collection-constructor).
+           * NOTE `initialize` is identical for both the entity and user collection.
+           *
+           * @method
+           * @param {Array} [models] List of users.
+           * @param {Object} [options] Options.
+           * @param {Kinvey.Query} [options.query] The collection query.
+           * @throws {Kinvey.Error} `options.query` must be of type: `Kinvey.Query`.
+           */
+          initialize: Kinvey.Backbone.Collection.prototype.initialize
+        })
+      );
 
     }
 
@@ -8646,7 +8674,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         TiFacebook.appid = options.appId;
         TiFacebook.permissions = options.permissions || TiFacebook.permissions || [];
 
-        // Trigger the authorization flow.
+        // Register the event listener.
         var listener = function(event) {
           TiFacebook.removeEventListener('login', listener); // Cleanup.
 
@@ -8703,7 +8731,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         options = options || {};
         options.scope = [ // https://developers.google.com/+/api/oauth#scopes
           'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email'
+          'https://www.googleapis.com/auth/userinfo.email'
         ].join(' ');
 
         // Forward to `tiPlatformConnect`.
@@ -8818,7 +8846,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // Create the collection if it does not exist yet.
           db.execute(
             'CREATE TABLE IF NOT EXISTS ' + escapedCollection + ' ' +
-            '(key BLOB PRIMARY KEY NOT NULL, value BLOB NOT NULL)');
+            '(key BLOB PRIMARY KEY NOT NULL, value BLOB NOT NULL)'
+          );
 
           // Execute the queries.
           var response = query.map(function(parts) {
@@ -8918,7 +8947,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // Add the query for the document.
           queries.push([
-              'INSERT OR REPLACE INTO #{collection} (key, value) VALUES (?, ?)', [document._id, JSON.stringify(document)]
+            'INSERT OR REPLACE INTO #{collection} (key, value) VALUES (?, ?)', [document._id, JSON.stringify(document)]
           ]);
 
           // Return the document.
@@ -9276,7 +9305,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var deferred = Kinvey.Defer.deferred();
 
         // Create the request.
-        var request = options.xhr = new Titanium.Network.HTTPClient();
+        var request = options.xhr = Titanium.Network.createHTTPClient();
         request.open(method, url);
 
         // Apply options.
