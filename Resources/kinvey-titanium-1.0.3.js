@@ -15,9 +15,6 @@
     }
   };
   var File = function() { };;
-/*! IndexedDBShim - v0.1.2 - 2013-06-22 */
-var idbModules={};(function(e){function t(e,t,n,o){n.target=t,"function"==typeof t[e]&&t[e].apply(t,[n]),"function"==typeof o&&o()}function n(t,n,o){var i=new DOMException.constructor(0,n);throw i.name=t,i.message=n,i.stack=arguments.callee.caller,e.DEBUG&&console.log(t,n,o,i),i}var o=function(){this.length=0,this._items=[],Object.defineProperty&&Object.defineProperty(this,"_items",{enumerable:!1})};if(o.prototype={contains:function(e){return-1!==this._items.indexOf(e)},item:function(e){return this._items[e]},indexOf:function(e){return this._items.indexOf(e)},push:function(e){this._items.push(e),this.length+=1;for(var t=0;this._items.length>t;t++)this[t]=this._items[t]},splice:function(){this._items.splice.apply(this._items,arguments),this.length=this._items.length;for(var e in this)e===parseInt(e,10)+""&&delete this[e];for(e=0;this._items.length>e;e++)this[e]=this._items[e]}},Object.defineProperty)for(var i in{indexOf:!1,push:!1,splice:!1})Object.defineProperty(o.prototype,i,{enumerable:!1});e.util={throwDOMException:n,callback:t,quote:function(e){return"'"+e+"'"},StringList:o}})(idbModules),function(e){var t=function(){return{encode:function(e){return JSON.stringify(e)},decode:function(e){return JSON.parse(e)}}}();e.Sca=t}(idbModules),function(e){var t=["","number","string","boolean","object","undefined"],n=function(){return{encode:function(e){return t.indexOf(typeof e)+"-"+JSON.stringify(e)},decode:function(e){return e===void 0?void 0:JSON.parse(e.substring(2))}}},o={number:n("number"),"boolean":n(),object:n(),string:{encode:function(e){return t.indexOf("string")+"-"+e},decode:function(e){return""+e.substring(2)}},undefined:{encode:function(){return t.indexOf("undefined")+"-undefined"},decode:function(){return void 0}}},i=function(){return{encode:function(e){return o[typeof e].encode(e)},decode:function(e){return o[t[e.substring(0,1)]].decode(e)}}}();e.Key=i}(idbModules),function(e){var t=function(e,t){return{type:e,debug:t,bubbles:!1,cancelable:!1,eventPhase:0,timeStamp:new Date}};e.Event=t}(idbModules),function(e){var t=function(){this.onsuccess=this.onerror=this.result=this.error=this.source=this.transaction=null,this.readyState="pending"},n=function(){this.onblocked=this.onupgradeneeded=null};n.prototype=t,e.IDBRequest=t,e.IDBOpenRequest=n}(idbModules),function(e,t){var n=function(e,t,n,o){this.lower=e,this.upper=t,this.lowerOpen=n,this.upperOpen=o};n.only=function(e){return new n(e,e,!0,!0)},n.lowerBound=function(e,o){return new n(e,t,o,t)},n.upperBound=function(e){return new n(t,e,t,open)},n.bound=function(e,t,o,i){return new n(e,t,o,i)},e.IDBKeyRange=n}(idbModules),function(e,t){function n(n,o,i,r,s,a){this.__range=n,this.source=this.__idbObjectStore=i,this.__req=r,this.key=t,this.direction=o,this.__keyColumnName=s,this.__valueColumnName=a,this.source.transaction.__active||e.util.throwDOMException("TransactionInactiveError - The transaction this IDBObjectStore belongs to is not active."),this.__offset=-1,this.__lastKeyContinued=t,this["continue"]()}n.prototype.__find=function(n,o,i,r){var s=this,a=["SELECT * FROM ",e.util.quote(s.__idbObjectStore.name)],u=[];a.push("WHERE ",s.__keyColumnName," NOT NULL"),s.__range&&(s.__range.lower||s.__range.upper)&&(a.push("AND"),s.__range.lower&&(a.push(s.__keyColumnName+(s.__range.lowerOpen?" >":" >= ")+" ?"),u.push(e.Key.encode(s.__range.lower))),s.__range.lower&&s.__range.upper&&a.push("AND"),s.__range.upper&&(a.push(s.__keyColumnName+(s.__range.upperOpen?" < ":" <= ")+" ?"),u.push(e.Key.encode(s.__range.upper)))),n!==t&&(s.__lastKeyContinued=n,s.__offset=0),s.__lastKeyContinued!==t&&(a.push("AND "+s.__keyColumnName+" >= ?"),u.push(e.Key.encode(s.__lastKeyContinued))),a.push("ORDER BY ",s.__keyColumnName),a.push("LIMIT 1 OFFSET "+s.__offset),e.DEBUG&&console.log(a.join(" "),u),o.executeSql(a.join(" "),u,function(n,o){if(1===o.rows.length){var r=e.Key.decode(o.rows.item(0)[s.__keyColumnName]),a="value"===s.__valueColumnName?e.Sca.decode(o.rows.item(0)[s.__valueColumnName]):e.Key.decode(o.rows.item(0)[s.__valueColumnName]);i(r,a)}else e.DEBUG&&console.log("Reached end of cursors"),i(t,t)},function(t,n){e.DEBUG&&console.log("Could not execute Cursor.continue"),r(n)})},n.prototype["continue"]=function(e){var n=this;this.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){n.__offset++,n.__find(e,o,function(e,o){n.key=e,n.value=o,r(n.key!==t?n:t,n.__req)},function(e){s(e)})})},n.prototype.advance=function(n){0>=n&&e.util.throwDOMException("Type Error - Count is invalid - 0 or negative",n);var o=this;this.__idbObjectStore.transaction.__addToTransactionQueue(function(e,i,r,s){o.__offset+=n,o.__find(t,e,function(e,n){o.key=e,o.value=n,r(o.key!==t?o:t,o.__req)},function(e){s(e)})})},n.prototype.update=function(n){var o=this;return this.__idbObjectStore.transaction.__addToTransactionQueue(function(i,r,s,a){o.__find(t,i,function(t){var r="UPDATE "+e.util.quote(o.__idbObjectStore.name)+" SET value = ? WHERE key = ?";e.DEBUG&&console.log(r,n,t),i.executeSql(r,[e.Sca.encode(n),e.Key.encode(t)],function(e,n){1===n.rowsAffected?s(t):a("No rowns with key found"+t)},function(e,t){a(t)})},function(e){a(e)})})},n.prototype["delete"]=function(){var n=this;return this.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){n.__find(t,o,function(i){var a="DELETE FROM  "+e.util.quote(n.__idbObjectStore.name)+" WHERE key = ?";e.DEBUG&&console.log(a,i),o.executeSql(a,[e.Key.encode(i)],function(e,n){1===n.rowsAffected?r(t):s("No rowns with key found"+i)},function(e,t){s(t)})},function(e){s(e)})})},e.IDBCursor=n}(idbModules),function(idbModules,undefined){function IDBIndex(e,t){this.indexName=this.name=e,this.__idbObjectStore=this.objectStore=this.source=t;var n=t.__storeProps&&t.__storeProps.indexList;n&&(n=JSON.parse(n)),this.keyPath=n&&n[e]&&n[e].keyPath||e,["multiEntry","unique"].forEach(function(t){this[t]=!!(n&&n[e]&&n[e].optionalParams&&n[e].optionalParams[t])},this)}IDBIndex.prototype.__createIndex=function(indexName,keyPath,optionalParameters){var me=this,transaction=me.__idbObjectStore.transaction;transaction.__addToTransactionQueue(function(tx,args,success,failure){me.__idbObjectStore.__getStoreProps(tx,function(){function error(){idbModules.util.throwDOMException(0,"Could not create new index",arguments)}2!==transaction.mode&&idbModules.util.throwDOMException(0,"Invalid State error, not a version transaction",me.transaction);var idxList=JSON.parse(me.__idbObjectStore.__storeProps.indexList);idxList[indexName]!==undefined&&idbModules.util.throwDOMException(0,"Index already exists on store",idxList);var columnName=indexName;idxList[indexName]={columnName:columnName,keyPath:keyPath,optionalParams:optionalParameters},me.__idbObjectStore.__storeProps.indexList=JSON.stringify(idxList);var sql=["ALTER TABLE",idbModules.util.quote(me.__idbObjectStore.name),"ADD",columnName,"BLOB"].join(" ");idbModules.DEBUG&&console.log(sql),tx.executeSql(sql,[],function(tx,data){tx.executeSql("SELECT * FROM "+idbModules.util.quote(me.__idbObjectStore.name),[],function(tx,data){(function initIndexForRow(i){if(data.rows.length>i)try{var value=idbModules.Sca.decode(data.rows.item(i).value),indexKey=eval("value['"+keyPath+"']");tx.executeSql("UPDATE "+idbModules.util.quote(me.__idbObjectStore.name)+" set "+columnName+" = ? where key = ?",[idbModules.Key.encode(indexKey),data.rows.item(i).key],function(){initIndexForRow(i+1)},error)}catch(e){initIndexForRow(i+1)}else idbModules.DEBUG&&console.log("Updating the indexes in table",me.__idbObjectStore.__storeProps),tx.executeSql("UPDATE __sys__ set indexList = ? where name = ?",[me.__idbObjectStore.__storeProps.indexList,me.__idbObjectStore.name],function(){me.__idbObjectStore.__setReadyState("createIndex",!0),success(me)},error)})(0)},error)},error)},"createObjectStore")})},IDBIndex.prototype.openCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this.source,n,this.indexName,"value"),n},IDBIndex.prototype.openKeyCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this.source,n,this.indexName,"key"),n},IDBIndex.prototype.__fetchIndexData=function(e,t){var n=this;return n.__idbObjectStore.transaction.__addToTransactionQueue(function(o,i,r,s){var a=["SELECT * FROM ",idbModules.util.quote(n.__idbObjectStore.name)," WHERE",n.indexName,"NOT NULL"],u=[];e!==undefined&&(a.push("AND",n.indexName," = ?"),u.push(idbModules.Key.encode(e))),idbModules.DEBUG&&console.log("Trying to fetch data for Index",a.join(" "),u),o.executeSql(a.join(" "),u,function(e,n){var o;o="count"==typeof t?n.rows.length:0===n.rows.length?undefined:"key"===t?idbModules.Key.decode(n.rows.item(0).key):idbModules.Sca.decode(n.rows.item(0).value),r(o)},s)})},IDBIndex.prototype.get=function(e){return this.__fetchIndexData(e,"value")},IDBIndex.prototype.getKey=function(e){return this.__fetchIndexData(e,"key")},IDBIndex.prototype.count=function(e){return this.__fetchIndexData(e,"count")},idbModules.IDBIndex=IDBIndex}(idbModules),function(idbModules){var IDBObjectStore=function(e,t,n){this.name=e,this.transaction=t,this.__ready={},this.__setReadyState("createObjectStore",n===void 0?!0:n),this.indexNames=new idbModules.util.StringList};IDBObjectStore.prototype.__setReadyState=function(e,t){this.__ready[e]=t},IDBObjectStore.prototype.__waitForReady=function(e,t){var n=!0;if(t!==void 0)n=this.__ready[t]===void 0?!0:this.__ready[t];else for(var o in this.__ready)this.__ready[o]||(n=!1);if(n)e();else{idbModules.DEBUG&&console.log("Waiting for to be ready",t);var i=this;window.setTimeout(function(){i.__waitForReady(e,t)},100)}},IDBObjectStore.prototype.__getStoreProps=function(e,t,n){var o=this;this.__waitForReady(function(){o.__storeProps?(idbModules.DEBUG&&console.log("Store properties - cached",o.__storeProps),t(o.__storeProps)):e.executeSql("SELECT * FROM __sys__ where name = ?",[o.name],function(e,n){1!==n.rows.length?t():(o.__storeProps={name:n.rows.item(0).name,indexList:n.rows.item(0).indexList,autoInc:n.rows.item(0).autoInc,keyPath:n.rows.item(0).keyPath},idbModules.DEBUG&&console.log("Store properties",o.__storeProps),t(o.__storeProps))},function(){t()})},n)},IDBObjectStore.prototype.__deriveKey=function(tx,value,key,callback){function getNextAutoIncKey(){tx.executeSql("SELECT * FROM sqlite_sequence where name like ?",[me.name],function(e,t){1!==t.rows.length?callback(0):callback(t.rows.item(0).seq)},function(e,t){idbModules.util.throwDOMException(0,"Data Error - Could not get the auto increment value for key",t)})}var me=this;me.__getStoreProps(tx,function(props){if(props||idbModules.util.throwDOMException(0,"Data Error - Could not locate defination for this table",props),props.keyPath)if(key!==void 0&&idbModules.util.throwDOMException(0,"Data Error - The object store uses in-line keys and the key parameter was provided",props),value)try{var primaryKey=eval("value['"+props.keyPath+"']");primaryKey?callback(primaryKey):"true"===props.autoInc?getNextAutoIncKey():idbModules.util.throwDOMException(0,"Data Error - Could not eval key from keyPath")}catch(e){idbModules.util.throwDOMException(0,"Data Error - Could not eval key from keyPath",e)}else idbModules.util.throwDOMException(0,"Data Error - KeyPath was specified, but value was not");else key!==void 0?callback(key):"false"===props.autoInc?idbModules.util.throwDOMException(0,"Data Error - The object store uses out-of-line keys and has no key generator and the key parameter was not provided. ",props):getNextAutoIncKey()})},IDBObjectStore.prototype.__insertData=function(tx,value,primaryKey,success,error){var paramMap={};primaryKey!==void 0&&(paramMap.key=idbModules.Key.encode(primaryKey));var indexes=JSON.parse(this.__storeProps.indexList);for(var key in indexes)try{paramMap[indexes[key].columnName]=idbModules.Key.encode(eval("value['"+indexes[key].keyPath+"']"))}catch(e){error(e)}var sqlStart=["INSERT INTO ",idbModules.util.quote(this.name),"("],sqlEnd=[" VALUES ("],sqlValues=[];for(key in paramMap)sqlStart.push(key+","),sqlEnd.push("?,"),sqlValues.push(paramMap[key]);sqlStart.push("value )"),sqlEnd.push("?)"),sqlValues.push(idbModules.Sca.encode(value));var sql=sqlStart.join(" ")+sqlEnd.join(" ");idbModules.DEBUG&&console.log("SQL for adding",sql,sqlValues),tx.executeSql(sql,sqlValues,function(){success(primaryKey)},function(e,t){error(t)})},IDBObjectStore.prototype.add=function(e,t){var n=this;return n.transaction.__addToTransactionQueue(function(o,i,r,s){n.__deriveKey(o,e,t,function(t){n.__insertData(o,e,t,r,s)})})},IDBObjectStore.prototype.put=function(e,t){var n=this;return n.transaction.__addToTransactionQueue(function(o,i,r,s){n.__deriveKey(o,e,t,function(t){var i="DELETE FROM "+idbModules.util.quote(n.name)+" where key = ?";o.executeSql(i,[idbModules.Key.encode(t)],function(o,i){idbModules.DEBUG&&console.log("Did the row with the",t,"exist? ",i.rowsAffected),n.__insertData(o,e,t,r,s)},function(e,t){s(t)})})})},IDBObjectStore.prototype.get=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o=idbModules.Key.encode(e);idbModules.DEBUG&&console.log("Fetching",t.name,o),n.executeSql("SELECT * FROM "+idbModules.util.quote(t.name)+" where key = ?",[o],function(e,t){idbModules.DEBUG&&console.log("Fetched data",t);try{if(0===t.rows.length)return i();i(idbModules.Sca.decode(t.rows.item(0).value))}catch(n){idbModules.DEBUG&&console.log(n),i(void 0)}},function(e,t){r(t)})})})},IDBObjectStore.prototype["delete"]=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o=idbModules.Key.encode(e);idbModules.DEBUG&&console.log("Fetching",t.name,o),n.executeSql("DELETE FROM "+idbModules.util.quote(t.name)+" where key = ?",[o],function(e,t){idbModules.DEBUG&&console.log("Deleted from database",t.rowsAffected),i()},function(e,t){r(t)})})})},IDBObjectStore.prototype.clear=function(){var e=this;return e.transaction.__addToTransactionQueue(function(t,n,o,i){e.__waitForReady(function(){t.executeSql("DELETE FROM "+idbModules.util.quote(e.name),[],function(e,t){idbModules.DEBUG&&console.log("Cleared all records from database",t.rowsAffected),o()},function(e,t){i(t)})})})},IDBObjectStore.prototype.count=function(e){var t=this;return t.transaction.__addToTransactionQueue(function(n,o,i,r){t.__waitForReady(function(){var o="SELECT * FROM "+idbModules.util.quote(t.name)+(e!==void 0?" WHERE key = ?":""),s=[];e!==void 0&&s.push(idbModules.Key.encode(e)),n.executeSql(o,s,function(e,t){i(t.rows.length)},function(e,t){r(t)})})})},IDBObjectStore.prototype.openCursor=function(e,t){var n=new idbModules.IDBRequest;return new idbModules.IDBCursor(e,t,this,n,"key","value"),n},IDBObjectStore.prototype.index=function(e){var t=new idbModules.IDBIndex(e,this);return t},IDBObjectStore.prototype.createIndex=function(e,t,n){var o=this;n=n||{},o.__setReadyState("createIndex",!1);var i=new idbModules.IDBIndex(e,o);return o.__waitForReady(function(){i.__createIndex(e,t,n)},"createObjectStore"),o.indexNames.push(e),i},IDBObjectStore.prototype.deleteIndex=function(e){var t=new idbModules.IDBIndex(e,this,!1);return t.__deleteIndex(e),t},idbModules.IDBObjectStore=IDBObjectStore}(idbModules),function(e){var t=0,n=1,o=2,i=function(o,i,r){if("number"==typeof i)this.mode=i,2!==i&&e.DEBUG&&console.log("Mode should be a string, but was specified as ",i);else if("string"==typeof i)switch(i){case"readwrite":this.mode=n;break;case"readonly":this.mode=t;break;default:this.mode=t}this.storeNames="string"==typeof o?[o]:o;for(var s=0;this.storeNames.length>s;s++)r.objectStoreNames.contains(this.storeNames[s])||e.util.throwDOMException(0,"The operation failed because the requested database object could not be found. For example, an object store did not exist but was being opened.",this.storeNames[s]);this.__active=!0,this.__running=!1,this.__requests=[],this.__aborted=!1,this.db=r,this.error=null,this.onabort=this.onerror=this.oncomplete=null};i.prototype.__executeRequests=function(){if(this.__running&&this.mode!==o)return e.DEBUG&&console.log("Looks like the request set is already running",this.mode),void 0;this.__running=!0;var t=this;window.setTimeout(function(){2===t.mode||t.__active||e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished",t.__active),t.db.__db.transaction(function(n){function o(t,n){n&&(s.req=n),s.req.readyState="done",s.req.result=t,delete s.req.error;var o=e.Event("success");e.util.callback("onsuccess",s.req,o),a++,r()}function i(){s.req.readyState="done",s.req.error="DOMError";var t=e.Event("error",arguments);e.util.callback("onerror",s.req,t),a++,r()}function r(){return a>=t.__requests.length?(t.__active=!1,t.__requests=[],void 0):(s=t.__requests[a],s.op(n,s.args,o,i),void 0)}t.__tx=n;var s=null,a=0;try{r()}catch(u){e.DEBUG&&console.log("An exception occured in transaction",arguments),"function"==typeof t.onerror&&t.onerror()}},function(){e.DEBUG&&console.log("An error in transaction",arguments),"function"==typeof t.onerror&&t.onerror()},function(){e.DEBUG&&console.log("Transaction completed",arguments),"function"==typeof t.oncomplete&&t.oncomplete()})},1)},i.prototype.__addToTransactionQueue=function(t,n){this.__active||this.mode===o||e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished.",this.__mode);var i=new e.IDBRequest;return i.source=this.db,this.__requests.push({op:t,args:n,req:i}),this.__executeRequests(),i},i.prototype.objectStore=function(t){return new e.IDBObjectStore(t,this)},i.prototype.abort=function(){!this.__active&&e.util.throwDOMException(0,"A request was placed against a transaction which is currently not active, or which is finished",this.__active)},i.prototype.READ_ONLY=0,i.prototype.READ_WRITE=1,i.prototype.VERSION_CHANGE=2,e.IDBTransaction=i}(idbModules),function(e){var t=function(t,n,o,i){this.__db=t,this.version=o,this.__storeProperties=i,this.objectStoreNames=new e.util.StringList;for(var r=0;i.rows.length>r;r++)this.objectStoreNames.push(i.rows.item(r).name);this.name=n,this.onabort=this.onerror=this.onversionchange=null};t.prototype.createObjectStore=function(t,n){var o=this;n=n||{},n.keyPath=n.keyPath||null;var i=new e.IDBObjectStore(t,o.__versionTransaction,!1),r=o.__versionTransaction;return r.__addToTransactionQueue(function(r,s,a){function u(){e.util.throwDOMException(0,"Could not create new object store",arguments)}o.__versionTransaction||e.util.throwDOMException(0,"Invalid State error",o.transaction);var c=["CREATE TABLE",e.util.quote(t),"(key BLOB",n.autoIncrement?", inc INTEGER PRIMARY KEY AUTOINCREMENT":"PRIMARY KEY",", value BLOB)"].join(" ");e.DEBUG&&console.log(c),r.executeSql(c,[],function(e){e.executeSql("INSERT INTO __sys__ VALUES (?,?,?,?)",[t,n.keyPath,n.autoIncrement?!0:!1,"{}"],function(){i.__setReadyState("createObjectStore",!0),a(i)},u)},u)}),o.objectStoreNames.push(t),i},t.prototype.deleteObjectStore=function(t){var n=function(){e.util.throwDOMException(0,"Could not delete ObjectStore",arguments)},o=this;!o.objectStoreNames.contains(t)&&n("Object Store does not exist"),o.objectStoreNames.splice(o.objectStoreNames.indexOf(t),1);var i=o.__versionTransaction;i.__addToTransactionQueue(function(){o.__versionTransaction||e.util.throwDOMException(0,"Invalid State error",o.transaction),o.__db.transaction(function(o){o.executeSql("SELECT * FROM __sys__ where name = ?",[t],function(o,i){i.rows.length>0&&o.executeSql("DROP TABLE "+e.util.quote(t),[],function(){o.executeSql("DELETE FROM __sys__ WHERE name = ?",[t],function(){},n)},n)})})})},t.prototype.close=function(){},t.prototype.transaction=function(t,n){var o=new e.IDBTransaction(t,n||1,this);return o},e.IDBDatabase=t}(idbModules),function(e){var t=4194304;if(window.openDatabase){var n=window.openDatabase("__sysdb__",1,"System Database",t);n.transaction(function(t){t.executeSql("SELECT * FROM dbVersions",[],function(){},function(){n.transaction(function(t){t.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);",[],function(){},function(){e.util.throwDOMException("Could not create table __sysdb__ to save DB versions")})})})},function(){e.DEBUG&&console.log("Error in sysdb transaction - when selecting from dbVersions",arguments)});var o={open:function(o,i){function r(){if(!u){var t=e.Event("error",arguments);a.readyState="done",a.error="DOMError",e.util.callback("onerror",a,t),u=!0}}function s(s){var u=window.openDatabase(o,1,o,t);a.readyState="done",i===void 0&&(i=s||1),(0>=i||s>i)&&e.util.throwDOMException(0,"An attempt was made to open a database using a lower version than the existing version.",i),u.transaction(function(t){t.executeSql("CREATE TABLE IF NOT EXISTS __sys__ (name VARCHAR(255), keyPath VARCHAR(255), autoInc BOOLEAN, indexList BLOB)",[],function(){t.executeSql("SELECT * FROM __sys__",[],function(t,c){var d=e.Event("success");a.source=a.result=new e.IDBDatabase(u,o,i,c),i>s?n.transaction(function(t){t.executeSql("UPDATE dbVersions set version = ? where name = ?",[i,o],function(){var t=e.Event("upgradeneeded");t.oldVersion=s,t.newVersion=i,a.transaction=a.result.__versionTransaction=new e.IDBTransaction([],2,a.source),e.util.callback("onupgradeneeded",a,t,function(){var t=e.Event("success");e.util.callback("onsuccess",a,t)})},r)},r):e.util.callback("onsuccess",a,d)},r)},r)},r)}var a=new e.IDBOpenRequest,u=!1;return n.transaction(function(e){e.executeSql("SELECT * FROM dbVersions where name = ?",[o],function(e,t){0===t.rows.length?e.executeSql("INSERT INTO dbVersions VALUES (?,?)",[o,i||1],function(){s(0)},r):s(t.rows.item(0).version)},r)},r),a},deleteDatabase:function(o){function i(t){if(!a){s.readyState="done",s.error="DOMError";var n=e.Event("error");n.message=t,n.debug=arguments,e.util.callback("onerror",s,n),a=!0}}function r(){n.transaction(function(t){t.executeSql("DELETE FROM dbVersions where name = ? ",[o],function(){s.result=void 0;var t=e.Event("success");t.newVersion=null,t.oldVersion=u,e.util.callback("onsuccess",s,t)},i)},i)}var s=new e.IDBOpenRequest,a=!1,u=null;return n.transaction(function(n){n.executeSql("SELECT * FROM dbVersions where name = ?",[o],function(n,a){if(0===a.rows.length){s.result=void 0;var c=e.Event("success");return c.newVersion=null,c.oldVersion=u,e.util.callback("onsuccess",s,c),void 0}u=a.rows.item(0).version;var d=window.openDatabase(o,1,o,t);d.transaction(function(t){t.executeSql("SELECT * FROM __sys__",[],function(t,n){var o=n.rows;(function s(n){n>=o.length?t.executeSql("DROP TABLE __sys__",[],function(){r()},i):t.executeSql("DROP TABLE "+e.util.quote(o.item(n).name),[],function(){s(n+1)},function(){s(n+1)})})(0)},function(){r()})},i)})},i),s},cmp:function(t,n){return e.Key.encode(t)>e.Key.encode(n)?1:t===n?0:-1}};e.shimIndexedDB=o}}(idbModules),function(e,t){e.openDatabase!==void 0&&(e.shimIndexedDB=t.shimIndexedDB,e.shimIndexedDB&&(e.shimIndexedDB.__useShim=function(){e.indexedDB=t.shimIndexedDB,e.IDBDatabase=t.IDBDatabase,e.IDBTransaction=t.IDBTransaction,e.IDBCursor=t.IDBCursor,e.IDBKeyRange=t.IDBKeyRange},e.shimIndexedDB.__debug=function(e){t.DEBUG=e})),e.indexedDB=e.indexedDB||e.webkitIndexedDB||e.mozIndexedDB||e.oIndexedDB||e.msIndexedDB,e.indexedDB===void 0&&e.openDatabase!==void 0?e.shimIndexedDB.__useShim():(e.IDBDatabase=e.IDBDatabase||e.webkitIDBDatabase,e.IDBTransaction=e.IDBTransaction||e.webkitIDBTransaction,e.IDBCursor=e.IDBCursor||e.webkitIDBCursor,e.IDBKeyRange=e.IDBKeyRange||e.webkitIDBKeyRange,e.IDBTransaction||(e.IDBTransaction={}),e.IDBTransaction.READ_ONLY=e.IDBTransaction.READ_ONLY||"readonly",e.IDBTransaction.READ_WRITE=e.IDBTransaction.READ_WRITE||"readwrite")}(window,idbModules);
-//@ sourceMappingURL=http://nparashuram.com/IndexedDBShim/dist/IndexedDBShim.min.map;
 /** @license MIT - ©2013 Ruben Verborgh */
 !function(){function e(){var c=function(u,f,i){if(u!==c){var v=e();return c.c.push({d:v,resolve:u,reject:f}),v.promise}for(var s=f?"resolve":"reject",a=0,p=c.c.length;p>a;a++){var h=c.c[a],l=h.d,j=h[s];typeof j!==t?l[s](i):n(j,i,l)}c=r(o,i,f)},o={then:function(e,r){return c(e,r)}};return c.c=[],{promise:o,resolve:function(e){c.c&&c(c,!0,e)},reject:function(e){c.c&&c(c,!1,e)}}}function r(r,c,o){return function(u,f){var i,v=o?u:f;return typeof v!==t?r:(n(v,c,i=e()),i.promise)}}function n(e,r,n){setTimeout(function(){try{var c=e(r);c&&typeof c.then===t?c.then(n.resolve,n.reject):n.resolve(c)}catch(o){n.reject(o)}})}var t="function";window.promiscuous={resolve:function(e){var n={};return n.then=r(n,e,!0),n},reject:function(e){var n={};return n.then=r(n,e,!1),n},deferred:e}}();;
 (function(){var l=new function(){function d(a){return a?0:-1}var f=this.priority=function(a,b){for(var c=a.exprs,e=0,f=0,d=c.length;f<d;f++){var g=c[f];if(!~(g=g.e(g.v,b instanceof Date?b.getTime():b,b)))return-1;e+=g}return e},e=this.parse=function(a,b){a||(a={$eq:a});var c=[];if(a.constructor==Object)for(var d in a){var m=k[d]?d:"$trav",j=a[d],g=j;if(h[m]){if(~d.indexOf(".")){g=d.split(".");d=g.shift();for(var n={},l=n,p=0,s=g.length-1;p<s;p++)l=l[g[p]]={};l[g[p]]=j;g=j=n}if(j instanceof Array){g=
@@ -143,7 +140,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.0.2';
+    Kinvey.SDK_VERSION = '1.0.3';
 
     // Properties.
     // -----------
@@ -188,56 +185,68 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     // The active user.
     var activeUser = null;
 
+    // Status flag indicating whether the active user is ready to be used.
+    var activeUserReady = false;
+
     /**
      * Restores the active user (if any) from disk.
      *
      * @returns {Promise} The active user, or `null` if there is no active user.
      */
     var restoreActiveUser = function() {
-      // Retrieve the authtoken from storage.
+      // Retrieve the authtoken from storage. If there is an authtoken, restore the
+      // active user from disk.
       var promise = Storage.get('activeUser');
-
-      // If there is an authtoken, restore the active user from disk.
       return promise.then(function(user) {
-        if(null != user) {
+        // If there is no active user, set to `null`.
+        if(null == user) {
+          return Kinvey.setActiveUser(null);
+        }
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          log('Restoring the active user.');
+        }
+
+        // Set the active user to a near-empty user with only the authtoken set.
+        var previous = Kinvey.setActiveUser({
+          _id: user[0],
+          _kmd: {
+            authtoken: user[1]
+          }
+        });
+
+        // Retrieve the user. The `Kinvey.User.me` method will also update the
+        // active user. If `INVALID_CREDENTIALS`, reset the active user.
+        return Kinvey.User.me().then(null, function(error) {
           // Debug.
           if(KINVEY_DEBUG) {
-            log('Restoring the active user.');
+            log('Failed to restore the active user.', error);
           }
 
-          // Set the active user to a near-empty user with only the authtoken set.
-          var previous = Kinvey.setActiveUser({
-            _id: user[0],
-            _kmd: {
-              authtoken: user[1]
-            }
-          });
-
-          // Retrieve the user. The `Kinvey.User.me` method will also update the
-          // active user. If `INVALID_CREDENTIALS`, reset the active user.
-          return Kinvey.User.me().then(null, function(error) {
-            // Debug.
-            if(KINVEY_DEBUG) {
-              log('Failed to restore the active user.', error);
-            }
-
-            // Reset the active user.
-            if(Kinvey.Error.INVALID_CREDENTIALS === error.name) {
-              Kinvey.setActiveUser(previous);
-            }
-            return Kinvey.Defer.reject(error);
-          });
-        }
-        return Kinvey.getActiveUser();
+          // Reset the active user.
+          if(Kinvey.Error.INVALID_CREDENTIALS === error.name) {
+            Kinvey.setActiveUser(previous);
+          }
+          return Kinvey.Defer.reject(error);
+        });
       });
     };
 
     /**
-     * Returns the active user.
-     *
-     * @returns {?Object} The active user, or `null` if there is no active user.
-     */
+ * Returns the active user.
+ *
+ * @throws {Error} `Kinvey.getActiveUser` can only be called after the promise
+     returned by `Kinvey.init` fulfills or rejects.
+ * @returns {?Object} The active user, or `null` if there is no active user.
+ */
     Kinvey.getActiveUser = function() {
+      // Validate preconditions.
+      if(false === activeUserReady) {
+        throw new Kinvey.Error('Kinvey.getActiveUser can only be called after the ' +
+          'promise returned by Kinvey.init fulfills or rejects.');
+      }
+
       return activeUser;
     };
 
@@ -256,8 +265,14 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Validate arguments.
-      if(null != user && !(null != user._kmd && null != user._kmd.authtoken)) {
-        throw new Kinvey.Error('user argument must contain: _kmd.authtoken.');
+      if(null != user && !(null != user._id && null != user._kmd && null != user._kmd.authtoken)) {
+        throw new Kinvey.Error('user argument must contain: _id, _kmd.authtoken.');
+      }
+
+      // At this point, the active user is ready to be used (even though the
+      // user data is not retrieved yet).
+      if(false === activeUserReady) {
+        activeUserReady = true;
       }
 
       var result = Kinvey.getActiveUser(); // Previous.
@@ -302,6 +317,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       if(null == options.appSecret && null == options.masterSecret) {
         throw new Kinvey.Error('options argument must contain: appSecret and/or masterSecret.');
       }
+
+      // The active user is not ready yet.
+      activeUserReady = false;
 
       // Save credentials.
       Kinvey.appKey = options.appKey;
@@ -990,21 +1008,24 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
     /**
      * @typedef {Object} Options
-     * @property {function} [error]     Failure callback.
-     * @property {Array}    [exclude]   List of relational fields not to save. Use
-     *             in conjunction with `save` or `update`.
-     * @property {boolean}  [fallback]  Fallback to the network if the request
+     * @property {function} [error]        Failure callback.
+     * @property {Array}    [exclude]      List of relational fields not to save.
+     *             Use in conjunction with `save` or `update`.
+     * @property {boolean}  [fallback]     Fallback to the network if the request
      *             failed locally. Use in conjunction with `offline`.
      * @property {boolean}  [fileTls=true] Use the https protocol to communicate
      *             with GCS.
-     * @property {integer}  [fileTtl]   A custom expiration time (in seconds).
-     * @property {boolean}  [offline]   Initiate the request locally.
-     * @property {boolean}  [refresh]   Persist the response locally.
-     * @property {Object}   [relations] Map of relational fields to collections.
-     * @property {boolean}  [skipBL]    Skip Business Logic. Use in conjunction
+     * @property {integer}  [fileTtl]      A custom expiration time (in seconds).
+     * @property {boolean}  [nocache]      Use cache busting.
+     * @property {boolean}  [offline]      Initiate the request locally.
+     * @property {boolean}  [refresh]      Persist the response locally.
+     * @property {Object}   [relations]    Map of relational fields to collections.
+     * @property {boolean}  [skipBL]       Skip Business Logic. Use in conjunction
      *             with Master Secret.
-     * @property {function} [success]   Success callback.
-     * @property {integer}  [timeout]   The request timeout (ms).
+     * @property {function} [success]      Success callback.
+     * @property {integer}  [timeout]      The request timeout (ms).
+     * @property {boolean}  [trace=false]  Add the request id to the error object
+     *             for easy request tracking (in case of contacting support).
      */
 
     // Define the `Storage` namespace, used to store application state.
@@ -1494,7 +1515,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.0.2'];
+      var parts = ['js-titanium/1.0.3'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
@@ -5028,9 +5049,14 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
                   return Kinvey.Defer.resolve(member);
                 }
 
+                // To allow storing of users with references locally, use
+                // `Kinvey.DataStore` if the operation does not need to notify
+                // the synchronization functionality.
+                var saveUsingDataStore = options.offline && false === options.track;
+
                 // Forward to the `Kinvey.User` or `Kinvey.DataStore` namespace.
                 var promise;
-                if(USERS === collection) {
+                if(USERS === collection && !saveUsingDataStore) {
                   // If the referenced user is new, create with `state` set to false.
                   var isNew = null == member._id;
                   options.state = isNew && '' !== property ? options.state || false : options.state;
@@ -5250,12 +5276,12 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Use net. If `options.refresh`, persist the response locally.
         var promise = Kinvey.Persistence.Net.read(request, options);
         if(request.local.res && options.refresh) {
-          // Debug.
-          if(KINVEY_DEBUG) {
-            log('Persisting the response locally.');
-          }
-
           return promise.then(function(response) {
+            // Debug.
+            if(KINVEY_DEBUG) {
+              log('Persisting the response locally.');
+            }
+
             // Add support for references.
             var promise;
             if(options.relations) {
@@ -5618,7 +5644,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           if(options.offline && false !== options.track) {
             // Debug.
             if(KINVEY_DEBUG) {
-              log('Notifying the synchronization functionality.', response);
+              log('Notifying the synchronization functionality.', collection, response);
             }
 
             return Sync.notify(collection, response, options).then(function() {
@@ -5715,7 +5741,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           if(options.offline && false !== options.track) {
             // Debug.
             if(KINVEY_DEBUG) {
-              log('Notifying the synchronization functionality.', response);
+              log('Notifying the synchronization functionality.', collection, response);
             }
 
             return Sync.notify(collection, response, options).then(function() {
@@ -5760,7 +5786,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           if(options.offline && false !== options.track) {
             // Debug.
             if(KINVEY_DEBUG) {
-              log('Notifying the synchronization functionality.', response);
+              log('Notifying the synchronization functionality.', collection, response);
             }
 
             return Sync.notify(collection, response.documents, options).then(function() {
@@ -5922,6 +5948,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           return Kinvey.Defer.reject(error);
         }
 
+        // Cast arguments.
+        options.trace = options.trace || (KINVEY_DEBUG && false !== options.trace);
+
         // Build, escape, and join URL segments.
         // Format: <API_ENDPOINT>/<namespace>[/<Kinvey.appKey>][/<collection>][/<id>]
         var segments = [request.namespace, Kinvey.appKey, request.collection, request.id];
@@ -5992,6 +6021,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         if(options.skipBL) {
           headers['X-Kinvey-Skip-Business-Logic'] = true;
         }
+        if(options.trace) {
+          headers['X-Kinvey-Include-Headers-In-Response'] = 'X-Kinvey-Request-Id';
+          headers['X-Kinvey-ResponseWrapper'] = true;
+        }
 
         // Debug.
         if(KINVEY_DEBUG) {
@@ -6023,11 +6056,25 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             options
           ).then(function(response) {
             // Parse the response.
-            return JSON.parse(response);
+            response = JSON.parse(response);
+
+            // Debug.
+            if(KINVEY_DEBUG && options.trace && isObject(response)) {
+              log('Obtained the request ID.', response.headers['X-Kinvey-Request-Id']);
+            }
+
+            return options.trace && isObject(response) ? response.result : response;
           }, function(response) {
             // Parse the response.
+            var requestId = null;
             try {
               response = JSON.parse(response);
+
+              // If `options.trace`, extract result and headers from the response.
+              if(options.trace) {
+                requestId = response.headers['X-Kinvey-Request-Id'];
+                response = response.result;
+              }
             }
             catch(e) {}
 
@@ -6038,6 +6085,16 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
                 description: response.description || '',
                 debug: response.debug || ''
               };
+
+              // If `options.trace`, add the `requestId`.
+              if(options.trace) {
+                response.requestId = requestId;
+
+                // Debug.
+                if(KINVEY_DEBUG) {
+                  log('Obtained the request ID.', requestId);
+                }
+              }
             }
             else { // Client-side error.
               var dict = { // Dictionary for common errors.
@@ -6783,6 +6840,530 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
     /* jshint evil: true */
 
+    /**
+     * `Database` adapter for [WebSql](http://dev.w3.org/html5/webdatabase/).
+     *
+     * @private
+     * @namespace
+     */
+    var WebSqlAdapter = {
+      /**
+       * The reference to an opened instance of Database.
+       *
+       * @type {Database}
+       */
+      db: null,
+
+      /**
+       * Returns the database name.
+       *
+       * @throws {Kinvey.Error} `Kinvey.appKey` must not be `null`.
+       * @returns {string} The database name.
+       */
+      dbName: function() {
+        // Validate preconditions.
+        if(null == Kinvey.appKey) {
+          throw new Kinvey.Error('Kinvey.appKey must not be null.');
+        }
+        return 'Kinvey.' + Kinvey.appKey;
+      },
+
+      /**
+       * The database size (in bytes).
+       *
+       * @default
+       * @type {integer}
+       */
+      size: 5 * 1024 * 1024,
+
+      /**
+       * Executes a series of queries within a transaction.
+       *
+       * @param {string}   collection    The collection.
+       * @param {string|Array} query     The query, or list of queries.
+       * @param {Array}    [parameters]  The query parameters.
+       * @param {boolean}  [write=false] Request write access in addition to read.
+       * @param {Object}   [options]     Options.
+       * @returns {Promise} The query result.
+       */
+      transaction: function(collection, query, parameters, write /*, options*/ ) {
+        // Validate preconditions.
+        var error;
+        if(!isString(collection) || !/^[a-zA-Z0-9\-]{1,128}/.test(collection)) {
+          error = clientError(Kinvey.Error.INVALID_IDENTIFIER, {
+            description: 'The collection name has an invalid format.',
+            debug: 'The collection name must be a string containing only ' + 'alphanumeric characters and dashes, "' + collection + '" given.'
+          });
+          return Kinvey.Defer.reject(error);
+        }
+        var escapedCollection = '"' + collection + '"';
+        var isMaster = 'sqlite_master' === collection;
+        var isMulti = isArray(query);
+
+        // Cast arguments.
+        query = isMulti ? query : [
+          [query, parameters]
+        ];
+        write = write || false;
+
+        // If there is a database handle, re-use it.
+        if(null === WebSqlAdapter.db) {
+          WebSqlAdapter.db = root.openDatabase(WebSqlAdapter.dbName(), 1, '', WebSqlAdapter.size);
+        }
+
+        // Prepare the response.
+        var deferred = Kinvey.Defer.deferred();
+
+        // Obtain a transaction handle.
+        var writeTxn = write || !isFunction(WebSqlAdapter.db.readTransaction);
+        WebSqlAdapter.db[writeTxn ? 'transaction' : 'readTransaction'](function(tx) {
+          // If `write`, create the collection if it does not exist yet.
+          if(write && !isMaster) {
+            tx.executeSql(
+              'CREATE TABLE IF NOT EXISTS ' + escapedCollection + ' ' +
+              '(key BLOB PRIMARY KEY NOT NULL, value BLOB NOT NULL)'
+            );
+          }
+
+          // Execute the queries.
+          var pending = query.length;
+          var responses = [];
+          query.forEach(function(parts) {
+            var sql = parts[0].replace('#{collection}', escapedCollection);
+
+            // Debug.
+            if(KINVEY_DEBUG) {
+              log('Executing a query.', sql, parts[1]);
+            }
+
+            // Execute the query, and append the result to the response.
+            tx.executeSql(sql, parts[1], function(_, resultSet) {
+              // Append the result.
+              var response = {
+                rowCount: resultSet.rowsAffected,
+                result: []
+              };
+              if(resultSet.rows.length) { // Append the rows.
+                for(var i = 0; i < resultSet.rows.length; i += 1) {
+                  var value = resultSet.rows.item(i).value;
+                  var document = isMaster ? value : JSON.parse(value);
+                  response.result.push(document);
+                }
+              }
+              responses.push(response);
+
+              // Debug.
+              if(KINVEY_DEBUG) {
+                log('Executed the query.', sql, parts[1], response);
+              }
+
+              // When all queries are processed, resolve.
+              // NOTE Some implementations fire the `txn` success callback at the
+              // wrong time, so manually maintain a `pending` counter.
+              pending -= 1;
+              if(0 === pending) {
+                deferred.resolve(isMulti ? responses : responses.shift());
+              }
+            });
+          });
+        }, function(err) {
+          // Debug.
+          if(KINVEY_DEBUG) {
+            log('Failed to execute the query.', err);
+          }
+
+          // NOTE Some implementations return the error message as only argument.
+          err = isString(err) ? err : err.message;
+
+          // Translate the error in case the collection does not exist.
+          if(-1 !== err.indexOf('no such table')) {
+            error = clientError(Kinvey.Error.COLLECTION_NOT_FOUND, {
+              description: 'This collection not found for this app backend',
+              debug: {
+                collection: collection
+              }
+            });
+          }
+          else { // Other errors.
+            error = clientError(Kinvey.Error.DATABASE_ERROR, {
+              debug: err
+            });
+          }
+
+          // Return the rejection.
+          deferred.reject(error);
+        });
+
+        // Return the promise.
+        return deferred.promise;
+      },
+
+      /**
+       * Generates an object id.
+       *
+       * @param {integer} [length=24] The length of the object id.
+       * @returns {string} The id.
+       */
+      objectID: function(length) {
+        length = length || 24;
+        var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        var result = '';
+        for(var i = 0, j = chars.length; i < length; i += 1) {
+          var pos = Math.floor(Math.random() * j);
+          result += chars.substring(pos, pos + 1);
+        }
+        return result;
+      },
+
+      /**
+       * @augments {Database.batch}
+       */
+      batch: function(collection, documents, options) {
+        // If there are no documents, return.
+        if(0 === documents.length) {
+          return Kinvey.Defer.resolve(documents);
+        }
+
+        // Build the queries.
+        var queries = [];
+        documents = documents.map(function(document) {
+          // Cast arguments.
+          document._id = document._id || WebSqlAdapter.objectID();
+
+          // Add the query for the document.
+          queries.push([
+            'REPLACE INTO #{collection} (key, value) VALUES (?, ?)', [document._id, JSON.stringify(document)]
+          ]);
+
+          // Return the document.
+          return document;
+        });
+
+        // Prepare the response.
+        var promise = WebSqlAdapter.transaction(collection, queries, null, true, options);
+
+        // Return the response.
+        return promise.then(function() {
+          return documents;
+        });
+      },
+
+      /**
+       * @augments {Database.clean}
+       */
+      clean: function(collection, query, options) {
+        // Deleting should not take the query sort, limit, and skip into account.
+        if(null != query) { // Reset.
+          query.sort(null).limit(null).skip(0);
+        }
+
+        // Obtain the documents to be deleted via `WebSqlAdapter.find`.
+        return WebSqlAdapter.find(collection, query, options).then(function(documents) {
+          // If there are no documents matching the query, return.
+          if(0 === documents.length) {
+            return {
+              count: 0,
+              documents: []
+            };
+          }
+
+          // Build the query.
+          var infix = [];
+          var parameters = documents.map(function(document) {
+            infix.push('?'); // Add placeholder.
+            return document._id;
+          });
+          var sql = 'DELETE FROM #{collection} WHERE key IN(' + infix.join(',') + ')';
+
+          // Prepare the response.
+          var promise = WebSqlAdapter.transaction(collection, sql, parameters, true, options);
+
+          // Return the response.
+          return promise.then(function(response) {
+            // NOTE Some implementations do not return a `rowCount`.
+            response.rowCount = null != response.rowCount ? response.rowCount : documents.length;
+            return {
+              count: response.rowCount,
+              documents: documents
+            };
+          });
+        });
+      },
+
+      /**
+       * @augments {Database.count}
+       */
+      count: function(collection, query, options) {
+        // Counting should not take the query sort, limit, and skip into account.
+        if(null != query) { // Reset.
+          query.sort(null).limit(null).skip(0);
+        }
+
+        // Forward to `WebSqlAdapter.find`, and return the response count.
+        return WebSqlAdapter.find(collection, query, options).then(function(response) {
+          return {
+            count: response.length
+          };
+        });
+      },
+
+      /**
+       * @augments {Database.destroy}
+       */
+      destroy: function(collection, id, options) {
+        // Prepare the response.
+        var promise = WebSqlAdapter.transaction(collection, [
+          ['SELECT value FROM #{collection} WHERE key = ?', [id]],
+          ['DELETE       FROM #{collection} WHERE key = ?', [id]]
+        ], null, true, options);
+
+        // Return the response.
+        return promise.then(function(response) {
+          // Extract the response.
+          var count = response[1].rowCount;
+          var documents = response[0].result;
+
+          // NOTE Some implementations do not return a `rowCount`.
+          count = null != count ? count : response[0].result.length;
+
+          // If the document could not be found, throw an `ENTITY_NOT_FOUND` error.
+          if(0 === count) {
+            var error = clientError(Kinvey.Error.ENTITY_NOT_FOUND, {
+              description: 'This entity not found in the collection',
+              debug: {
+                collection: collection,
+                id: id
+              }
+            });
+            return Kinvey.Defer.reject(error);
+          }
+
+          // Return the count and the deleted document.
+          return {
+            count: count,
+            documents: documents
+          };
+        });
+      },
+
+      /**
+       * @augments {Database.destruct}
+       */
+      destruct: function(options) {
+        // Obtain a list of all tables in the database.
+        var query = 'SELECT name AS value FROM #{collection} WHERE type = ?';
+        var parameters = ['table'];
+
+        // Return the response.
+        var promise = WebSqlAdapter.transaction('sqlite_master', query, parameters, false, options);
+        return promise.then(function(response) {
+          // If there are no tables, return.
+          var tables = response.result;
+          if(0 === tables.length) {
+            return null;
+          }
+
+          // Drop all tables. Filter tables first to avoid attempting to delete
+          // system tables (which will fail).
+          var queries = tables.filter(function(table) {
+            return(/^[a-zA-Z0-9\-]{1,128}/).test(table);
+          }).map(function(table) {
+            return ['DROP TABLE IF EXISTS \'' + table + '\''];
+          });
+          return WebSqlAdapter.transaction('sqlite_master', queries, null, true, options);
+        }).then(function() {
+          return null;
+        });
+      },
+
+      /**
+       * @augments {Database.find}
+       */
+      find: function(collection, query, options) {
+        // Prepare the response.
+        var sql = 'SELECT value FROM #{collection}';
+        var promise = WebSqlAdapter.transaction(collection, sql, [], false, options);
+
+        // Return the response.
+        return promise.then(function(response) {
+          response = response.result; // The documents.
+
+          // Apply the query.
+          if(null == query) {
+            return response;
+          }
+
+          // Filters.
+          response = root.sift(query.toJSON().filter, response);
+
+          // Post process.
+          return query._postProcess(response);
+        }, function(error) {
+          // If `COLLECTION_NOT_FOUND`, return the empty set.
+          if(Kinvey.Error.COLLECTION_NOT_FOUND === error.name) {
+            return [];
+          }
+          return Kinvey.Defer.reject(error);
+        });
+      },
+
+      /**
+       * @augments {Database.findAndModify}
+       */
+      findAndModify: function(collection, id, fn, options) {
+        // Obtain the document to be modified via `WebSqlAdapter.get`.
+        var promise = WebSqlAdapter.get(collection, id, options).then(null, function(error) {
+          // If `ENTITY_NOT_FOUND`, use an empty object and continue.
+          if(Kinvey.Error.ENTITY_NOT_FOUND === error.name) {
+            return null;
+          }
+          return Kinvey.Defer.reject(error);
+        });
+
+        // Return the response.
+        return promise.then(function(response) {
+          // Apply change function and update the document via `WebSqlAdapter.save`.
+          var document = fn(response);
+          return WebSqlAdapter.save(collection, document, options);
+        });
+      },
+
+      /**
+       * @augments {Database.get}
+       */
+      get: function(collection, id, options) {
+        // Prepare the response.
+        var sql = 'SELECT value FROM #{collection} WHERE key = ?';
+        var promise = WebSqlAdapter.transaction(collection, sql, [id], false, options);
+
+        // Return the response.
+        return promise.then(function(response) {
+          // Extract the documents.
+          var documents = response.result;
+
+          // If the document could not be found, throw an `ENTITY_NOT_FOUND` error.
+          if(0 === documents.length) {
+            var error = clientError(Kinvey.Error.ENTITY_NOT_FOUND, {
+              description: 'This entity not found in the collection',
+              debug: {
+                collection: collection,
+                id: id
+              }
+            });
+            return Kinvey.Defer.reject(error);
+          }
+          return documents[0];
+        }, function(error) {
+          // If `COLLECTION_NOT_FOUND`, convert to `ENTITY_NOT_FOUND`.
+          if(Kinvey.Error.COLLECTION_NOT_FOUND === error.name) {
+            error = clientError(Kinvey.Error.ENTITY_NOT_FOUND, {
+              description: 'This entity not found in the collection',
+              debug: {
+                collection: collection,
+                id: id
+              }
+            });
+          }
+          return Kinvey.Defer.reject(error);
+        });
+      },
+
+      /**
+       * @augments {Database.group}
+       */
+      group: function(collection, aggregation, options) {
+        // Cast arguments. This casts the reduce string to reduce function.
+        var reduce = aggregation.reduce.replace(/function[\s\S]*?\([\s\S]*?\)/, '');
+        aggregation.reduce = new Function(['doc', 'out'], reduce);
+
+        // Obtain documents subject to aggregation.
+        var query = new Kinvey.Query({
+          filter: aggregation.condition
+        });
+        return WebSqlAdapter.find(collection, query, options).then(function(documents) {
+          // Prepare the grouping.
+          var groups = {};
+
+          // Segment documents into groups.
+          documents.forEach(function(document) {
+            // Determine the group the document belongs to.
+            // NOTE Dot-separated (nested) fields are not supported.
+            var group = {};
+            for(var name in aggregation.key) {
+              if(aggregation.key.hasOwnProperty(name)) {
+                group[name] = document[name];
+              }
+            }
+
+            // Initialize the group (if not done yet).
+            var key = JSON.stringify(group);
+            if(null == groups[key]) {
+              groups[key] = group;
+              for(var attr in aggregation.initial) { // Add initial attributes.
+                if(aggregation.initial.hasOwnProperty(attr)) {
+                  groups[key][attr] = aggregation.initial[attr];
+                }
+              }
+            }
+
+            // Run the reduce function on the group and document.
+            aggregation.reduce(document, groups[key]);
+          });
+
+          // Cast the groups to the response.
+          var response = [];
+          for(var segment in groups) {
+            if(groups.hasOwnProperty(segment)) {
+              response.push(groups[segment]);
+            }
+          }
+          return response;
+        });
+      },
+
+      /**
+       * @augments {Database.save}
+       */
+      save: function(collection, document, options) {
+        // Cast arguments.
+        document._id = document._id || WebSqlAdapter.objectID();
+
+        // Build the query.
+        var query = 'REPLACE INTO #{collection} (key, value) VALUES (?, ?)';
+        var parameters = [document._id, JSON.stringify(document)];
+
+        // Prepare the response.
+        var promise = WebSqlAdapter.transaction(collection, query, parameters, true, options);
+
+        // Return the response.
+        return promise.then(function() {
+          return document;
+        });
+      },
+
+      /**
+       * @augments {Database.update}
+       */
+      update: function(collection, document, options) {
+        // Forward to `WebSqlAdapter.save`.
+        return WebSqlAdapter.save(collection, document, options);
+      }
+    };
+
+    // Use WebSQL adapter.
+    if('undefined' !== typeof root.openDatabase && 'undefined' !== typeof root.sift) {
+      Database.use(WebSqlAdapter);
+
+      // Add `Kinvey.Query` operators not supported by `sift`.
+      ['near', 'regex', 'within'].forEach(function(operator) {
+        root.sift.useOperator(operator, function() {
+          throw new Kinvey.Error(operator + ' query operator is not supported locally.');
+        });
+      });
+    }
+
+    /* jshint evil: true */
+
     // `Database` adapter for [IndexedDB](http://www.w3.org/TR/IndexedDB/).
     var IDBAdapter = {
       /**
@@ -6860,10 +7441,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       transaction: function(collection, write, success, error, force) {
         // Validate preconditions.
-        if(!/^[a-zA-Z0-9\-]{1,128}/.test(collection)) {
+        if(!isString(collection) || !/^[a-zA-Z0-9\-]{1,128}/.test(collection)) {
           return error(clientError(Kinvey.Error.INVALID_IDENTIFIER, {
             description: 'The collection name has an invalid format.',
-            debug: 'The collection name may only contain alphanumeric characters and dashes.'
+            debug: 'The collection name must be a string containing only ' + 'alphanumeric characters and dashes, "' + collection + '" given.'
           }));
         }
 
@@ -7144,9 +7725,6 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Handle the `success` event.
         request.onsuccess = function() {
-          // Unset the database handle since the IndexedDBShim cannot fire all
-          // `versionchange` events needed.
-          IDBAdapter.db = null;
           deferred.resolve(null);
         };
 
@@ -8759,29 +9337,50 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     Social.use(TiSocialAdapter);
 
     // `Storage` adapter for Titanium.
+
+    // The storage methods are executed in the background. Therefore, implement a
+    // queue to force the background processes to execute serially.
+    var storagePromise = Kinvey.Defer.resolve(null);
+
+    /**
+     * @private
+     * @namespace
+     */
     var TiAppStorage = {
       /**
        * @augments {Storage._destroy}
        */
       _destroy: function(key) {
-        Titanium.App.Properties.removeProperty(key);
-        return Kinvey.Defer.resolve(null);
+        // Remove the item on our turn.
+        storagePromise = storagePromise.then(function() {
+          Titanium.App.Properties.removeProperty(key);
+          return Kinvey.Defer.resolve(null);
+        });
+        return storagePromise;
       },
 
       /**
        * @augments {Storage._get}
        */
       _get: function(key) {
-        var value = Titanium.App.Properties.getObject(key, null);
-        return Kinvey.Defer.resolve(value);
+        // Retrieve the item on our turn.
+        storagePromise = storagePromise.then(function() {
+          var value = Titanium.App.Properties.getObject(key, null);
+          return Kinvey.Defer.resolve(value);
+        });
+        return storagePromise;
       },
 
       /**
        * @augments {Storage._save}
        */
       _save: function(key, value) {
-        Titanium.App.Properties.setObject(key, value);
-        return Kinvey.Defer.resolve(null);
+        // Save the item on our turn.
+        storagePromise = storagePromise.then(function() {
+          Titanium.App.Properties.setObject(key, value);
+          return Kinvey.Defer.resolve(null);
+        });
+        return storagePromise;
       }
     };
 
@@ -8821,10 +9420,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       execute: function(collection, query, parameters, options) {
         // Validate preconditions.
-        if(!/^[a-zA-Z0-9\-]{1,128}/.test(collection)) {
+        if(!isString(collection) || !/^[a-zA-Z0-9\-]{1,128}/.test(collection)) {
           var error = clientError(Kinvey.Error.INVALID_IDENTIFIER, {
             description: 'The collection name has an invalid format.',
-            debug: 'The collection name may only contain alphanumeric characters and dashes.'
+            debug: 'The collection name must be a string containing only ' + 'alphanumeric characters and dashes, "' + collection + '" given.'
           });
           return Kinvey.Defer.reject(error);
         }
