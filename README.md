@@ -12,7 +12,7 @@ After downloading or cloning the repository:
 * Replace `App Key` and `App Secret` (`Resources/app.js`) with your applications credentials.
 * Optional: adjust the `Run Configurations` to suit your needs:
 ![Adjust Run Configurations](https://raw.github.com/KinveyApps/TestDrive-Titanium/master/screenshot-run-configurations.png)
-* Run the project on the platform of your choice. 
+* Run the project on the platform of your choice.
 
 ## Functionality
 This application demonstrates:
@@ -26,3 +26,19 @@ The application is set-up to run on Android and as mobile web application. The m
 The UI is also initialized in this file. By default, the sample is a single-tab application. The only page is defined in `Resources/ui/ping.js`, which shows a button to ping the Kinvey service.
 
 The best place to learn how to add and modify your application is the [Titanium Documentation](http://docs.appcelerator.com).
+
+## License
+
+    Copyright 2013 Kinvey, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
