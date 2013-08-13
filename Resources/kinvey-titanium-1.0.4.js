@@ -29,26 +29,20 @@ var exports=exports||this;exports.OAuth=function(a){function b(a){var e,b=argume
 var exports=exports||this;exports.Google=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1!==n.url.indexOf("https://accounts.google.com/o/oauth2/approval")){o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a),s||o.close();var u=n.source.evalJS("document.getElementsByTagName('title')[0].innerText").split("=")[1];t.post("https://accounts.google.com/o/oauth2/token",{grant_type:"authorization_code",client_id:e.consumerKey,client_secret:e.consumerSecret,code:u,redirect_uri:e.callbackUrl},function(n){var i=JSON.parse(n.text);t.setAccessToken([i.access_token]),e.accessTokenKey=i.access_token,e.refreshTokenKey=i.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:i.expires_in}),e.authorized=!0,s&&o.close()})}else o.remove(i),r.hide(),o.leftNavButton!==c&&(o.leftNavButton=c)})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Google Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.accessTokenKey=e.accessTokenKey,s.refreshTokenKey=e.refreshTokenKey,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.refreshTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"urn:ietf:wg:oauth:2.0:oob",e.requestTokenUrl=e.requestTokenUrl||"https://accounts.google.com/o/oauth2/auth",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?this.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:this.consumerKey,client_secret:this.consumerSecret,refresh_token:this.refreshTokenKey},function(e){var s=JSON.parse(e.text);t.oauthClient.setAccessToken([s.access_token]),t.accessTokenKey=s.access_token,t.refreshTokenKey=s.refresh_token,t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.oauthClient.getAccessTokenKey(),refreshTokenKey:t.refreshTokenKey,expiresIn:s.expires_in})},function(){t.oauthClient.setAccessToken([null]),t.accessTokenKey=null,t.refreshTokenKey=null,t.fireEvent("login",{success:!1,error:!0})}):(e.call(this),this.oauthClient.setAccessToken("",""),t.webView.url=this.oauthClient.requestTokenUrl+"?client_id="+this.consumerKey+"&redirect_uri="+this.callbackUrl+"&scope="+this.scope+"&response_type=code")},n.prototype.request=function(e,t,s,o,n){var i=this,r=this.oauthClient,c=e;s.Authorization="OAuth "+r.getAccessTokenKey(),r.request({method:o,url:c,data:t,headers:s,success:function(e){n.call(i,{success:!0,error:!1,result:e})},failure:function(e){n.call(i,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.refreshTokenKey=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n.prototype.refreshAccessToken=function(){var e=this;e.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:e.consumerKey,client_secret:e.consumerSecret,refresh_token:e.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("refresh",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(){e.fireEvent("refresh",{success:!1,error:!0})})},n}(this);var exports=exports||this;exports.Linkedin=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementsByClassName('access-code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.linkedin.com/uas/oauth/accessToken?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Linkedin Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://www.linkedin.com/uas/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"oob",e.requestTokenUrl=e.requestTokenUrl||"https://api.linkedin.com/uas/oauth/requestToken",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.linkedin.com/"+e,t.access_token=this.accessTokenKey,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);var exports=exports||this;exports.Twitter=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementById('oauth_pin').getElementsByTagName('code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.twitter.com/oauth/access_token?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Twitter Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://api.twitter.com/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.accessTokenSecret&&(s.authorized=!0),e.requestTokenUrl=e.requestTokenUrl||"https://api.twitter.com/oauth/request_token",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.twitter.com/"+e,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);;
 }.call(this));;
 /*!
- * Copyright (c) 2013 Kinvey, Inc. All rights reserved.
+ * Copyright (c) 2013 Kinvey, Inc.
  *
- * Licensed to Kinvey, Inc. under one or more contributor
- * license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership.  Kinvey, Inc. licenses this file to you under the
- * Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You
- * may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-// Wrap in [IIFE](https://www.wikipedia.org/wiki/Immediately-invoked_function_expression).
 (function() {
 
   // Setup.
@@ -140,7 +134,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.0.3';
+    Kinvey.SDK_VERSION = '1.0.4';
 
     // Properties.
     // -----------
@@ -1016,7 +1010,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @property {boolean}  [fileTls=true] Use the https protocol to communicate
      *             with GCS.
      * @property {integer}  [fileTtl]      A custom expiration time (in seconds).
-     * @property {boolean}  [nocache]      Use cache busting.
+     * @property {boolean}  [nocache=true] Use cache busting.
      * @property {boolean}  [offline]      Initiate the request locally.
      * @property {boolean}  [refresh]      Persist the response locally.
      * @property {Object}   [relations]    Map of relational fields to collections.
@@ -1515,7 +1509,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.0.3'];
+      var parts = ['js-titanium/1.0.4'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
@@ -2509,6 +2503,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
     };
 
+    /* jshint sub: true */
+
     // Files.
     // ------
 
@@ -2846,7 +2842,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         data.mimeType = data.mimeType || file.mimeType || file.type || 'application/octet-stream';
 
         // Apply options.
-        if(options.public) {
+        if(options['public']) {
           data._public = true;
         }
         options.contentType = data.mimeType;
@@ -2905,6 +2901,38 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     // Metadata.
     // ---------
 
+    // Patch JavaScript implementations lacking ISO-8601 date support.
+    // http://jsfiddle.net/mplungjan/QkasD/
+    var fromISO = function(dateString) {
+      var date = Date.parse(dateString);
+      if(date) {
+        return new Date(date);
+      }
+
+      // Patch here.
+      var regex = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/;
+      var match = dateString.match(regex);
+      if(null != match[1]) {
+        var day = match[1].split(/\D/).map(function(segment) {
+          return root.parseInt(segment, 10) || 0;
+        });
+        day[1] -= 1; // Months range 0–11.
+        day = new Date(Date.UTC.apply(Date, day));
+
+        // Adjust for timezone.
+        if(null != match[5]) {
+          var timezone = root.parseInt(match[5], 10) / 100 * 60;
+          timezone += (null != match[6] ? root.parseInt(match[6], 10) : 0);
+          timezone *= ('+' === match[4]) ? -1 : 1;
+          if(timezone) {
+            day.setUTCMinutes(day.getUTCMinutes() * timezone);
+          }
+        }
+        return day;
+      }
+      return NaN; // Invalid.
+    };
+
     // Wrapper for accessing the `_acl` and `_kmd` properties of a document
     // (i.e. entity and users).
 
@@ -2960,7 +2988,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       getCreatedAt: function() {
         if(null != this._document._kmd && null != this._document._kmd.ect) {
-          return new Date(this._document._kmd.ect);
+          return fromISO(this._document._kmd.ect);
         }
         return null;
       },
@@ -2984,7 +3012,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       getLastModified: function() {
         if(null != this._document._kmd && null != this._document._kmd.lmt) {
-          return new Date(this._document._kmd.lmt);
+          return fromISO(this._document._kmd.lmt);
         }
         return null;
       },
@@ -4474,7 +4502,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         coord[1] = parseFloat(coord[1]);
 
         // `$nearSphere` and `$maxDistance` are separate filters.
-        var result = this._addFilter(field, '$near', [coord[0], coord[1]]);
+        var result = this._addFilter(field, '$nearSphere', [coord[0], coord[1]]);
         if(null != maxDistance) {
           this._addFilter(field, '$maxDistance', maxDistance);
         }
@@ -5977,9 +6005,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           }
         }
 
-        // If `options.nocache`, add a cache busting query string. This is useful
-        // for Android < 4.0 which caches all requests aggressively.
-        if(options.nocache) {
+        // Unless `options.nocache` is false, add a cache busting query string.
+        // This is useful for Android < 4.0 which caches all requests aggressively.
+        if(false !== options.nocache) {
           flags._ = Math.random().toString(36).substr(2);
         }
 
@@ -8112,6 +8140,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The response and tokens.
        */
       requestToken: function(provider, options) {
+        // Popup blockers only allow opening a dialog at this moment. The popup
+        // location will be updated later.
+        var blank = 'about:blank';
+        var popup = root.open(blank, 'KinveyOAuth2');
+
         // Open the login dialog. This step consists of getting the dialog url,
         // after which the dialog is opened.
         var redirect = options.redirect || root.location.toString();
@@ -8130,18 +8163,30 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // Obtain the tokens from the login dialog.
           var deferred = Kinvey.Defer.deferred();
 
-          // Open the dialog. Once the popup returns to the redirect url, we can
-          // access it.
-          var popup = root.open(response.url, 'KinveyOAuth2');
+          // Set the popup location.
+          if(null != popup) {
+            popup.location = response.url;
+          }
 
           // Popup management.
           var elapsed = 0; // Time elapsed since opening the popup.
-          var interval = 100; //100 ms.
+          var interval = 100; // ms.
           var timer = root.setInterval(function() {
             var error;
 
+            // The popup was blocked.
+            if(null == popup) {
+              root.clearTimeout(timer); // Stop listening.
+
+              // Return the response.
+              error = clientError(Kinvey.Error.SOCIAL_ERROR, {
+                debug: 'The popup was blocked.'
+              });
+              deferred.reject(error);
+            }
+
             // The popup closed unexpectedly.
-            if(null == popup.location) {
+            else if(popup.closed) {
               root.clearTimeout(timer); // Stop listening.
 
               // Return the response.
@@ -8158,25 +8203,37 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
               // Return the response.
               error = clientError(Kinvey.Error.SOCIAL_ERROR, {
-                debug: 'The user waited too long to reply to the authorization request.'
+                debug: 'The authorization request timed out.'
               });
               deferred.reject(error);
             }
 
-            // If `popup.location.host`, the popup was redirected back.
-            else if(popup.location.host) {
-              root.clearTimeout(timer); // Stop listening.
-              popup.close();
-
-              // Extract tokens from the url.
-              var location = popup.location;
-              var tokenString = location.search.substring(1) + '&' + location.hash.substring(1);
-              var tokens = SocialAdapter.tokenize(tokenString);
-              if(null != response.oauth_token_secret) { // OAuth 1.0a.
-                tokens.oauth_token_secret = response.oauth_token_secret;
+            // The popup is still active, check its location.
+            else {
+              // Firefox will throw an exception when `popup.location.host` has
+              // a different origin.
+              var host = false;
+              try {
+                host = blank !== popup.location.toString();
               }
+              catch(e) {}
 
-              deferred.resolve(tokens);
+              // Continue if the popup was redirected back to our domain.
+              if(host) {
+                root.clearTimeout(timer); // Stop listening.
+
+                // Extract tokens from the url.
+                var location = popup.location;
+                var tokenString = location.search.substring(1) + '&' + location.hash.substring(1);
+                var tokens = SocialAdapter.tokenize(tokenString);
+                if(null != response.oauth_token_secret) { // OAuth 1.0a.
+                  tokens.oauth_token_secret = response.oauth_token_secret;
+                }
+                deferred.resolve(tokens);
+
+                // Close the popup.
+                popup.close();
+              }
             }
 
             // Update elapsed time.
@@ -9959,7 +10016,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             var response = !isMobileWeb && options.file ? request.responseData : request.responseText;
 
             // Get binary response data on Titanium mobileweb.
-            if(isMobileWeb && options.file && null != response) {
+            if(isMobileWeb && options.file && null != response && null != root.ArrayBuffer) {
               var buffer = new root.ArrayBuffer(response.length);
               var bufView = new root.Uint8Array(buffer);
               for(var i = 0, length = response.length; i < length; i += 1) {
