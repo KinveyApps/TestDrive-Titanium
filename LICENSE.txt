@@ -210,7 +210,7 @@ END OF TERMS AND CONDITIONS
 
 Summary:
 
-   * kinvey-1.0.4 [Apache-2.0] - used for data persistence.
+   * kinvey-1.0.5 [Apache-2.0] - used for data persistence.
 
 
 SECTION 1: Apache License, V2.0
