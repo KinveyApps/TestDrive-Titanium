@@ -15,7 +15,7 @@
     }
   };
   var File = function() { };;
-/** @license MIT - ©2013 Ruben Verborgh */
+/** @license MIT - promiscuous library - ©2013 Ruben Verborgh */
 !function(){function e(){var c=function(u,f,i){if(u!==c){var v=e();return c.c.push({d:v,resolve:u,reject:f}),v.promise}for(var s=f?"resolve":"reject",a=0,p=c.c.length;p>a;a++){var h=c.c[a],l=h.d,j=h[s];typeof j!==t?l[s](i):n(j,i,l)}c=r(o,i,f)},o={then:function(e,r){return c(e,r)}};return c.c=[],{promise:o,resolve:function(e){c.c&&c(c,!0,e)},reject:function(e){c.c&&c(c,!1,e)}}}function r(r,c,o){return function(u,f){var i,v=o?u:f;return typeof v!==t?r:(n(v,c,i=e()),i.promise)}}function n(e,r,n){setTimeout(function(){try{var c=e(r);c&&typeof c.then===t?c.then(n.resolve,n.reject):n.resolve(c)}catch(o){n.reject(o)}})}var t="function";window.promiscuous={resolve:function(e){var n={};return n.then=r(n,e,!0),n},reject:function(e){var n={};return n.then=r(n,e,!1),n},deferred:e}}();;
 (function(){var l=new function(){function d(a){return a?0:-1}var f=this.priority=function(a,b){for(var c=a.exprs,e=0,f=0,d=c.length;f<d;f++){var g=c[f];if(!~(g=g.e(g.v,b instanceof Date?b.getTime():b,b)))return-1;e+=g}return e},e=this.parse=function(a,b){a||(a={$eq:a});var c=[];if(a.constructor==Object)for(var d in a){var m=k[d]?d:"$trav",j=a[d],g=j;if(h[m]){if(~d.indexOf(".")){g=d.split(".");d=g.shift();for(var n={},l=n,p=0,s=g.length-1;p<s;p++)l=l[g[p]]={};l[g[p]]=j;g=j=n}if(j instanceof Array){g=
 [];for(n=j.length;n--;)g.push(e(j[n]))}else g=e(j,d)}c.push(r(m,d,g))}else c.push(r("$eq",d,a));var q={exprs:c,k:b,test:function(a){return!!~q.priority(a)},priority:function(a){return f(q,a)}};return q},h=this.traversable={$and:!0,$or:!0,$nor:!0,$trav:!0,$not:!0},k=this.testers={$eq:function(a,b){return d(a.test(b))},$ne:function(a,b){return d(!a.test(b))},$lt:function(a,b){return a>b?0:-1},$gt:function(a,b){return a<b?0:-1},$lte:function(a,b){return a>=b?0:-1},$gte:function(a,b){return a<=b?0:-1},
@@ -134,7 +134,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.0.4';
+    Kinvey.SDK_VERSION = '1.0.5';
 
     // Properties.
     // -----------
@@ -1509,7 +1509,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.0.4'];
+      var parts = ['js-titanium/1.0.5'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
@@ -3331,6 +3331,12 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           };
         }
         options = options || {};
+
+        // Validate arguments.
+        if(null == usernameOrData.username && null == usernameOrData.password &&
+          null == usernameOrData._socialIdentity) {
+          throw new Kinvey.Error('Argument must contain: username and password, or _socialIdentity.');
+        }
 
         // Logout the current active user first, then proceed with logging in
         // with the specified credentials.
@@ -6047,17 +6053,17 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           headers['X-Kinvey-Content-Type'] = options.contentType;
         }
         if(options.skipBL) {
-          headers['X-Kinvey-Skip-Business-Logic'] = true;
+          headers['X-Kinvey-Skip-Business-Logic'] = 'true';
         }
         if(options.trace) {
           headers['X-Kinvey-Include-Headers-In-Response'] = 'X-Kinvey-Request-Id';
-          headers['X-Kinvey-ResponseWrapper'] = true;
+          headers['X-Kinvey-ResponseWrapper'] = 'true';
         }
 
         // Debug.
         if(KINVEY_DEBUG) {
-          headers['X-Kinvey-Trace-Request'] = true;
-          headers['X-Kinvey-Force-Debug-Log-Credentials'] = true;
+          headers['X-Kinvey-Trace-Request'] = 'true';
+          headers['X-Kinvey-Force-Debug-Log-Credentials'] = 'true';
         }
 
         // Authorization.
@@ -6536,20 +6542,16 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           return composite.document;
         });
 
-        // Build the request.
-        var request = {
-          namespace: USERS === collection ? USERS : DATA_STORE,
-          collection: USERS === collection ? null : collection,
-          auth: Auth.Default
-        };
-
         // Save documents on net.
         var error = []; // Track errors of individual update operations.
         var promises = documents.map(function(document) {
-          // Update the request parameters and save the document.
-          request.id = document._id;
-          request.data = document;
-          return Kinvey.Persistence.Net.update(request, options).then(null, function() {
+          return Kinvey.Persistence.Net.update({
+            namespace: USERS === collection ? USERS : DATA_STORE,
+            collection: USERS === collection ? null : collection,
+            id: document._id,
+            data: document,
+            auth: Auth.Default
+          }, options).then(null, function() {
             // Rejection should not break the entire synchronization. Instead,
             // append the document id to `error`, and resolve.
             error.push(document._id);
@@ -6557,11 +6559,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           });
         });
         return Kinvey.Defer.all(promises).then(function(responses) {
-          // `responses` is an `Array` of documents. Update the request parameters
-          // and batch save all documents.
-          request.id = null;
-          request.data = responses;
-          return Kinvey.Persistence.Local.create(request, options);
+          // `responses` is an `Array` of documents. Batch save all documents.
+          return Kinvey.Persistence.Local.create({
+            namespace: USERS === collection ? USERS : DATA_STORE,
+            collection: USERS === collection ? null : collection,
+            data: responses,
+            auth: Auth.Default
+          }, options);
         }).then(function(response) {
           // Build the final response.
           return {
@@ -9256,7 +9260,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Failed to obtain the access tokens, reject the promise.
         var error = clientError(Kinvey.Error.SOCIAL_ERROR, {
           description: event.error,
-          debug: event.data || ''
+          debug: event
         });
         deferred.reject(error);
       });
@@ -9329,7 +9333,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // On failure, reject with the error.
           var error = clientError(Kinvey.Error.SOCIAL_ERROR, {
-            debug: event.data.status + ': ' + event.error
+            debug: event
           });
           deferred.reject(error);
         };
@@ -9497,7 +9501,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // an error object.
         try {
           var db = Titanium.Database.open(TiDatabaseAdapter.dbName());
-          db.execute('BEGIN'); // Start a transaction.
+          db.execute('BEGIN TRANSACTION'); // Start a transaction.
 
           // Create the collection if it does not exist yet.
           db.execute(
@@ -9547,7 +9551,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           });
 
           // Commit the transaction.
-          db.execute('COMMIT');
+          db.execute('COMMIT TRANSACTION');
 
           // Close the database.
           db.close();
@@ -9964,6 +9968,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var request = options.xhr = Titanium.Network.createHTTPClient();
         request.open(method, url);
 
+        // Set the TLS version (iOS only).
+        if(isFunction(request.setTlsVersion) && Titanium.Network.TLS_VERSION_1_2) {
+          request.setTlsVersion(Titanium.Network.TLS_VERSION_1_2);
+        }
+
         // Apply options.
         if(0 < options.timeout) {
           request.timeout = options.timeout;
@@ -10048,9 +10057,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Patch Titanium mobileweb.
         if(isMobileWeb) {
           // Prevent Titanium from appending an incorrect Content-Type header.
+          // Also, GCS does not CORS allow the X-Titanium-Id header.
           var setHeader = request._xhr.setRequestHeader;
           request._xhr.setRequestHeader = function(name) {
-            return 'Content-Type' === name ? null : setHeader.apply(request._xhr, arguments);
+            if('Content-Type' === name || 'X-Titanium-Id' === name) {
+              return null;
+            }
+            return setHeader.apply(request._xhr, arguments);
           };
 
           // Prevent Titanium from URL encoding blobs.
