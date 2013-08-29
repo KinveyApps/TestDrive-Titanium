@@ -134,7 +134,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.0.5';
+    Kinvey.SDK_VERSION = '1.1.0';
 
     // Properties.
     // -----------
@@ -185,9 +185,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     /**
      * Restores the active user (if any) from disk.
      *
+     * @param {Object} options Options.
      * @returns {Promise} The active user, or `null` if there is no active user.
      */
-    var restoreActiveUser = function() {
+    var restoreActiveUser = function(options) {
       // Retrieve the authtoken from storage. If there is an authtoken, restore the
       // active user from disk.
       var promise = Storage.get('activeUser');
@@ -202,13 +203,18 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           log('Restoring the active user.');
         }
 
-        // Set the active user to a near-empty user with only the authtoken set.
+        // Set the active user to a near-empty user with only id and authtoken set.
         var previous = Kinvey.setActiveUser({
           _id: user[0],
           _kmd: {
             authtoken: user[1]
           }
         });
+
+        // If not `options.refresh`, return here.
+        if(false === options.refresh) {
+          return Kinvey.getActiveUser();
+        }
 
         // Retrieve the user. The `Kinvey.User.me` method will also update the
         // active user. If `INVALID_CREDENTIALS`, reset the active user.
@@ -287,12 +293,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     /**
      * Initializes the library for use with Kinvey services.
      *
-     * @param {Options} options Options.
-     * @param {string}  options.appKey        App Key.
-     * @param {string} [options.appSecret]    App Secret.
-     * @param {string} [options.masterSecret] Master Secret. **Never use the
+     * @param {Options}  options Options.
+     * @param {string}   options.appKey        App Key.
+     * @param {string}  [options.appSecret]    App Secret.
+     * @param {string}  [options.masterSecret] Master Secret. **Never use the
      *          Master Secret in client-side code.**
-     * @param {Object} [options.sync]         Synchronization options.
+     * @param {boolean} [options.refresh=true] Refresh the active user (if any).
+     * @param {Object}  [options.sync]         Synchronization options.
      * @throws {Kinvey.Error} `options` must contain: `appSecret` or
      *                          `masterSecret`.
      * @returns {Promise} The active user.
@@ -321,7 +328,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       Kinvey.masterSecret = null != options.masterSecret ? options.masterSecret : null;
 
       // Initialize the synchronization namespace and restore the active user.
-      var promise = Kinvey.Sync.init(options.sync).then(restoreActiveUser);
+      var promise = Kinvey.Sync.init(options.sync).then(function() {
+        return restoreActiveUser(options);
+      });
       return wrapCallbacks(promise, options);
     };
 
@@ -668,6 +677,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
     // #### Client.
     /**
+     * @memberOf Kinvey.Error
+     * @constant
+     * @default
+     */
+    Kinvey.Error.ALREADY_LOGGED_IN = 'AlreadyLoggedIn';
+
+    /**
      * @memberof Kinvey.Error
      * @constant
      * @default
@@ -734,6 +750,19 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     var ClientError = {};
 
     /**
+     * Already logged in error.
+     *
+     * @constant
+     * @type {Object}
+     * @default
+     */
+    ClientError[Kinvey.Error.ALREADY_LOGGED_IN] = {
+      name: Kinvey.Error.ALREADY_LOGGED_IN,
+      description: 'You are already logged in with another user.',
+      debug: 'If you want to switch users, logout the active user first ' + 'using `Kinvey.User.logout`, then try again.'
+    };
+
+    /**
      * Database error.
      *
      * @constant
@@ -781,8 +810,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      */
     ClientError[Kinvey.Error.NO_ACTIVE_USER] = {
       name: Kinvey.Error.NO_ACTIVE_USER,
-      description: 'No active user.',
-      debug: 'Try creating a user or logging in first.'
+      description: 'You need to be logged in to execute this request.',
+      debug: 'Try creating a user using `Kinvey.User.signup`, or login an ' + 'existing user using `Kinvey.User.login`.'
     };
 
     /**
@@ -1225,13 +1254,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     // Authentication.
     // ---------------
 
-    // Access to the Kinvey service is authenticated through (implicit) user
-    // credentials, Master Secret, or App Secret. A combination of these is often
-    // accepted, but not always. Therefore, an extensive set of all possible
-    // combinations is gathered here and presented as authentication policies.
-
-    // The promise to handle concurrent requests when the active user is `null`.
-    var implicitUserPromise = null;
+    // Access to the Kinvey service is authenticated through user credentials,
+    // Master Secret, or App Secret. A combination of these is often (but not
+    // always) accepted. Therefore, an extensive set of all possible combinations
+    // is gathered here and presented as authentication policies.
 
     /**
      * @private
@@ -1295,50 +1321,17 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       },
 
       /**
-       * Authenticate through (1) user credentials, or (2) Master Secret. If both
-       * fail, an implicit user is created and (1) is attempted.
+       * Authenticate through (1) user credentials, or (2) Master Secret.
        *
        * @returns {Promise}
        */
       Default: function() {
-        return Auth.UserDefault().then(null, function() {
-          // Debug.
-          if(KINVEY_DEBUG) {
-            log('Creating an implicit user.');
-          }
-
-          // A race condition occurs when the active user is `null`, and multiple
-          // requests are fired simultaneously. Normally, this would result in the
-          // creation of multiple implicit users. The flow below ensures only one
-          // implicit user can be created at the time, deferring any concurrent
-          // requests until after the implicit user is created and ready for usage.
-
-          // Debug.
-          if(KINVEY_DEBUG && null !== implicitUserPromise) {
-            log('An implicit user is already being created by another process, waiting.');
-          }
-
-          // If there is no implicit user being created right now, obtain the lock.
-          if(null === implicitUserPromise) {
-            // Create an implicit user.
-            implicitUserPromise = Kinvey.User.create().then(function(user) {
-              // Debug.
-              if(KINVEY_DEBUG) {
-                log('Created the implicit user.', user);
-              }
-
-              // Release the lock and return the response.
-              implicitUserPromise = null;
-              return user;
-            }, function(error) {
-              // Release the lock and forward the error.
-              implicitUserPromise = null;
-              return Kinvey.Defer.reject(error);
-            });
-          }
-
-          // Authenticate using the implicit user.
-          return implicitUserPromise.then(Auth.Session);
+        return Auth.Session().then(null, function(error) {
+          return Auth.Master().then(null, function() {
+            // Most likely, the developer did not create a user. Return a useful
+            // error.
+            return Kinvey.Defer.reject(error);
+          });
         });
       },
 
@@ -1409,15 +1402,6 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Return the response.
         return promise;
-      },
-
-      /**
-       * Authenticate through (1) user credentials, or (2) Master Secret.
-       *
-       * @returns {Promise}
-       */
-      UserDefault: function() {
-        return Auth.Session().then(null, Auth.Master);
       }
     };
 
@@ -1509,7 +1493,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.0.5'];
+      var parts = ['js-titanium/1.1.0'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
@@ -3320,6 +3304,12 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           log('Logging in an existing user.', arguments);
         }
 
+        // Validate preconditions.
+        if(null !== Kinvey.getActiveUser()) {
+          var error = clientError(Kinvey.Error.ALREADY_LOGGED_IN);
+          return Kinvey.Defer.reject(error);
+        }
+
         // Cast arguments.
         if(isObject(usernameOrData)) {
           options = 'undefined' !== typeof options ? options : password;
@@ -3338,42 +3328,35 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           throw new Kinvey.Error('Argument must contain: username and password, or _socialIdentity.');
         }
 
-        // Logout the current active user first, then proceed with logging in
-        // with the specified credentials.
-        return Kinvey.User.logout({
-          force: true,
-          silent: true
-        }).then(function() {
-          // Prepare the response.
-          var promise = Kinvey.Persistence.create({
-            namespace: USERS,
-            collection: options._provider ? null : 'login',
-            data: usernameOrData,
-            flags: options._provider ? {
-              provider: options._provider
-            } : {},
-            auth: Auth.App,
-            local: {
-              res: true
-            }
-          }, options).then(function(user) {
-            // Set and return the active user.
-            Kinvey.setActiveUser(user);
-            return user;
-          });
-
-          // Debug.
-          if(KINVEY_DEBUG) {
-            promise.then(function(response) {
-              log('Logged in the user.', response);
-            }, function(error) {
-              log('Failed to login the user.', error);
-            });
+        // Login with the specified credentials.
+        var promise = Kinvey.Persistence.create({
+          namespace: USERS,
+          collection: options._provider ? null : 'login',
+          data: usernameOrData,
+          flags: options._provider ? {
+            provider: options._provider
+          } : {},
+          auth: Auth.App,
+          local: {
+            res: true
           }
-
-          // Return the response.
-          return wrapCallbacks(promise, options);
+        }, options).then(function(user) {
+          // Set and return the active user.
+          Kinvey.setActiveUser(user);
+          return user;
         });
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          promise.then(function(response) {
+            log('Logged in the user.', response);
+          }, function(error) {
+            log('Failed to login the user.', error);
+          });
+        }
+
+        // Return the response.
+        return wrapCallbacks(promise, options);
       },
 
       /**
@@ -3648,8 +3631,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        *
        * @param {Object} [data] User data.
        * @param {Options} [options] Options.
-       * @param {boolean} [options.state=true] Save created user as the
-       *          active user.
+       * @param {boolean} [options.state=true] Save the created user as the active
+       *          user.
        * @returns {Promise} The new user.
        */
       create: function(data, options) {
@@ -3661,45 +3644,36 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Cast arguments.
         options = options || {};
 
-        // If `options.state`, logout the active user.
-        var promise;
-        if(false !== options.state) {
-          promise = Kinvey.User.logout({
-            force: true,
-            silent: true
-          });
-        }
-        else {
-          promise = Kinvey.Defer.resolve(null);
+        // If `options.state`, validate preconditions.
+        if(false !== options.state && null !== Kinvey.getActiveUser()) {
+          var error = clientError(Kinvey.Error.ALREADY_LOGGED_IN);
+          return Kinvey.Defer.reject(error);
         }
 
         // Create the new user.
-        return promise.then(function() {
-          // Prepare the response.
-          var promise = Kinvey.Persistence.create({
-            namespace: USERS,
-            data: data || {},
-            auth: Auth.App
-          }, options).then(function(user) {
-            // If `options.state`, set the active user.
-            if(false !== options.state) {
-              Kinvey.setActiveUser(user);
-            }
-            return user;
-          });
-
-          // Debug.
-          if(KINVEY_DEBUG) {
-            promise.then(function(response) {
-              log('Created the new user.', response);
-            }, function(error) {
-              log('Failed to create the new user.', error);
-            });
+        var promise = Kinvey.Persistence.create({
+          namespace: USERS,
+          data: data || {},
+          auth: Auth.App
+        }, options).then(function(user) {
+          // If `options.state`, set the active user.
+          if(false !== options.state) {
+            Kinvey.setActiveUser(user);
           }
-
-          // Return the response.
-          return wrapCallbacks(promise, options);
+          return user;
         });
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          promise.then(function(response) {
+            log('Created the new user.', response);
+          }, function(error) {
+            log('Failed to create the new user.', error);
+          });
+        }
+
+        // Return the response.
+        return wrapCallbacks(promise, options);
       },
 
       /**
@@ -3751,7 +3725,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           namespace: USERS,
           id: data._id,
           data: data,
-          auth: Auth.UserDefault,
+          auth: Auth.Default,
           local: {
             res: true
           }
@@ -3932,7 +3906,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           flags: options.hard ? {
             hard: true
           } : {},
-          auth: Auth.UserDefault,
+          auth: Auth.Default,
           local: {
             res: true
           }
