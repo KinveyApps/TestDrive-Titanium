@@ -2,5 +2,4 @@ tmp
 build
 build.log
 .fastdev.lock
-.project
 .settings
