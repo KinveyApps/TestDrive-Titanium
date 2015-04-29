@@ -5,17 +5,9 @@
     return window.setTimeout(fn, 0);
   };
   var exports = window.__KinveySocialAdapter = window;
-  var originalRequire = require;
-  require = function(module) {
-    if(0 === module.indexOf('jsOAuth')) {
-      return exports;
-    }
-    else if(null != originalRequire) {
-      return originalRequire.apply(this, arguments);
-    }
-  };
-  var File = function() { };;
-/**@license MIT-promiscuous-©Ruben Verborgh*/
+  var File = function() { };
+;
+/**@license MIT-promiscuous-Â©Ruben Verborgh*/
 !function(n,t){function c(n,t){return(typeof t)[0]==n}function u(o,e){return e=function f(i,h,l,a,p,s){function y(n){return function(t){p&&(p=0,f(c,n,t))}}if(a=f.q,i!=c)return u(function(n,t){a.push({p:this,r:n,j:t,1:i,0:h})});if(l&&c(n,l)|c(t,l))try{p=l.then}catch(j){h=0,l=j}if(c(n,p))try{p.call(l,y(1),h=y(0))}catch(j){h(j)}else for(e=function(t,e){return c(n,t=h?t:e)?u(function(n,c){r(this,n,c,l,t)}):o},s=0;s<a.length;)p=a[s++],c(n,i=p[h])?r(p.p,p.r,p.j,l,i):(h?p.r:p.j)(l)},e.q=[],o.call(o={then:function(n,t){return e(n,t)},"catch":function(n){return e(0,n)}},function(n){e(c,1,n)},function(n){e(c,0,n)}),o}function r(u,r,o,e,f){setTimeout(function(){try{e=f(e),f=e&&c(t,e)|c(n,e)&&e.then,c(n,f)?e==u?o(TypeError()):f.call(e,r,o):r(e)}catch(i){o(i)}})}function o(n){return u(function(t){t(n)})}Promise=u,u.resolve=o,u.reject=function(n){return u(function(t,c){c(n)})},u.all=function(n){return u(function(t,c,u,r){r=[],u=n.length||t(r),n.map(function(n,e){o(n).then(function(n){r[e]=n,--u||t(r)},c)})})}}("f","o");;
 (function(){var m=new function(){function g(a){return a?0:-1}var e=this.priority=function(a,b){for(var c=a.exprs,f=0,d=0,e=c.length;d<e;d++){var h=c[d];if(!~(h=h.e(h.v,b instanceof Date?b.getTime():b,b)))return-1;f+=h}return f},d=this.parse=function(a,b){a||(a={$eq:a});var c=[];if(a.constructor==Object)for(var f in a){var g=l[f]?f:"$trav",k=a[f],h=k;if(j[g]){if(~f.indexOf(".")){h=f.split(".");f=h.shift();for(var n={},m=n,p=0,s=h.length-1;p<s;p++)m=m[h[p]]={};m[h[p]]=k;h=k=n}if(k instanceof Array){h=
 [];for(n=k.length;n--;)h.push(d(k[n]))}else h=d(k,f)}c.push(r(g,f,h))}else c.push(r("$eq",f,a));var q={exprs:c,k:b,test:function(a){return!!~q.priority(a)},priority:function(a){return e(q,a)}};return q},j=this.traversable={$and:!0,$or:!0,$nor:!0,$trav:!0,$not:!0},l=this.testers={$eq:function(a,b){return g(a.test(b))},$ne:function(a,b){return g(!a.test(b))},$lt:function(a,b){return a>b?0:-1},$gt:function(a,b){return a<b?0:-1},$lte:function(a,b){return a>=b?0:-1},$gte:function(a,b){return a<=b?0:-1},
@@ -26,10 +18,10 @@ c,f=0,g=d.length;f<g;f++)b=d[f],a=j(b),~(c=l.priority(a))&&e.push({value:b,prior
 d.traverse)m.traversable[j]=!0};"undefined"!=typeof module&&"undefined"!=typeof module.exports?module.exports=j:"undefined"!=typeof window&&(window.sift=j)})();
 ;
 var exports=exports||this;exports.OAuth=function(a){function b(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(!(this instanceof c))return new c(a);for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function c(){}function d(a){var d,f,g,h,i,j,k,b=arguments,c=b.callee,l=/^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/,m=this;return this instanceof c?(m.scheme="",m.host="",m.port="",m.path="",m.query=new e,m.anchor="",null!==a&&(d=a.match(l),f=d[1],g=d[2],h=d[3],i=d[4],j=d[5],k=d[6],f=void 0!==f?f.replace("://","").toLowerCase():"http",h=h?h.replace(":",""):"https"===f?"443":"80",f="http"==f&&"443"===h?"https":f,j=j?j.replace("?",""):"",k=k?k.replace("#",""):"",("https"===f&&"443"!==h||"http"===f&&"80"!==h)&&(g=g+":"+h),m.scheme=f,m.host=g,m.port=h,m.path=i||"/",m.query.setQueryParams(j),m.anchor=k||""),void 0):new c(a)}function e(a){var e,b=arguments,c=b.callee,f=(b.length,this);if(g.urlDecode,!(this instanceof c))return new c(a);if(void 0!=a)for(e in a)a.hasOwnProperty(e)&&(f[e]=a[e]);return f}function g(a){return this instanceof g?this.init(a):new g(a)}function h(a){var c,d,b=[];for(c in a)a[c]&&void 0!==a[c]&&""!==a[c]&&("realm"===c?d=c+'="'+a[c]+'"':b.push(c+'="'+g.urlEncode(a[c]+"")+'"'));return b.sort(),d&&b.unshift(d),b.join(", ")}function i(a,b,c,d){var f,e=[],h=g.urlEncode;for(f in c)void 0!==c[f]&&""!==c[f]&&e.push([g.urlEncode(f),g.urlEncode(c[f]+"")]);for(f in d)void 0!==d[f]&&""!==d[f]&&(c[f]||e.push([h(f),h(d[f]+"")]));return e=e.sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:a[1]>b[1]?1:0}).map(function(a){return a.join("=")}),[a,h(b),h(e.join("&"))].join("&")}function j(){return parseInt(+new Date/1e3,10)}function k(a){function b(){return Math.floor(Math.random()*h.length)}a=a||64;var g,c=a/8,d="",e=c/4,f=c%4,h=["20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F","30","31","32","33","34","35","36","37","38","39","3A","3B","3C","3D","3E","3F","40","41","42","43","44","45","46","47","48","49","4A","4B","4C","4D","4E","4F","50","51","52","53","54","55","56","57","58","59","5A","5B","5C","5D","5E","5F","60","61","62","63","64","65","66","67","68","69","6A","6B","6C","6D","6E","6F","70","71","72","73","74","75","76","77","78","79","7A","7B","7C","7D","7E"];for(g=0;e>g;g++)d+=h[b()]+h[b()]+h[b()]+h[b()];for(g=0;f>g;g++)d+=h[b()];return d}function l(){var b;if("undefined"!=typeof a.Titanium&&"undefined"!=typeof a.Titanium.Network.createHTTPClient)b=a.Titanium.Network.createHTTPClient();else if("undefined"!=typeof require)try{b=new require("xhr").XMLHttpRequest()}catch(c){if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}else{if("undefined"==typeof a.XMLHttpRequest)throw"No valid request transport found.";b=new a.XMLHttpRequest}return b}function m(a){var b=new Array(++a);return b.join(0).split("")}function n(a){var c,d,b=[];for(d=0;d<a.length;d++)c=a.charCodeAt(d),128>c?b.push(c):2048>c?b.push(192+(c>>6),128+(63&c)):65536>c?b.push(224+(c>>12),128+(63&c>>6),128+(63&c)):2097152>c&&b.push(240+(c>>18),128+(63&c>>12),128+(63&c>>6),128+(63&c));return b}function o(a){var c,b=[];for(c=0;c<32*a.length;c+=8)b.push(255&a[c>>>5]>>>24-c%32);return b}function p(a){var d,b=[],c=a.length;for(d=0;c>d;d++)b.push((a[d]>>>4).toString(16)),b.push((15&a[d]).toString(16));return b.join("")}function q(a){var d,b="",c=a.length;for(d=0;c>d;d++)b+=String.fromCharCode(a[d]);return b}function r(a,b){return a<<b|a>>>32-b}function s(a){if(void 0!==a){var c,d,b=a;return b.constructor===String&&(b=n(b)),c=this instanceof s?this:new s(a),d=c.hash(b),p(d)}return this instanceof s?this:new s}function t(a,b,c,d){var h,i,j,k,e=n(b),f=n(c),g=e.length;for(g>a.blocksize&&(e=a.hash(e),g=e.length),e=e.concat(m(a.blocksize-g)),i=e.slice(0),j=e.slice(0),k=0;k<a.blocksize;k++)i[k]^=92,j[k]^=54;return h=a.hash(i.concat(a.hash(j.concat(f)))),d?p(h):q(h)}c.prototype={join:function(a){return a=a||"",this.values().join(a)},keys:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(a);return b},values:function(){var a,b=[],c=this;for(a in c)c.hasOwnProperty(a)&&b.push(c[a]);return b},shift:function(){throw"not implimented"},unshift:function(){throw"not implimented"},push:function(){throw"not implimented"},pop:function(){throw"not implimented"},sort:function(){throw"not implimented"},ksort:function(a){var d,e,f,b=this,c=b.keys();for(void 0==a?c.sort():c.sort(a),d=0;d<c.length;d++)f=c[d],e=b[f],delete b[f],b[f]=e;return b},toObject:function(){var b,a={},c=this;for(b in c)c.hasOwnProperty(b)&&(a[b]=c[b]);return a}},b.prototype=new c,d.prototype={scheme:"",host:"",port:"",path:"",query:"",anchor:"",toString:function(){var a=this,b=a.query+"";return a.scheme+"://"+a.host+a.path+(""!=b?"?"+b:"")+(""!==a.anchor?"#"+a.anchor:"")}},e.prototype=new b,e.prototype.toString=function(){var a,b=this,c=[],d="",e="",f=g.urlEncode;b.ksort();for(a in b)b.hasOwnProperty(a)&&void 0!=a&&void 0!=b[a]&&(e=f(a)+"="+f(b[a]),c.push(e));return c.length>0&&(d=c.join("&")),d},e.prototype.setQueryParams=function(a){var d,e,f,i,b=arguments,c=b.length,h=this,j=g.urlDecode;if(1==c){if("object"==typeof a)for(d in a)a.hasOwnProperty(d)&&(h[d]=j(a[d]));else if("string"==typeof a)for(e=a.split("&"),d=0,f=e.length;f>d;d++)i=e[d].split("="),""!=i[0]&&(h[i[0]]=j(i[1]))}else for(d=0;c>d;d+=2)h[b[d]]=j(b[d+1])};var f="1.0";return g.prototype={realm:"",requestTokenUrl:"",authorizationUrl:"",accessTokenUrl:"",init:function(a){var b="",c={enablePrivilege:a.enablePrivilege||!1,proxyUrl:a.proxyUrl,callbackUrl:a.callbackUrl||"oob",consumerKey:a.consumerKey,consumerSecret:a.consumerSecret,accessTokenKey:a.accessTokenKey||b,accessTokenSecret:a.accessTokenSecret||b,verifier:b,signatureMethod:a.signatureMethod||"HMAC-SHA1"};return this.realm=a.realm||b,this.requestTokenUrl=a.requestTokenUrl||b,this.authorizationUrl=a.authorizationUrl||b,this.accessTokenUrl=a.accessTokenUrl||b,this.getAccessToken=function(){return[c.accessTokenKey,c.accessTokenSecret]},this.getAccessTokenKey=function(){return c.accessTokenKey},this.getAccessTokenSecret=function(){return c.accessTokenSecret},this.setAccessToken=function(a,b){b&&(a=[a,b]),c.accessTokenKey=a[0],c.accessTokenSecret=a[1]},this.getVerifier=function(){return c.verifier},this.setVerifier=function(a){c.verifier=a},this.setCallbackUrl=function(a){c.callbackUrl=a},this.request=function(a){var b,e,m,n,o,p,q,r,s,t,u,v,x,z,A,B,w=[],y={};b=a.method||"GET",e=d(a.url),m=a.data||{},n=a.headers||{},o=a.success||function(){},p=a.failure||function(){},A=function(){var a=!1;for(var b in m)(m[b]instanceof File||"undefined"!=typeof m[b].fileName)&&(a=!0);return a}(),x=a.appendQueryString?a.appendQueryString:!1,c.enablePrivilege&&netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite"),q=l(),q.onreadystatechange=function(){if(4===q.readyState){var e,a=/^(.*?):\s*(.*?)\r?$/gm,b=n,c={},d="";if(q.getAllResponseHeaders)for(d=q.getAllResponseHeaders();e=a.exec(d);)c[e[1]]=e[2];else if(q.getResponseHeaders){d=q.getResponseHeaders();for(var f=0,g=d.length;g>f;++f)c[d[f][0]]=d[f][1]}var h=!1;"Content-Type"in c&&"text/xml"==c["Content-Type"]&&(h=!0);var i={text:q.responseText,xml:h?q.responseXML:"",requestHeaders:b,responseHeaders:c};q.status>=200&&q.status<=226||304==q.status||0===q.status?o(i):q.status>=400&&0!==q.status&&p(i)}},s={oauth_callback:c.callbackUrl,oauth_consumer_key:c.consumerKey,oauth_token:c.accessTokenKey,oauth_signature_method:c.signatureMethod,oauth_timestamp:j(),oauth_nonce:k(),oauth_verifier:c.verifier,oauth_version:f},t=c.signatureMethod,z=e.query.toObject();for(r in z)y[r]=z[r];if(!("Content-Type"in n&&"application/x-www-form-urlencoded"!=n["Content-Type"]||A))for(r in m)y[r]=m[r];if(B=e.scheme+"://"+e.host+e.path,u=i(b,B,s,y),v=g.signatureMethod[t](c.consumerSecret,c.accessTokenSecret,u),s.oauth_signature=v,this.realm&&(s.realm=this.realm),c.proxyUrl&&(e=d(c.proxyUrl+e.path)),x||"GET"==b)e.query.setQueryParams(m),w=null;else if(A){if(A){w=new FormData;for(r in m)w.append(r,m[r])}}else if("string"==typeof m)w=m,"Content-Type"in n||(n["Content-Type"]="text/plain");else{for(r in m)w.push(g.urlEncode(r)+"="+g.urlEncode(m[r]+""));w=w.sort().join("&"),"Content-Type"in n||(n["Content-Type"]="application/x-www-form-urlencoded")}q.open(b,e+"",!0),q.setRequestHeader("Authorization","OAuth "+h(s)),q.setRequestHeader("X-Requested-With","XMLHttpRequest");for(r in n)q.setRequestHeader(r,n[r]);q.send(w)},this},get:function(a,b,c){this.request({url:a,success:b,failure:c})},post:function(a,b,c,d){this.request({method:"POST",url:a,data:b,success:c,failure:d})},getJSON:function(a,b,c){this.get(a,function(a){b(JSON.parse(a.text))},c)},postJSON:function(a,b,c,d){this.request({method:"POST",url:a,data:JSON.stringify(b),success:function(a){c(JSON.parse(a.text))},failure:d,headers:{"Content-Type":"application/json"}})},parseTokenRequest:function(a,b){switch(b){case"text/xml":var c=a.xml.getElementsByTagName("token"),d=a.xml.getElementsByTagName("secret");i[g.urlDecode(c[0])]=g.urlDecode(d[0]);break;default:for(var e=0,f=a.text.split("&"),h=f.length,i={};h>e;++e){var j=f[e].split("=");i[g.urlDecode(j[0])]=g.urlDecode(j[1])}}return i},fetchRequestToken:function(a,b){var c=this;c.setAccessToken("","");var d=c.authorizationUrl;this.get(this.requestTokenUrl,function(b){var e=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([e.oauth_token,e.oauth_token_secret]),a(d+"?"+b.text)},b)},fetchAccessToken:function(a,b){var c=this;this.get(this.accessTokenUrl,function(b){var d=c.parseTokenRequest(b,b.responseHeaders["Content-Type"]||void 0);c.setAccessToken([d.oauth_token,d.oauth_token_secret]),c.setVerifier(""),a(b)},b)}},g.signatureMethod={"HMAC-SHA1":function(b,c,d){var e,f,h=g.urlEncode;return b=h(b),c=h(c||""),e=b+"&"+c,f=t(s.prototype,e,d),a.btoa(f)}},g.urlEncode=function(a){function b(a){var b=a.toString(16).toUpperCase();return b.length<2&&(b=0+b),"%"+b}if(!a)return"";a+="";var e,g,c=/[ \t\r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,d=a.length,f=a.split("");for(e=0;d>e;e++)(g=f[e].match(c))&&(g=g[0].charCodeAt(0),128>g?f[e]=b(g):2048>g?f[e]=b(192+(g>>6))+b(128+(63&g)):65536>g?f[e]=b(224+(g>>12))+b(128+(63&g>>6))+b(128+(63&g)):2097152>g&&(f[e]=b(240+(g>>18))+b(128+(63&g>>12))+b(128+(63&g>>6))+b(128+(63&g))));return f.join("")},g.urlDecode=function(a){return a?a.replace(/%[a-fA-F0-9]{2}/gi,function(a){return String.fromCharCode(parseInt(a.replace("%",""),16))}):""},s.prototype=new s,s.prototype.blocksize=64,s.prototype.hash=function(a){function A(a,b,c,d){switch(a){case 0:return b&c|~b&d;case 1:case 3:return b^c^d;case 2:return b&c|b&d|c&d}return-1}var d,e,f,g,h,i,j,k,l,p,q,s,t,u,v,w,x,y,z,b=[1732584193,4023233417,2562383102,271733878,3285377520],c=[1518500249,1859775393,2400959708,3395469782];for(a.constructor===String&&(a=n(a.encodeUTF8())),f=a.length,g=Math.ceil((f+9)/this.blocksize)*this.blocksize-(f+9),e=Math.floor(f/4294967296),d=Math.floor(f%4294967296),h=[255&8*e>>24,255&8*e>>16,255&8*e>>8,255&8*e,255&8*d>>24,255&8*d>>16,255&8*d>>8,255&8*d],a=a.concat([128],m(g),h),i=Math.ceil(a.length/this.blocksize),j=0;i>j;j++){for(k=a.slice(j*this.blocksize,(j+1)*this.blocksize),l=k.length,p=[],q=0;l>q;q++)p[q>>>2]|=k[q]<<24-8*(q-4*(q>>2));for(s=b[0],t=b[1],u=b[2],v=b[3],w=b[4],x=0;80>x;x++)x>=16&&(p[x]=r(p[x-3]^p[x-8]^p[x-14]^p[x-16],1)),y=Math.floor(x/20),z=r(s,5)+A(y,t,u,v)+w+c[y]+p[x],w=v,v=u,u=r(t,30),t=s,s=z;b[0]+=s,b[1]+=t,b[2]+=u,b[3]+=v,b[4]+=w}return o(b)},g}(exports);var exports=exports||this;!function(a){var b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";a.btoa=a.btoa||function(a){for(var e,f,c=0,d=a.length,g="";d>c;c+=3)e=[a.charCodeAt(c),a.charCodeAt(c+1),a.charCodeAt(c+2)],f=[e[0]>>2,(3&e[0])<<4|e[1]>>4,(15&e[1])<<2|e[2]>>6,63&e[2]],isNaN(e[1])&&(f[2]=64),isNaN(e[2])&&(f[3]=64),g+=b.charAt(f[0])+b.charAt(f[1])+b.charAt(f[2])+b.charAt(f[3]);return g}}(exports);;
-var exports=exports||this;exports.Google=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1!==n.url.indexOf("https://accounts.google.com/o/oauth2/approval")){o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a),s||o.close();var u=n.source.evalJS("document.getElementsByTagName('title')[0].innerText").split("=")[1];t.post("https://accounts.google.com/o/oauth2/token",{grant_type:"authorization_code",client_id:e.consumerKey,client_secret:e.consumerSecret,code:u,redirect_uri:e.callbackUrl},function(n){var i=JSON.parse(n.text);t.setAccessToken([i.access_token]),e.accessTokenKey=i.access_token,e.refreshTokenKey=i.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:i.expires_in}),e.authorized=!0,s&&o.close()})}else o.remove(i),r.hide(),o.leftNavButton!==c&&(o.leftNavButton=c)})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Google Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.accessTokenKey=e.accessTokenKey,s.refreshTokenKey=e.refreshTokenKey,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.refreshTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"urn:ietf:wg:oauth:2.0:oob",e.requestTokenUrl=e.requestTokenUrl||"https://accounts.google.com/o/oauth2/auth",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?this.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:this.consumerKey,client_secret:this.consumerSecret,refresh_token:this.refreshTokenKey},function(e){var s=JSON.parse(e.text);t.oauthClient.setAccessToken([s.access_token]),t.accessTokenKey=s.access_token,t.refreshTokenKey=s.refresh_token,t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.oauthClient.getAccessTokenKey(),refreshTokenKey:t.refreshTokenKey,expiresIn:s.expires_in})},function(){t.oauthClient.setAccessToken([null]),t.accessTokenKey=null,t.refreshTokenKey=null,t.fireEvent("login",{success:!1,error:!0})}):(e.call(this),this.oauthClient.setAccessToken("",""),t.webView.url=this.oauthClient.requestTokenUrl+"?client_id="+this.consumerKey+"&redirect_uri="+this.callbackUrl+"&scope="+this.scope+"&response_type=code")},n.prototype.request=function(e,t,s,o,n){var i=this,r=this.oauthClient,c=e;s.Authorization="OAuth "+r.getAccessTokenKey(),r.request({method:o,url:c,data:t,headers:s,success:function(e){n.call(i,{success:!0,error:!1,result:e})},failure:function(e){n.call(i,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.refreshTokenKey=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n.prototype.refreshAccessToken=function(){var e=this;e.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:e.consumerKey,client_secret:e.consumerSecret,refresh_token:e.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("refresh",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(){e.fireEvent("refresh",{success:!1,error:!0})})},n}(this);var exports=exports||this;exports.Linkedin=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementsByClassName('access-code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.linkedin.com/uas/oauth/accessToken?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Linkedin Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://www.linkedin.com/uas/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.scope=e.scope,s.authorized=!1,s.listeners={},s.accessTokenKey&&(s.authorized=!0),s.callbackUrl=e.callbackUrl||"oob",e.requestTokenUrl=e.requestTokenUrl||"https://api.linkedin.com/uas/oauth/requestToken",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.linkedin.com/"+e,t.access_token=this.accessTokenKey,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);var exports=exports||this;exports.Twitter=function(){function e(){var e=this,t=this.oauthClient,o=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,o.leftNavButton=c,r.show(),i.add(r),o.add(i),o.open({modal:!0}),o.add(n),c.addEventListener("click",function(){o.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(){n.goBack()}),n.addEventListener("beforeload",function(){s||o.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))o.remove(i),r.hide(),o.leftNavButton!==a&&(o.leftNavButton=a);else{o.leftNavButton!==c&&(o.leftNavButton=c);var u=n.source.evalJS("document.getElementById('oauth_pin').getElementsByTagName('code')[0].innerText");u?(s||o.close(),t.accessTokenUrl="https://api.twitter.com/oauth/access_token?oauth_verifier="+u,t.fetchAccessToken(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,s&&o.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(o.remove(i),r.hide())}})}var t=function(){},s="android"===Ti.Platform.osname,o=require("jsOAuth-1.3.3"),n=function(e){var s;return s=this instanceof n?this:new t,e||(e={}),s.windowTitle=e.windowTitle||"Twitter Authorization",s.windowClose=e.windowClose||"Close",s.windowBack=e.windowBack||"Back",s.consumerKey=e.consumerKey,s.consumerSecret=e.consumerSecret,s.authorizeUrl="https://api.twitter.com/oauth/authorize",s.accessTokenKey=e.accessTokenKey,s.accessTokenSecret=e.accessTokenSecret,s.authorized=!1,s.listeners={},s.accessTokenKey&&s.accessTokenSecret&&(s.authorized=!0),e.requestTokenUrl=e.requestTokenUrl||"https://api.twitter.com/oauth/request_token",s.oauthClient=o.OAuth(e),s};return t.prototype=n.prototype,n.prototype.authorize=function(){var t=this;this.authorized?setTimeout(function(){t.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.accessTokenKey,accessTokenSecret:t.accessTokenSecret})},1):(e.call(this),this.oauthClient.fetchRequestToken(function(e){var s=t.authorizeUrl+e;t.webView.url=s},function(e){t.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:e})}))},n.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.twitter.com/"+e,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},n.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},n.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},n.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},n}(this);;
+var exports=exports||this;exports.Google=function(e){function t(){var e=this,t=this.oauthClient,s=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,s.leftNavButton=c,r.show(),i.add(r),s.add(i),s.open({modal:!0}),s.add(n),c.addEventListener("click",function(t){s.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(e){n.goBack()}),n.addEventListener("beforeload",function(e){o||s.add(i),r.show()}),n.addEventListener("load",function(n){if(-1!==n.url.indexOf("https://accounts.google.com/o/oauth2/approval")){s.remove(i),r.hide(),s.leftNavButton!==a&&(s.leftNavButton=a),o||s.close();var u=n.source.evalJS("document.getElementsByTagName('title')[0].innerText").split("=")[1];t.post("https://accounts.google.com/o/oauth2/token",{grant_type:"authorization_code",client_id:e.consumerKey,client_secret:e.consumerSecret,code:u,redirect_uri:e.callbackUrl},function(n){var i=JSON.parse(n.text);t.setAccessToken([i.access_token]),e.accessTokenKey=i.access_token,e.refreshTokenKey=i.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:i.expires_in}),e.authorized=!0,o&&s.close()})}else s.remove(i),r.hide(),s.leftNavButton!==c&&(s.leftNavButton=c)})}var s=function(){},o="android"===Ti.Platform.osname,n={OAuth:exports.OAuth},i=function(e){var t;return t=this instanceof i?this:new s,e||(e={}),t.windowTitle=e.windowTitle||"Google Authorization",t.windowClose=e.windowClose||"Close",t.windowBack=e.windowBack||"Back",t.consumerKey=e.consumerKey,t.consumerSecret=e.consumerSecret,t.accessTokenKey=e.accessTokenKey,t.refreshTokenKey=e.refreshTokenKey,t.scope=e.scope,t.authorized=!1,t.listeners={},t.accessTokenKey&&t.refreshTokenKey&&(t.authorized=!0),t.callbackUrl=e.callbackUrl||"urn:ietf:wg:oauth:2.0:oob",e.requestTokenUrl=e.requestTokenUrl||"https://accounts.google.com/o/oauth2/auth",t.oauthClient=n.OAuth(e),t};return s.prototype=i.prototype,i.prototype.authorize=function(){var e=this;this.authorized?this.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:this.consumerKey,client_secret:this.consumerSecret,refresh_token:this.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("login",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(t){e.oauthClient.setAccessToken([null]),e.accessTokenKey=null,e.refreshTokenKey=null,e.fireEvent("login",{success:!1,error:!0})}):(t.call(this),this.oauthClient.setAccessToken("",""),e.webView.url=this.oauthClient.requestTokenUrl+"?client_id="+this.consumerKey+"&redirect_uri="+this.callbackUrl+"&scope="+this.scope+"&response_type=code")},i.prototype.request=function(e,t,s,o,n){var i=this,r=this.oauthClient,c=e;s.Authorization="OAuth "+r.getAccessTokenKey(),r.request({method:o,url:c,data:t,headers:s,success:function(e){n.call(i,{success:!0,error:!1,result:e})},failure:function(e){n.call(i,{success:!1,error:"Request failed",result:e})}})},i.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.refreshTokenKey=null,this.authorized=!1,e()},i.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},i.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},i.prototype.refreshAccessToken=function(){var e=this;e.oauthClient.post("https://accounts.google.com/o/oauth2/token",{grant_type:"refresh_token",client_id:e.consumerKey,client_secret:e.consumerSecret,refresh_token:e.refreshTokenKey},function(t){var s=JSON.parse(t.text);e.oauthClient.setAccessToken([s.access_token]),e.accessTokenKey=s.access_token,e.refreshTokenKey=s.refresh_token,e.fireEvent("refresh",{success:!0,error:!1,accessTokenKey:e.oauthClient.getAccessTokenKey(),refreshTokenKey:e.refreshTokenKey,expiresIn:s.expires_in})},function(t){e.fireEvent("refresh",{success:!1,error:!0})})},i}(this);var exports=exports||this;exports.Linkedin=function(e){function t(){var e=this,t=this.oauthClient,s=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,s.leftNavButton=c,r.show(),i.add(r),s.add(i),s.open({modal:!0}),s.add(n),c.addEventListener("click",function(t){s.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(e){n.goBack()}),n.addEventListener("beforeload",function(e){o||s.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))s.remove(i),r.hide(),s.leftNavButton!==a&&(s.leftNavButton=a);else{s.leftNavButton!==c&&(s.leftNavButton=c);var u=n.source.evalJS("document.getElementsByClassName('access-code')[0].innerText");u?(o||s.close(),t.accessTokenUrl="https://api.linkedin.com/uas/oauth/accessToken?oauth_verifier="+u,t.fetchAccessToken(function(n){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,o&&s.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(s.remove(i),r.hide())}})}var s=function(){},o="android"===Ti.Platform.osname,n={OAuth:exports.OAuth},i=function(e){var t;return t=this instanceof i?this:new s,e||(e={}),t.windowTitle=e.windowTitle||"Linkedin Authorization",t.windowClose=e.windowClose||"Close",t.windowBack=e.windowBack||"Back",t.consumerKey=e.consumerKey,t.consumerSecret=e.consumerSecret,t.authorizeUrl="https://www.linkedin.com/uas/oauth/authorize",t.accessTokenKey=e.accessTokenKey,t.accessTokenSecret=e.accessTokenSecret,t.scope=e.scope,t.authorized=!1,t.listeners={},t.accessTokenKey&&(t.authorized=!0),t.callbackUrl=e.callbackUrl||"oob",e.requestTokenUrl=e.requestTokenUrl||"https://api.linkedin.com/uas/oauth/requestToken",t.oauthClient=n.OAuth(e),t};return s.prototype=i.prototype,i.prototype.authorize=function(){var e=this;this.authorized?setTimeout(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:e.accessTokenKey,accessTokenSecret:e.accessTokenSecret})},1):(t.call(this),this.oauthClient.fetchRequestToken(function(t){var s=e.authorizeUrl+t;e.webView.url=s},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})}))},i.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.linkedin.com/"+e,t.access_token=this.accessTokenKey,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},i.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},i.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},i.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},i}(this);var exports=exports||this;exports.Twitter=function(e){function t(){var e=this,t=this.oauthClient,s=Ti.UI.createWindow({title:this.windowTitle}),n=Ti.UI.createWebView(),i=Ti.UI.createView({backgroundColor:"black",opacity:.7,zIndex:1}),r=Titanium.UI.createActivityIndicator({height:50,width:10,message:"Loading...",color:"white"}),c=Ti.UI.createButton({title:this.windowClose}),a=Ti.UI.createButton({title:this.windowBack});this.webView=n,s.leftNavButton=c,r.show(),i.add(r),s.add(i),s.open({modal:!0}),s.add(n),c.addEventListener("click",function(t){s.close(),e.fireEvent("cancel",{success:!1,error:"The user cancelled.",result:null})}),a.addEventListener("click",function(e){n.goBack()}),n.addEventListener("beforeload",function(e){o||s.add(i),r.show()}),n.addEventListener("load",function(n){if(-1===n.url.indexOf(e.authorizeUrl))s.remove(i),r.hide(),s.leftNavButton!==a&&(s.leftNavButton=a);else{s.leftNavButton!==c&&(s.leftNavButton=c);var u=n.source.evalJS("document.getElementById('oauth_pin').getElementsByTagName('code')[0].innerText");u?(o||s.close(),t.accessTokenUrl="https://api.twitter.com/oauth/access_token?oauth_verifier="+u,t.fetchAccessToken(function(n){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:t.getAccessTokenKey(),accessTokenSecret:t.getAccessTokenSecret()}),e.authorized=!0,o&&s.close()},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})})):(s.remove(i),r.hide())}})}var s=function(){},o="android"===Ti.Platform.osname,n={OAuth:exports.OAuth},i=function(e){var t;return t=this instanceof i?this:new s,e||(e={}),t.windowTitle=e.windowTitle||"Twitter Authorization",t.windowClose=e.windowClose||"Close",t.windowBack=e.windowBack||"Back",t.consumerKey=e.consumerKey,t.consumerSecret=e.consumerSecret,t.authorizeUrl="https://api.twitter.com/oauth/authorize",t.accessTokenKey=e.accessTokenKey,t.accessTokenSecret=e.accessTokenSecret,t.authorized=!1,t.listeners={},t.accessTokenKey&&t.accessTokenSecret&&(t.authorized=!0),e.requestTokenUrl=e.requestTokenUrl||"https://api.twitter.com/oauth/request_token",t.oauthClient=n.OAuth(e),t};return s.prototype=i.prototype,i.prototype.authorize=function(){var e=this;this.authorized?setTimeout(function(){e.fireEvent("login",{success:!0,error:!1,accessTokenKey:e.accessTokenKey,accessTokenSecret:e.accessTokenSecret})},1):(t.call(this),this.oauthClient.fetchRequestToken(function(t){var s=e.authorizeUrl+t;e.webView.url=s},function(t){e.fireEvent("login",{success:!1,error:"Failure to fetch access token, please try again.",result:t})}))},i.prototype.request=function(e,t,s,o,n){var i,r=this,c=this.oauthClient;i=e.match(/^https?:\/\/.+/i)?e:"https://api.twitter.com/"+e,c.request({method:o,url:i,data:t,headers:s,success:function(e){n.call(r,{success:!0,error:!1,result:e})},failure:function(e){n.call(r,{success:!1,error:"Request failed",result:e})}})},i.prototype.logout=function(e){this.oauthClient.setAccessToken("",""),this.accessTokenKey=null,this.accessTokenSecret=null,this.authorized=!1,e()},i.prototype.addEventListener=function(e,t){this.listeners=this.listeners||{},this.listeners[e]=this.listeners[e]||[],this.listeners[e].push(t)},i.prototype.fireEvent=function(e,t){for(var s=this.listeners[e]||[],o=0;o<s.length;o++)s[o].call(this,t)},i}(this);;
 }.call(this));;
 /*!
- * Copyright (c) 2014 Kinvey, Inc.
+ * Copyright (c) 2015 Kinvey, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,11 +107,22 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @constant
      * @type {string}
      * @default
+     * @deprecated Kinvey.API_ENDPOINT
      */
-    Kinvey.API_ENDPOINT = 'https://baas.kinvey.com';
+    Kinvey.APIHostName = 'https://baas.kinvey.com';
+    Kinvey.API_ENDPOINT = undefined;
 
     /**
-     * The Kinvey API version used when communicating with `Kinvey.API_ENDPOINT`.
+     * The Auth server.
+     *
+     * @constant
+     * @type {String}
+     * @default https://auth.kinvey.com
+     */
+    Kinvey.MICHostName = 'https://auth.kinvey.com';
+
+    /**
+     * The Kinvey API version used when communicating with `Kinvey.APIHostName`.
      *
      * @constant
      * @type {string}
@@ -134,7 +137,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @type {string}
      * @default
      */
-    Kinvey.SDK_VERSION = '1.1.8';
+    Kinvey.SDK_VERSION = '1.3.1';
 
     // Properties.
     // -----------
@@ -172,6 +175,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     /*var PUSH = 'push';*/
     var RPC = 'rpc';
     var USERS = 'user';
+    var CRP_MAX_BYTES = 2000;
     /*var USER_GROUPS = 'group';*/
 
     // The library has a concept of an active user which represents the person
@@ -255,12 +259,12 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     };
 
     /**
- * Returns the active user.
- *
- * @throws {Error} `Kinvey.getActiveUser` can only be called after the promise
-     returned by `Kinvey.init` fulfills or rejects.
- * @returns {?Object} The active user, or `null` if there is no active user.
- */
+     * Returns the active user.
+     *
+     * @throws {Error} `Kinvey.getActiveUser` can only be called after the promise
+         returned by `Kinvey.init` fulfills or rejects.
+     * @returns {?Object} The active user, or `null` if there is no active user.
+     */
     Kinvey.getActiveUser = function() {
       // Validate preconditions.
       if(false === activeUserReady) {
@@ -278,6 +282,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @throws {Kinvey.Error} `user` must contain: `_kmd.authtoken`.
      * @returns {?Object} The previous active user, or `null` if there was no
      *            previous active user.
+     * @throws {Kinvey.Error} user argument must contain: _id, _kmd.authtoken.
      */
     Kinvey.setActiveUser = function(user) {
       // Debug.
@@ -315,17 +320,21 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * Initializes the library for use with Kinvey services.
      *
      * @param {Options}  options Options.
+     * @param {string}  [options.clientAppVersion]   Client App Version.
+     * @param {Object}  [options.customRequestProperties] Customer request properties.
+     * @param {string}  [options.apiHostName]  API Host Name. Must use the `https` protocol
+     * @param {string}  [options.micHostName]  MIC Host Name. Must use the `https` protocol
      * @param {string}   options.appKey        App Key.
      * @param {string}  [options.appSecret]    App Secret.
      * @param {string}  [options.masterSecret] Master Secret. **Never use the
      *          Master Secret in client-side code.**
      * @param {boolean} [options.refresh=true] Refresh the active user (if any).
      * @param {Object}  [options.sync]         Synchronization options.
-     * @throws {Kinvey.Error} `options` must contain: `appSecret` or
-     *                          `masterSecret`.
      * @returns {Promise} The active user.
      */
     Kinvey.init = function(options) {
+      var error;
+
       // Debug.
       if(KINVEY_DEBUG) {
         log('Initializing the copy of the library.', arguments);
@@ -334,14 +343,51 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // Validate arguments.
       options = options || {};
       if(null == options.appKey) {
-        throw new Kinvey.Error('options argument must contain: appKey.');
+        error = new Kinvey.Error('options argument must contain: appKey.');
+        return wrapCallbacks(Kinvey.Defer.reject(error), options);
       }
       if(null == options.appSecret && null == options.masterSecret) {
-        throw new Kinvey.Error('options argument must contain: appSecret and/or masterSecret.');
+        error = new Kinvey.Error('options argument must contain: appSecret and/or masterSecret.');
+        return wrapCallbacks(Kinvey.Defer.reject(error), options);
       }
 
       // The active user is not ready yet.
       activeUserReady = false;
+
+      // Set the API host name
+      var apiHostName = options.apiHostName || Kinvey.API_ENDPOINT;
+      Kinvey.APIHostName = apiHostName || Kinvey.APIHostName;
+
+      // Check if Kinvey.APIHostName uses https protocol
+      if(Kinvey.APIHostName.indexOf('https://') !== 0) {
+        error = new Kinvey.Error('Kinvey requires https as the protocol when setting' +
+          ' Kinvey.APIHostName, instead found the protocol ' +
+          Kinvey.APIHostName.substring(0, Kinvey.APIHostName.indexOf(':/')) +
+          ' in Kinvey.APIHostName: ' + Kinvey.APIHostName);
+        return wrapCallbacks(Kinvey.Defer.reject(error), options);
+      }
+
+      // Set the MIC host name
+      Kinvey.MICHostName = options.micHostName || Kinvey.MICHostName;
+
+      // Check if Kinvey.MICHostName uses https protocol
+      if(Kinvey.MICHostName.indexOf('https://') !== 0) {
+        error = new Kinvey.Error('Kinvey requires https as the protocol when setting' +
+          ' Kinvey.MICHostName, instead found the protocol ' +
+          Kinvey.MICHostName.substring(0, Kinvey.MICHostName.indexOf(':/')) +
+          ' in Kinvey.MICHostName: ' + Kinvey.MICHostName);
+        return wrapCallbacks(Kinvey.Defer.reject(error), options);
+      }
+
+      // Set the Client App Version
+      if(options.clientAppVersion != null) {
+        Kinvey.ClientAppVersion.setVersion(options.clientAppVersion);
+      }
+
+      // Set the custom request properties
+      if(options.customRequestProperties != null) {
+        Kinvey.CustomRequestProperties.setProperties(options.customRequestProperties);
+      }
 
       // Save credentials.
       Kinvey.appKey = options.appKey;
@@ -395,6 +441,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // Return the response.
       return wrapCallbacks(promise, options);
     };
+
 
     // Error-handling.
     // ---------------
@@ -847,6 +894,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      */
     Kinvey.Error.SYNC_ERROR = 'SyncError';
 
+    /**
+     * @memberof Kinvey.Error
+     * @constant
+     * @default
+     */
+    Kinvey.Error.MIC_ERROR = 'MIC_ERROR';
+
     // All client-side errors are fully declared below.
     var ClientError = {};
 
@@ -982,6 +1036,19 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       debug: ''
     };
 
+    /**
+     * MIC error.
+     *
+     * @constant
+     * @type {Object}
+     * @default
+     */
+    ClientError[Kinvey.Error.MIC_ERROR] = {
+      name: Kinvey.Error.MIC_ERROR,
+      description: 'Unable to authorize using Mobile Identity Connect.',
+      debug: ''
+    };
+
     // The `description` and `debug` properties can be overridden if desired. The
     // function below makes it easy to customize client errors.
 
@@ -1008,6 +1075,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         debug: dict.debug || error.debug || ''
       };
     };
+
 
     // Utils.
     // ------
@@ -1078,7 +1146,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       return '[object Array]' === Object.prototype.toString.call(arg);
     };
     var isFunction = function(fn) {
-      if('function' !== typeof / . / ) {
+      if('function' !== typeof /./) {
         return 'function' === typeof fn;
       }
       return '[object Function]' === Object.prototype.toString.call(fn);
@@ -1096,6 +1164,9 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     var isString = function(str) {
       return '[object String]' === Object.prototype.toString.call(str);
     };
+    // var isEmptyString = String.isEmpty = function(str) {
+    //   return isString(str) && (str.length === 0 || !str.trim());
+    // };
 
     var isEmpty = function(obj) {
       if(null == obj) {
@@ -1150,6 +1221,69 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           };
         });
       };
+    };
+
+    // Gets the byte count for a string
+    var getByteCount = function(str) {
+      var count = 0,
+        stringLength = str.length,
+        i;
+
+      str = String(str || '');
+
+      for(i = 0; i < stringLength; i++) {
+        var partCount = encodeURI(str[i]).split('%').length;
+        count += partCount === 1 ? 1 : partCount - 1;
+      }
+
+      return count;
+    };
+
+    /**
+     * Parse a query string and return an object.
+     *
+     * @example foo=bar&baz=qux -> { foo: "bar", baz: "qux" }
+     * @param {string} string The query string.
+     * @returns {Object} The query string params.
+     */
+    var parseQueryString = function(str) {
+      if(typeof str !== 'string') {
+        return {};
+      }
+
+      str = str.trim().replace(/^(\?|#)/, '');
+
+      if(!str) {
+        return {};
+      }
+
+      var index = str.indexOf('#/');
+      if(index === str.length - 2) {
+        str = str.substring(0, index);
+      }
+
+      return str.trim().split('&').reduce(function(ret, param) {
+        var parts = param.replace(/\+/g, ' ').split('=');
+        var key = parts[0];
+        var val = parts[1];
+
+        key = decodeURIComponent(key);
+        // missing `=` should be `null`:
+        // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+        val = val === undefined ? null : decodeURIComponent(val);
+
+        if(!ret.hasOwnProperty(key)) {
+          ret[key] = val;
+        }
+        else if(Array.isArray(ret[key])) {
+          ret[key].push(val);
+        }
+        else {
+          ret[key] = [ret[key], val];
+        }
+
+        return ret;
+      }, {});
     };
 
     // Define the request Option type for documentation purposes.
@@ -1270,6 +1404,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       use: use(['_destroy', '_get', '_save'])
     };
 
+
     // Deferreds.
     // ----------
 
@@ -1291,9 +1426,12 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The promise.
        */
       all: function(promises) {
+        var error;
+
         // Validate arguments.
         if(!isArray(promises)) {
-          throw new Kinvey.Error('promises argument must be of type: Array.');
+          error = new Kinvey.Error('promises argument must be of type: Array.');
+          return Kinvey.Defer.reject(error);
         }
 
         // If there are no promises, resolve immediately.
@@ -1377,6 +1515,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @property {function} then The accessor to the current state or eventual
      *             fulfillment value or rejection reason.
      */
+
 
     // Authentication.
     // ---------------
@@ -1508,9 +1647,19 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Session: function() {
         // Validate preconditions.
+        var error;
         var user = Kinvey.getActiveUser();
+
         if(null === user) {
-          var error = clientError(Kinvey.Error.NO_ACTIVE_USER);
+          error = clientError(Kinvey.Error.NO_ACTIVE_USER);
+          return Kinvey.Defer.reject(error);
+        }
+
+        // Check if user has property _kmd
+        if(user._kmd === null || user._kmd === undefined) {
+          error = new Kinvey.Error('The active user does not have _kmd defined as a property.' +
+            'It is required to authenticate the user. User _id: ' +
+            user._id);
           return Kinvey.Defer.reject(error);
         }
 
@@ -1531,6 +1680,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         return promise;
       }
     };
+
 
     /* globals angular: true, Backbone: true, Ember: true, forge: true, jQuery: true */
     /* globals ko: true, Titanium: true */
@@ -1625,7 +1775,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
 
       // Return the device information string.
-      var parts = ['js-titanium/1.1.8'];
+      var parts = ['js-titanium/1.3.1'];
       if(0 !== libraries.length) { // Add external library information.
         parts.push('(' + libraries.sort().join(', ') + ')');
       }
@@ -1640,6 +1790,219 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         })
       ).join(' ');
     };
+
+    // Client App Version
+    // ----
+
+    // Set app version for the application.
+
+    var clientAppVersion;
+
+    var parseAppVersion = function() {
+      var version = arguments[0];
+
+      // Set app version using specified major, minor, and patch
+      // provided as arguments.
+      if(arguments.length > 1) {
+        // Get individual parts of app version
+        var major = arguments[0];
+        var minor = arguments[1];
+        var patch = arguments[2];
+
+        // Set app version to major value
+        version = (major + '').trim();
+
+        // Append minor value if it was provided
+        if(minor != null) {
+          version += ('.' + minor).trim();
+        }
+
+        // Append patch value if it was provided
+        if(patch != null) {
+          version += ('.' + patch).trim();
+        }
+      }
+
+      return version;
+    };
+
+    var stringifyAppVersion = function(version) {
+      if(null == version) {
+        return undefined;
+      }
+
+      return(version + '').trim();
+    };
+
+    var clearClientAppVersion = function() {
+      clientAppVersion = undefined;
+    };
+
+    /**
+     * @memberof! <global>
+     * @namespace Kinvey.ClientAppVersion
+     */
+    Kinvey.ClientAppVersion = /** @lends Kinvey.ClientAppVersion */ {
+
+      /**
+       * Returns a string representation of the client app version or
+       * `undefined` if one has not been set.
+       *
+       * @return {?string} A string representation of the client app
+       *                   version or `undefined`.
+       */
+      stringValue: function() {
+        return stringifyAppVersion(clientAppVersion);
+      },
+
+      /**
+       * Sets the client app version for the application.
+       */
+      setVersion: function() {
+        Kinvey.ClientAppVersion.clear();
+
+        // Debug
+        if(KINVEY_DEBUG) {
+          log('Setting the client app version.', arguments);
+        }
+
+        clientAppVersion = parseAppVersion.apply(root, arguments);
+      },
+
+      /**
+       * Clears the client app version that is set for the application.
+       */
+      clear: function() {
+        // Debug
+        if(KINVEY_DEBUG) {
+          log('Clearing the client app version.');
+        }
+
+        clearClientAppVersion();
+      }
+    };
+
+
+
+    // Custom Request Properties
+    // ----
+
+    // Set and get custom request properties for the application.
+
+    var customRequestProperties = {};
+
+    var clearCustomRequestProperty = function(name) {
+      if(null != name && customRequestProperties.hasOwnProperty(name)) {
+        delete customRequestProperties[name];
+      }
+    };
+
+    var clearCustomRequestProperties = function() {
+      customRequestProperties = {};
+    };
+
+    /**
+     * @memberof! <global>
+     * @namespace Kinvey.CustomRequestProperties
+     */
+    Kinvey.CustomRequestProperties = /** @lends Kinvey.CustomRequestProperties */ {
+
+      /**
+       * Returns the custom request properties that have been set for the application.
+       * @return {Object} Custom request properties
+       */
+      properties: function() {
+        // Return a copy and not a reference
+        return JSON.parse(JSON.stringify(customRequestProperties));
+      },
+
+      /**
+       * Returns the custom request property for the name or `undefined` if
+       * it has not been set.
+       *
+       * @param  {string} name Custom request property name
+       * @return {*}           Custom request property value
+       */
+      property: function(name) {
+        if(null != name && customRequestProperties.hasOwnProperty(name)) {
+          return customRequestProperties[name];
+        }
+
+        return undefined;
+      },
+
+      /**
+       * Clears all custom request properties that were previously set
+       * for the application. Then sets the provided properties
+       * for the application.
+       *
+       * @param {Object} properties Custom request properties
+       */
+      setProperties: function(properties) {
+        Kinvey.CustomRequestProperties.clear();
+        Kinvey.CustomRequestProperties.addProperties(properties);
+      },
+
+      /**
+       * Sets the custom request property for the name and value.
+       *
+       * @param {string} name  Custom request property name
+       * @param {*}      value Custom request property value
+       */
+      setProperty: function(name, value) {
+        var properties = {};
+        properties[name] = value;
+        Kinvey.CustomRequestProperties.addProperties(properties);
+      },
+
+      /**
+       * Adds to the properties to the exisiting custom request properties
+       * replacing any that already existed.
+       *
+       * @param {Object} properties Custom request properties
+       */
+      addProperties: function(properties) {
+        if(properties != null) {
+          Object.keys(properties).forEach(function(name) {
+            var value = properties[name];
+
+            // Debug
+            if(KINVEY_DEBUG) {
+              log('Adding custom request property ' + name + ' as ' + value + '.');
+            }
+
+            customRequestProperties[name] = value;
+          });
+        }
+      },
+
+      /**
+       * Clears all the custom request properties.
+       */
+      clear: function() {
+        // Debug
+        if(KINVEY_DEBUG) {
+          log('Clearing the custom request properties.');
+        }
+
+        clearCustomRequestProperties();
+      },
+
+      /**
+       * Clears one custom request property.
+       *
+       * @param  {string} name Custom request property name
+       */
+      clearProperty: function(name) {
+        // Debug
+        if(KINVEY_DEBUG) {
+          log('Clearing the custom request property ' + name + '.');
+        }
+
+        clearCustomRequestProperty(name);
+      }
+    };
+
 
     // ACL.
     // ----
@@ -2163,6 +2526,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       return agg;
     };
 
+
     // Custom Endpoints.
     // -----------------
 
@@ -2227,10 +2591,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {string} collection Collection.
        * @param {Kinvey.Query} [query] The query.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `query` must be of type: `Kinvey.Query`.
        * @returns {Promise} A list of documents.
        */
       find: function(collection, query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Retrieving documents by query.', arguments);
@@ -2238,7 +2603,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null != query && !(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -2370,10 +2736,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {string} collection Collection.
        * @param {Object} document Document.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `document` must contain: `_id`.
        * @returns {Promise} The (new) document.
        */
       update: function(collection, document, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Updating a document.', arguments);
@@ -2381,7 +2748,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null == document._id) {
-          throw new Kinvey.Error('document argument must contain: _id');
+          error = new Kinvey.Error('document argument must contain: _id');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -2423,6 +2791,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The response.
        */
       clean: function(collection, query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Deleting documents by query.', arguments);
@@ -2432,7 +2802,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         options = options || {};
         query = query || new Kinvey.Query();
         if(!(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Prepare the response.
@@ -2523,10 +2894,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {string} collection The collection.
        * @param {Kinvey.Query} [query] The query.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `query` must be of type: `Kinvey.Query`.
        * @returns {Promise} The response.
        */
       count: function(collection, query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Counting the number of documents.', arguments);
@@ -2534,7 +2906,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null != query && !(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -2573,10 +2946,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {string} collection The collection.
        * @param {Kinvey.Aggregation} aggregation The aggregation.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `aggregation` must be of type `Kinvey.Group`.
        * @returns {Promise} The response.
        */
       group: function(collection, aggregation, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Grouping documents', arguments);
@@ -2584,7 +2958,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(!(aggregation instanceof Kinvey.Group)) {
-          throw new Kinvey.Error('aggregation argument must be of type: Kinvey.Group.');
+          error = new Kinvey.Error('aggregation argument must be of type: Kinvey.Group.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -2618,6 +2993,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         return wrapCallbacks(promise, options);
       }
     };
+
 
     /* jshint sub: true */
 
@@ -2824,10 +3200,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {boolean} [options.tls=true] Use the https protocol to communicate
        *          with GCS.
        * @param {integer} [options.ttl] A custom expiration time.
-       * @throws {Kinvey.Error} `query` must be of type: `Kinvey.Query`.
        * @returns {Promise} A list of files.
        */
       find: function(query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Retrieving files by query.', arguments);
@@ -2835,7 +3212,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null != query && !(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -2930,7 +3308,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * Uploads a file.
        *
        * @param {*}       file               The file.
-       * @param {Object}  [data]             The files’ metadata.
+       * @param {Object}  [data]             The filesâ€™ metadata.
        * @param {Options} [options]          Options.
        * @param {boolean} [options.public]   Mark the file publicly-readable.
        * @param {boolean} [options.tls=true] Use the https protocol to communicate
@@ -3014,6 +3392,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
     };
 
+
     // Metadata.
     // ---------
 
@@ -3032,7 +3411,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var day = match[1].split(/\D/).map(function(segment) {
           return root.parseInt(segment, 10) || 0;
         });
-        day[1] -= 1; // Months range 0–11.
+        day[1] -= 1; // Months range 0â€“11.
         day = new Date(Date.UTC.apply(Date, day));
 
         // Adjust for timezone.
@@ -3205,10 +3584,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Options} [options] Options.
        * @param {boolean} [options.create=true] Create a new user if no user with
        *          the provided social identity exists.
-       * @throws {Kinvey.Error} `provider` is not supported.
        * @returns {Promise} The user.
        */
       connect: function(user, provider, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Linking a social identity to a Kinvey user.', arguments);
@@ -3218,12 +3598,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         options = options || {};
         options.create = 'undefined' !== typeof options.create ? options.create : true;
         if(!Kinvey.Social.isSupported(provider)) {
-          throw new Kinvey.Error('provider argument is not supported.');
+          error = new Kinvey.Error('provider argument is not supported.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Remove callbacks from `options` to avoid multiple calls.
         var success = options.success;
-        var error = options.error;
+        error = options.error;
         delete options.success;
         delete options.error;
 
@@ -3236,9 +3617,18 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           var activeUser = Kinvey.getActiveUser();
           user._socialIdentity = user._socialIdentity || {};
           user._socialIdentity[provider] = tokens;
-          if(null !== activeUser && activeUser._id === user._id) {
-            options._provider = provider; // Force tokens to be updated.
-            return Kinvey.User.update(user, options);
+
+          if(null !== activeUser) {
+            // Check activeUser for property _id. Thrown error will reject promise.
+            if(activeUser._id == null) {
+              error = new Kinvey.Error('Active user does not have _id property defined.');
+              throw error;
+            }
+
+            if(activeUser._id === user._id) {
+              options._provider = provider; // Force tokens to be updated.
+              return Kinvey.User.update(user, options);
+            }
           }
 
           // Attempt logging in with the tokens.
@@ -3280,10 +3670,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Object} [user] The user.
        * @param {string} provider The provider.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `provider` is not supported.
        * @returns {Promise} The user.
        */
       disconnect: function(user, provider, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Unlinking a social identity from a Kinvey user.', arguments);
@@ -3291,7 +3682,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Cast and validate arguments.
         if(!Kinvey.Social.isSupported(provider)) {
-          throw new Kinvey.Error('provider argument is not supported.');
+          error = new Kinvey.Error('provider argument is not supported.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Update the user data.
@@ -3386,6 +3778,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
     };
 
+
     // Users.
     // ------
 
@@ -3455,6 +3848,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The active user.
        */
       login: function(usernameOrData, password, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Logging in an existing user.', arguments);
@@ -3475,12 +3870,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Validate arguments.
         if(null == usernameOrData.username && null == usernameOrData.password &&
           null == usernameOrData._socialIdentity) {
-          throw new Kinvey.Error('Argument must contain: username and password, or _socialIdentity.');
+          error = new Kinvey.Error('Argument must contain: username and password, or _socialIdentity.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Validate preconditions.
         if(null !== Kinvey.getActiveUser()) {
-          var error = clientError(Kinvey.Error.ALREADY_LOGGED_IN);
+          error = clientError(Kinvey.Error.ALREADY_LOGGED_IN);
           return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
@@ -3572,7 +3968,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           }, options).then(null, function(error) {
             // If `options.force`, clear the active user on `INVALID_CREDENTIALS`.
             if(options.force && (Kinvey.Error.INVALID_CREDENTIALS === error.name ||
-              Kinvey.Error.EMAIL_VERIFICATION_REQUIRED === error.name)) {
+                Kinvey.Error.EMAIL_VERIFICATION_REQUIRED === error.name)) {
               // Debug.
               if(KINVEY_DEBUG) {
                 log('The user credentials are invalid. Returning success because of the force flag.');
@@ -3581,9 +3977,23 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             }
             return Kinvey.Defer.reject(error);
           }).then(function() {
+            // Disconnect MIC
+            return MIC.disconnect();
+          }).then(function() {
+            var error;
+
             // Reset the active user, and return the previous active user. Make
             // sure to delete the authtoken.
             var previous = Kinvey.setActiveUser(null);
+
+            // Check if previous has property _kmd. Thrown error will cause promise to be
+            // rejected
+            if(previous._kmd == null) {
+              error = new Kinvey.Error('The previous active user does not have _kmd defined' +
+                'as a property.');
+              throw error;
+            }
+
             if(null !== previous) {
               delete previous._kmd.authtoken;
             }
@@ -3867,10 +4277,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Options} [options] Options.
        * @param {string} [options._provider] Do not strip the `access_token` for
        *          this provider. Should only be used internally.
-       * @throws {Kinvey.Error} `data` must contain: `_id`.
        * @returns {Promise} The user.
        */
       update: function(data, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Updating a user.', arguments);
@@ -3878,13 +4289,14 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null == data._id) {
-          throw new Kinvey.Error('data argument must contain: _id');
+          error = new Kinvey.Error('data argument must contain: _id');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
         options = options || {};
 
-        // Delete the social identities’ access tokens, unless the identity is
+        // Delete the social identitiesâ€™ access tokens, unless the identity is
         // `options._provider`. The tokens will be re-added after updating.
         var tokens = [];
         if(null != data._socialIdentity) {
@@ -3913,7 +4325,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             res: true
           }
         }, options).then(function(user) {
-          // Re-add the social identities’ access tokens.
+          // Re-add the social identitiesâ€™ access tokens.
           tokens.forEach(function(identity) {
             var provider = identity.provider;
             if(null != user._socialIdentity && null != user._socialIdentity[provider]) {
@@ -3927,14 +4339,30 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // If we just updated the active user, refresh it.
           var activeUser = Kinvey.getActiveUser();
-          if(null !== activeUser && activeUser._id === user._id) {
-            // Debug.
-            if(KINVEY_DEBUG) {
-              log('Updating the active user because the updated user was the active user.');
+
+          if(null !== activeUser) {
+            // Check activeUser for property _id. Thrown error will reject promise.
+            if(activeUser._id == null) {
+              error = new Kinvey.Error('Active user does not have _id property defined.');
+              throw error;
             }
 
-            Kinvey.setActiveUser(user);
+            // Check user for property _id. Thrown error will reject promise.
+            if(user._id == null) {
+              error = new Kinvey.Error('User does not have _id property defined.');
+              throw error;
+            }
+
+            if(activeUser._id === user._id) {
+              // Debug.
+              if(KINVEY_DEBUG) {
+                log('Updating the active user because the updated user was the active user.');
+              }
+
+              Kinvey.setActiveUser(user);
+            }
           }
+
           return user;
         });
 
@@ -3958,10 +4386,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Options} [options] Options.
        * @param {boolean} [discover=false] Use
        *          [User Discovery](http://devcenter.kinvey.com/guides/users#lookup).
-       * @throws {Kinvey.Error} `query` must be of type: `Kinvey.Query`.
        * @returns {Promise} A list of users.
        */
       find: function(query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Retrieving users by query.', arguments);
@@ -3969,7 +4398,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null != query && !(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -4074,6 +4504,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The response.
        */
       destroy: function(id, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Deleting a user.', arguments);
@@ -4096,14 +4528,24 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         }, options).then(function(response) {
           // If we just deleted the active user, unset it here.
           var activeUser = Kinvey.getActiveUser();
-          if(null !== activeUser && activeUser._id === id) {
-            // Debug.
-            if(KINVEY_DEBUG) {
-              log('Deleting the active user because the deleted user was the active user.');
+
+          if(null !== activeUser) {
+            // Check activeUser for property _id. Thrown error will reject promise.
+            if(activeUser._id == null) {
+              error = new Kinvey.Error('Active user does not have _id property defined.');
+              throw error;
             }
 
-            Kinvey.setActiveUser(null);
+            if(activeUser._id === id) {
+              // Debug.
+              if(KINVEY_DEBUG) {
+                log('Deleting the active user because the deleted user was the active user.');
+              }
+
+              Kinvey.setActiveUser(null);
+            }
           }
+
           return response;
         }, function(error) {
           // If `options.silent`, treat `USER_NOT_FOUND` as success.
@@ -4173,10 +4615,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        *
        * @param {Kinvey.Query} [query] The query.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `query` must be of type: `Kinvey.Query`.
        * @returns {Promise} The response.
        */
       count: function(query, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Counting the number of users.', arguments);
@@ -4184,7 +4627,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(null != query && !(query instanceof Kinvey.Query)) {
-          throw new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          error = new Kinvey.Error('query argument must be of type: Kinvey.Query.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -4221,10 +4665,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        *
        * @param {Kinvey.Aggregation} aggregation The aggregation.
        * @param {Options} [options] Options.
-       * @throws {Kinvey.Error} `aggregation` must be of type `Kinvey.Group`.
        * @returns {Promise} The response.
        */
       group: function(aggregation, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Grouping users.', arguments);
@@ -4232,7 +4677,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Validate arguments.
         if(!(aggregation instanceof Kinvey.Group)) {
-          throw new Kinvey.Error('aggregation argument must be of type: Kinvey.Group.');
+          error = new Kinvey.Error('aggregation argument must be of type: Kinvey.Group.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
@@ -4265,6 +4711,837 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         return wrapCallbacks(promise, options);
       }
     };
+
+
+    // Mobile Identity Connect
+    // ----
+
+    var MIC = {
+      /**
+       * Auth Path
+       *
+       * @constant
+       * @default '/oauth/auth'
+       */
+      AUTH_PATH: '/oauth/auth',
+
+      /**
+       * Token Path
+       *
+       * @constant
+       * @default '/oauth/token'
+       */
+      TOKEN_PATH: '/oauth/token',
+
+      /**
+       * Auth Provider
+       *
+       * @constant
+       * @default 'kinveyAuth'
+       */
+      AUTH_PROVIDER: 'kinveyAuth',
+
+      /**
+       * Token Storage Key
+       *
+       * @constant
+       * @default 'micToken'
+       */
+      TOKEN_STORAGE_KEY: 'micToken',
+
+      /**
+       * Auth Timeout
+       *
+       * @constant
+       * @default 5 minutes
+       */
+      AUTH_TIMEOUT: (1000 * 60 * 5),
+
+      AuthorizationGrant: {
+        AuthorizationCodeLoginPage: 'AuthorizationCodeLoginPage',
+        AuthorizationCodeAPI: 'AuthorizationCodeAPI'
+      },
+
+      /**
+       * Login with MIC.
+       *
+       * @param  {string}   authorizationGrant        Authorization Grant.
+       * @param  {string}   redirectUri               Redirect Uri.
+       * @param  {Object}   [options]                 Options.
+       * @params {string}   [options.username]        Username for the user to be authorized.
+       * @params {string}   [options.password]        Password for the user to be authorized.
+       * @param  {boolean}  [options.create=true]     Create a new user if no user exists.
+       * @param  {number}   [options.timeout=300000]  How long to wait for a successful authorization. Defaults to 5 minutes.
+       * @return {Promise}                            Authorized user.
+       */
+      login: function(authorizationGrant, redirectUri, options) {
+        var clientId = Kinvey.appKey;
+        var activeUser = Kinvey.getActiveUser();
+        var error;
+        var promise;
+
+        // Set defaults for options
+        options = options || {};
+        options.timeout = options.timeout || MIC.AUTH_TIMEOUT;
+        options.attemptMICRefresh = false;
+
+        if(null != activeUser) {
+          // Reject with error because of active user
+          error = clientError(Kinvey.Error.ALREADY_LOGGED_IN);
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
+        }
+        else if(null == redirectUri) {
+          error = new Kinvey.Error('A redirect uri must be provided to login with MIC.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
+        }
+        // Step 1: Check authorization grant type
+        else if(MIC.AuthorizationGrant.AuthorizationCodeLoginPage === authorizationGrant) {
+          if(this.isNode()) {
+            error = new Kinvey.Error(MIC.AuthorizationGrant.AuthorizationCodeLoginPage + ' grant is not supported.');
+            return wrapCallbacks(Kinvey.Defer.reject(error), options);
+          }
+
+          // Step 2: Request a code
+          promise = MIC.requestCodeWithPopup(clientId, redirectUri, options);
+        }
+        else if(MIC.AuthorizationGrant.AuthorizationCodeAPI === authorizationGrant) {
+          if(this.isHTML5() || this.isAngular() || this.isBackbone() || this.isPhoneGap() || this.isTitanium()) {
+            error = new Kinvey.Error(MIC.AuthorizationGrant.AuthorizationCodeAPI + ' grant is not supported.');
+            return wrapCallbacks(Kinvey.Defer.reject(error), options);
+          }
+
+          if(null == options.username) {
+            error = new Kinvey.Error('A username must be provided to login with MIC using the ' +
+              MIC.AuthorizationGrant.AuthorizationCodeAPI + ' grant.');
+            return wrapCallbacks(Kinvey.Defer.reject(error), options);
+          }
+
+          if(null == options.password) {
+            error = new Kinvey.Error('A password must be provided to login with MIC using the ' +
+              MIC.AuthorizationGrant.AuthorizationCodeAPI + ' grant.');
+            return wrapCallbacks(Kinvey.Defer.reject(error), options);
+          }
+
+          // Step 2a: Request a temp login uri
+          promise = MIC.requestUrl(clientId, redirectUri, options).then(function(url) {
+            // Step 2b: Request a code
+            // options.url = url + '?client_id=' + encodeURIComponent(clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) +
+            //   '&response_type=code&username=' + encodeURIComponent(options.username) +
+            //   '&password=' + encodeURIComponent(options.password);
+            return MIC.requestCodeWithUrl(url, clientId, redirectUri, options);
+          });
+        }
+        else {
+          // Reject with error because of invalid authorization grant
+          error = clientError(Kinvey.Error.MIC_ERROR, {
+            debug: 'The authorization grant ' + authorizationGrant + ' is unrecognized. Please provide one of the ' +
+              'following authorization grants: ' + MIC.AuthorizationGrant.AuthorizationCodeLoginPage + ', ' +
+              MIC.AuthorizationGrant.AuthorizationCodeAPI + '.'
+          });
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
+        }
+
+        promise = promise.then(function(code) {
+          // Step 3: Request a token
+          return MIC.requestToken(clientId, redirectUri, code, options);
+        }).then(function(token) {
+          // Step 4: Connect the token with the user. Create a new user by default if one does not exist.
+          options.create = false === options.create ? false : true;
+          return MIC.connect(activeUser, token.access_token, options).then(function(user) {
+            // Step 5: Save the token
+            return Storage.save(MIC.TOKEN_STORAGE_KEY, {
+              refresh_token: token.refresh_token,
+              redirect_uri: redirectUri
+            }).then(function() {
+              return user;
+            });
+          });
+        });
+
+        return wrapCallbacks(promise, options);
+      },
+
+      /**
+       * Refresh a MIC token.
+       *
+       * @param  {Object}   [options]   Options.
+       * @return {Promise}              Authorized user.
+       */
+      refresh: function(options) {
+        var error;
+        var clientId = Kinvey.appKey;
+        var activeUser = Kinvey.getActiveUser();
+        var redirectUri;
+        var promise;
+
+        // Set defaults for options
+        options = options || {};
+        options.attemptMICRefresh = false;
+
+        // Step 1: Retrieve the saved token
+        promise = Storage.get(MIC.TOKEN_STORAGE_KEY).then(function(token) {
+          if(null != token) {
+            // Step 2: Refresh the token
+            redirectUri = token.redirect_uri;
+            return MIC.refreshToken(clientId, redirectUri, token.refresh_token, options);
+          }
+
+          // Throw error to reject promise for missing token.
+          error = clientError(Kinvey.Error.MIC_ERROR, {
+            debug: 'Unable to refresh because there is not a valid refresh token available.'
+          });
+          throw error;
+        }).then(function(token) {
+          // Step 3: Connect the token with the user
+          return MIC.connect(activeUser, token.access_token, options).then(function(user) {
+            // Step 4: Save the token
+            return Storage.save(MIC.TOKEN_STORAGE_KEY, {
+              refresh_token: token.refresh_token,
+              redirect_uri: redirectUri
+            }).then(function() {
+              return user;
+            });
+          });
+        }, function(err) {
+          return Storage.destroy(MIC.TOKEN_STORAGE_KEY).then(function() {
+            throw err;
+          });
+        });
+
+        return wrapCallbacks(promise, options);
+      },
+
+      /**
+       * Send a request to get a temp login url.
+       *
+       * @param  {string} clientId     Client Id.
+       * @param  {string} redirectUri  Redirect Uri.
+       * @param  {Object} options      Options.
+       * @return {Promise}             Temp Login Uri.
+       */
+      requestUrl: function(clientId, redirectUri, options) {
+        // Create a request
+        var request = {
+          method: 'POST',
+          url: Kinvey.MICHostName + MIC.AUTH_PATH,
+          data: {
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            response_type: 'code'
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            'X-Kinvey-API-Version': Kinvey.API_VERSION,
+            'X-Kinvey-Device-Information': deviceInformation()
+          }
+        };
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          request.headers['X-Kinvey-Trace-Request'] = 'true';
+          request.headers['X-Kinvey-Force-Debug-Log-Credentials'] = 'true';
+        }
+
+        // Send request
+        return Kinvey.Persistence.Net.request(
+          request.method,
+          request.url,
+          MIC.encodeFormData(request.data),
+          request.headers,
+          options
+        ).then(function(response) {
+          try {
+            response = JSON.parse(response);
+          }
+          catch(e) {}
+
+          return response.temp_login_uri;
+        });
+      },
+
+      /**
+       * Request a code by opening a popup up to a url.
+       *
+       * @param  {string} clientId    Client Id.
+       * @param  {string} redirectUri Redirect Uri.
+       * @param  {Object} options     Options.
+       * @return {Promise}            Code.
+       */
+      requestCodeWithPopup: function(clientId, redirectUri, options) {
+        var error;
+        var deferred = Kinvey.Defer.deferred();
+        var url = Kinvey.MICHostName + MIC.AUTH_PATH + '?client_id=' + encodeURIComponent(clientId) +
+          '&redirect_uri=' + encodeURIComponent(redirectUri) + '&response_type=code';
+        var deferredResolved = false;
+        var popup;
+        var tiWebView;
+        var tiCloseButton;
+        options = options || {};
+        options.url = options.url || url;
+
+        // Load handler: Used when running Cordova or Titanium
+        var loadHandler = function(event) {
+          // Check if url is location of redirect uri
+          var redirected = false;
+          try {
+            redirected = 0 === event.url.indexOf(redirectUri);
+          }
+          catch(e) {}
+
+          // Continue if the popup was redirected.
+          if(redirected) {
+            // Extract the code
+            var queryString = '?' + event.url.split('?')[1];
+            var params = parseQueryString(queryString);
+            deferred.resolve(params.code);
+            deferredResolved = true;
+
+            // Animation popup open prevents closing sometimes so
+            // wait just a moment to close
+            setTimeout(function() {
+              // Close the popup
+              popup.close();
+            }, 200);
+          }
+        };
+
+        // Close handler: Used when running Cordova or Titanium
+        var closeHandler = function() {
+          if(!deferredResolved) {
+            // Return the response.
+            error = clientError(Kinvey.Error.MIC_ERROR, {
+              debug: 'The popup was closed without authorizing the user.'
+            });
+            deferred.reject(error);
+          }
+
+          // Remove event listeners
+          if(MIC.isPhoneGap()) {
+            popup.removeEventListener('loadstart', loadHandler);
+            popup.removeEventListener('exit', closeHandler);
+          }
+          else if(MIC.isTitanium()) {
+            tiWebView.removeEventListener('load', loadHandler);
+            tiWebView.removeEventListener('error', loadHandler);
+            popup.removeEventListener('close', closeHandler);
+
+            if(OS_IOS) {
+              tiCloseButton.removeEventListener('click', clickHandler);
+            }
+            else if(OS_ANDROID) {
+              popup.close();
+              popup.removeEventListener('androidback', closeHandler);
+            }
+          }
+        };
+
+        // Click handler: Used when running Titanium
+        var clickHandler = function() {
+          popup.close();
+        };
+
+        if(MIC.isPhoneGap()) {
+          // Open the popup
+          popup = root.open(options.url, '_blank', 'location=yes');
+
+          if(null == popup) {
+            // Return the response.
+            error = clientError(Kinvey.Error.MIC_ERROR, {
+              debug: 'The popup was blocked.'
+            });
+            deferred.reject(error);
+          }
+          else {
+            popup.addEventListener('loadstart', loadHandler);
+            popup.addEventListener('exit', closeHandler);
+          }
+        }
+        else if(MIC.isTitanium()) {
+          // Create a web view
+          tiWebView = Titanium.UI.createWebView({
+            width: '100%',
+            height: '100%',
+            url: options.url
+          });
+
+          // Create a popup window
+          popup = Titanium.UI.createWindow({
+            backgroundColor: 'white',
+            barColor: '#000',
+            title: 'Kinvey - MIC',
+            modal: true
+          });
+
+          // Add the web view to the popup window
+          popup.add(tiWebView);
+
+          if(OS_IOS) {
+            // Create a window
+            var win = Titanium.UI.createWindow({
+              backgroundColor: 'white',
+              barColor: '#e3e3e3',
+              title: 'Kinvey - MIC'
+            });
+
+            // Add the web view to the window
+            win.add(tiWebView);
+
+            // Create close button
+            tiCloseButton = Titanium.UI.createButton({
+              title: 'Close',
+              style: Titanium.UI.iPhone.SystemButtonStyle.DONE
+            });
+            win.setLeftNavButton(tiCloseButton);
+
+            // Listen for click event on close button
+            tiCloseButton.addEventListener('click', clickHandler);
+
+            // Create a navigation window
+            popup = Titanium.UI.iOS.createNavigationWindow({
+              backgroundColor: 'white',
+              window: win,
+              modal: true
+            });
+          }
+          else if(OS_ANDROID) {
+            popup.addEventListener('androidback', closeHandler);
+          }
+
+          // Open the web view UI
+          popup.open();
+
+          // Add event listener
+          tiWebView.addEventListener('load', loadHandler);
+          tiWebView.addEventListener('error', loadHandler);
+          popup.addEventListener('close', closeHandler);
+        }
+        else {
+          // Open the popup
+          popup = root.open(options.url, '_blank', 'toolbar=no,location=no');
+
+          // Popup management.
+          var elapsed = 0; // Time elapsed since opening the popup.
+          var interval = 100; // ms.
+          var timer = root.setInterval(function() {
+            // The popup was blocked.
+            if(null == popup) {
+              root.clearTimeout(timer); // Stop listening.
+
+              // Return the response.
+              error = clientError(Kinvey.Error.MIC_ERROR, {
+                debug: 'The popup was blocked.'
+              });
+              deferred.reject(error);
+            }
+
+            // The popup closed unexpectedly.
+            else if(popup.closed) {
+              root.clearTimeout(timer); // Stop listening.
+
+              // Return the response.
+              error = clientError(Kinvey.Error.MIC_ERROR, {
+                debug: 'The popup was closed without authorizing the user.'
+              });
+              deferred.reject(error);
+            }
+            // The user waited too long to reply to the authorization request.
+            else if(options.timeout && elapsed > options.timeout) {
+              root.clearTimeout(timer); // Stop listening.
+              popup.close();
+
+              // Return the response.
+              error = clientError(Kinvey.Error.MIC_ERROR, {
+                debug: 'The authorization request timed out.'
+              });
+              deferred.reject(error);
+            }
+
+            // The popup is still active, check its location.
+            else {
+              // Firefox will throw an exception when `popup.location.host` has
+              // a different origin.
+              var redirected = false;
+              try {
+                redirected = 0 === popup.location.href.indexOf(redirectUri);
+              }
+              catch(e) {}
+
+              // Continue if the popup was redirected.
+              if(redirected) {
+                root.clearTimeout(timer);
+
+                // Extract the code
+                var params = parseQueryString(popup.location.search);
+                deferred.resolve(params.code);
+                deferredResolved = true;
+
+                // Close the popup
+                popup.close();
+              }
+            }
+
+            // Update elapsed time.
+            elapsed += interval;
+          }, interval);
+        }
+
+        // Return the promise.
+        return deferred.promise;
+      },
+
+      /**
+       * Request a code by sending a POST request to the url.
+       *
+       * @param  {String} url         Url.
+       * @param  {string} clientId    Client Id.
+       * @param  {string} redirectUri Redirect Uri.
+       * @param  {Object} options     Options.
+       * @return {Promise}            Code.
+       */
+      requestCodeWithUrl: function(url, clientId, redirectUri, options) {
+        // Create a request
+        var request = {
+          method: 'POST',
+          url: url,
+          data: {
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            response_type: 'code',
+            username: options.username,
+            password: options.password
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+          }
+        };
+
+        // Send request
+        return Kinvey.Persistence.Net.request(
+          request.method,
+          request.url,
+          MIC.encodeFormData(request.data),
+          request.headers,
+          options
+        ).then(function(response) {
+          try {
+            response = JSON.parse(response);
+          }
+          catch(e) {}
+
+          return response.code;
+        }, function(error) {
+          error = clientError(Kinvey.Error.MIC_ERROR, {
+            debug: 'Unable to authorize user with username ' + options.username + ' and ' +
+              'password ' + options.password + '.'
+          });
+          throw error;
+        });
+      },
+
+      /**
+       * Request a token from MIC using the provided code.
+       *
+       * @param  {string} clientId    Client Id.
+       * @param  {string} redirectUri Redirect Uri.
+       * @param  {string} code        MIC Code.
+       * @param  {Object} options     Options.
+       * @return {Promise}            Token.
+       */
+      requestToken: function(clientId, redirectUri, code, options) {
+        // Create a request
+        var request = {
+          auth: Auth.App,
+          method: 'POST',
+          url: Kinvey.MICHostName + MIC.TOKEN_PATH,
+          data: {
+            grant_type: 'authorization_code',
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            code: code
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            'X-Kinvey-API-Version': Kinvey.API_VERSION,
+            'X-Kinvey-Device-Information': deviceInformation()
+          }
+        };
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          request.headers['X-Kinvey-Trace-Request'] = 'true';
+          request.headers['X-Kinvey-Force-Debug-Log-Credentials'] = 'true';
+        }
+
+        return request.auth().then(function(auth) {
+          if(null !== auth) {
+            // Format credentials.
+            var credentials = auth.credentials;
+            if(null != auth.username) {
+              credentials = Kinvey.Persistence.Net.base64(auth.username + ':' + auth.password);
+            }
+
+            // Append header.
+            request.headers.Authorization = auth.scheme + ' ' + credentials;
+          }
+
+          // Send request
+          return Kinvey.Persistence.Net.request(
+            request.method,
+            request.url,
+            MIC.encodeFormData(request.data),
+            request.headers,
+            options
+          );
+        }).then(function(token) {
+          try {
+            token = JSON.parse(token);
+          }
+          catch(e) {}
+
+          return token;
+        });
+      },
+
+      /**
+       * Refresh a token with the provided refresh token.
+       *
+       * @param  {string} clientId     Client Id.
+       * @param  {string} redirectUri  Redirect Uri.
+       * @param  {string} refreshToken Refresh Token.
+       * @param  {Object} options      Options.
+       * @return {Promise}             User.
+       */
+      refreshToken: function(clientId, redirectUri, refreshToken, options) {
+        // Create a request
+        var request = {
+          auth: Auth.App,
+          method: 'POST',
+          url: Kinvey.MICHostName + MIC.TOKEN_PATH,
+          data: {
+            grant_type: 'refresh_token',
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            refresh_token: refreshToken
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            'X-Kinvey-API-Version': Kinvey.API_VERSION,
+            'X-Kinvey-Device-Information': deviceInformation()
+          }
+        };
+
+        // Debug.
+        if(KINVEY_DEBUG) {
+          request.headers['X-Kinvey-Trace-Request'] = 'true';
+          request.headers['X-Kinvey-Force-Debug-Log-Credentials'] = 'true';
+        }
+
+        return request.auth().then(function(auth) {
+          if(null !== auth) {
+            // Format credentials.
+            var credentials = auth.credentials;
+            if(null != auth.username) {
+              credentials = Kinvey.Persistence.Net.base64(auth.username + ':' + auth.password);
+            }
+
+            // Append header.
+            request.headers.Authorization = auth.scheme + ' ' + credentials;
+          }
+
+          // Send request
+          return Kinvey.Persistence.Net.request(
+            request.method,
+            request.url,
+            MIC.encodeFormData(request.data),
+            request.headers,
+            options
+          );
+        }).then(function(token) {
+          try {
+            token = JSON.parse(token);
+          }
+          catch(e) {}
+
+          return token;
+        });
+      },
+
+      /**
+       * Links a MIC token to the provided (if any) Kinvey user.
+       *
+       * @param {Object} [user] The associated user.
+       * @param {Options} [options] Options.
+       * @param {boolean} [options.create=true] Create a new user if no user with
+       *          the provided social identity exists.
+       * @returns {Promise} The user.
+       */
+      connect: function(user, accessToken, options) {
+        // Default user.
+        user = user || {};
+
+        // Set active user to null
+        Kinvey.setActiveUser(null);
+
+        // Attempt logging in with the tokens.
+        user._socialIdentity = {};
+        user._socialIdentity[MIC.AUTH_PROVIDER] = {
+          access_token: accessToken
+        };
+        return Kinvey.User.login(user, null, options).then(null, function(error) {
+          // If `options.create`, attempt to signup as a new user if no user with
+          // the identity exists.
+          if(options.create && Kinvey.Error.USER_NOT_FOUND === error.name) {
+            return Kinvey.User.signup(user, options).then(function(user) {
+              return MIC.connect(user, accessToken, options);
+            });
+          }
+
+          return Kinvey.Defer.reject(error);
+        });
+      },
+
+      /**
+       * Removes a MIC token from the provided Kinvey user.
+       *
+       * @param {Object} [user] The user.
+       * @param {Options} [options] Options.
+       * @returns {Promise} The user.
+       */
+      disconnect: function() {
+        // Destroy the token
+        return Storage.destroy(MIC.TOKEN_STORAGE_KEY);
+      },
+
+      /**
+       * Encodes the data as form data.
+       *
+       * @param  {object} data Data to encode.
+       * @return {string} Encoded data string.
+       */
+      encodeFormData: function(data) {
+        var str = [];
+        for(var p in data) {
+          if(data.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + '=' + encodeURIComponent(data[p]));
+          }
+        }
+        return str.join('&');
+      },
+
+      /**
+       * Return true or false if using HTML5.
+       *
+       * @return {Boolean} HTML5
+       */
+      isHTML5: function() {
+        return !(this.isTitanium() || this.isNode());
+      },
+
+      /**
+       * Return true or false if using Angular framework.
+       *
+       * @return {Boolean} Angular Framework
+       */
+      isAngular: function() {
+        return('undefined' !== typeof root.angular);
+      },
+
+      /**
+       * Return true or false if using Backbone framework.
+       *
+       * @return {Boolean} Backbone Framework
+       */
+      isBackbone: function() {
+        return('undefined' !== typeof root.Backbone);
+      },
+
+      /**
+       * Return true or false if using Cordova/PhoneGap framework.
+       *
+       * @return {Boolean} Cordova/PhoneGap Framework
+       */
+      isPhoneGap: function() {
+        return('undefined' !== typeof root.cordova && 'undefined' !== typeof root.device);
+      },
+
+      /**
+       * Return true or false if using Titanium framework.
+       *
+       * @return {Boolean} Titanium Framework
+       */
+      isTitanium: function() {
+        return('undefined' !== typeof Titanium);
+      },
+
+      /**
+       * Return true or false if using NodeJS.
+       *
+       * @return {Boolean} NodeJS
+       */
+      isNode: function() {
+        return('undefined' !== typeof module && module.exports);
+      }
+    };
+
+    /**
+     * @memberof! <global>
+     * @namespace Kinvey.User.MIC
+     */
+    Kinvey.User = Kinvey.User || {};
+    Kinvey.User.MIC = /** @lends Kinvey.User.MIC */ {
+
+      /**
+       * Authorize a user with Mobile Identity Connect (MIC) using a login page.
+       *
+       * @param  {String}   redirectUri               Where to redirect to after a succesful login. This should be the same value as setup
+       *                                              in the Kinvey Console for your applicaiton.
+       * @param  {Object}   [options]                 Options.
+       * @param  {Boolean}  [options.create=true]     Create a new user if no user exists.
+       * @param  {Number}   [options.timeout=300000]  How long to wait for a successful authorization. Defaults to 5 minutes.
+       * @return {Promise}                            Authorized user.
+       */
+      loginWithAuthorizationCodeLoginPage: function(redirectUri, options) {
+        return MIC.login(MIC.AuthorizationGrant.AuthorizationCodeLoginPage, redirectUri, options);
+      },
+
+      /**
+       * Authorize a user with Mobile Identity Connect (MIC) using a provided username and password.
+       *
+       * @param  {String}   username                Username for the user to be authorized.
+       * @param  {String}   password                Password for the user to be authorized.
+       * @param  {String}   redirectUri             Where to redirect to after a succesful login. This should be the same value as setup
+       *                                            in the Kinvey Console for your applicaiton.
+       * @param  {Object}   [options]               Options.
+       * @param  {Boolean}  [options.create=true]   Create a new user if no user exists.
+       * @return {Promise}                          Authorized user.
+       */
+      loginWithAuthorizationCodeAPI: function(username, password, redirectUri, options) {
+        options = options || {};
+        options.username = username;
+        options.password = password;
+        return MIC.login(MIC.AuthorizationGrant.AuthorizationCodeAPI, redirectUri, options);
+      },
+
+      /**
+       * Logout the active user.
+       *
+       * @param {Options} [options] Options.
+       * @param {boolean} [options.force=false] Reset the active user even if an
+       *          `InvalidCredentials` error is returned.
+       * @param {boolean} [options.silent=false] Succeed when there is no active
+       *          user.
+       * @returns {Promise} The previous active user.
+       */
+      logout: function(options) {
+        return Kinvey.User.logout(options);
+      }
+    };
+
+
 
     // Querying.
     // ---------
@@ -5072,6 +6349,17 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     // Relational Data.
     // ----------------
 
+    // Returns a shallow clone of the specified object.
+    var clone = function(object) {
+      var result = {};
+      for(var key in object) {
+        if(object.hasOwnProperty(key)) {
+          result[key] = object[key];
+        }
+      }
+      return result;
+    };
+
     /**
      * @private
      * @namespace KinveyReference
@@ -5094,7 +6382,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // If a list of documents was passed in, retrieve all relations in parallel.
         if(isArray(document)) {
           var promises = document.map(function(member) {
-            return KinveyReference.get(member, options);
+            return KinveyReference.get(member, clone(options));
           });
           return Kinvey.Defer.all(promises);
         }
@@ -5113,59 +6401,112 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         delete options.relations;
         delete options.success;
 
-        // Re-order the relations in order of deepness, so the partial responses
-        // propagate properly. Moreover, relations with the same depth can safely
-        // be retrieved in parallel.
-        var properties = [];
+
+
+        // We need to build a relationship mapping object
+        // This is important because we might have to resolve
+        // relationships as objects inside an array of existing
+        // relationships.
+        //
+        // ala: 'month', 'month.days'
+        // with an array of every month as the relationship key
+        var relationMapping = {};
         Object.keys(relations).forEach(function(relation) {
-          var index = relation.split('.').length;
-          properties[index] = (properties[index] || []).concat(relation);
-        });
+          var mapping = relationMapping;
+          var relationSplit = relation.split('.');
+          var relationLength = relationSplit.length;
+          relationSplit.forEach(function(relationStep, index) {
+            if(!mapping.keys) {
+              mapping.keys = {};
+            }
+            if(!mapping.keys[relationStep]) {
+              mapping.keys[relationStep] = {};
+            }
 
-        // Prepare the response.
-        var promise = Kinvey.Defer.resolve(null);
+            mapping = mapping.keys[relationStep];
 
-        // Retrieve all (relational) documents. Starts with the top-level relations.
-        properties.forEach(function(relationalLevel) {
-          promise = promise.then(function() {
-            var promises = relationalLevel.map(function(property) {
-              var reference = nested(document, property); // The reference.
-
-              // Retrieve the relation(s) in parallel.
-              var isArrayRelation = isArray(reference);
-              var promises = (isArrayRelation ? reference : [reference]).map(function(member) {
-                // Do not retrieve if the property is not a reference, or it is
-                // explicitly excluded.
-                if(null == member || 'KinveyRef' !== member._type ||
-                  -1 !== options.exclude.indexOf(property)) {
-                  return Kinvey.Defer.resolve(member);
-                }
-
-                // Forward to the `Kinvey.User` or `Kinvey.DataStore` namespace.
-                var promise;
-                if(USERS === member._collection) {
-                  promise = Kinvey.User.get(member._id, options);
-                }
-                else {
-                  promise = Kinvey.DataStore.get(member._collection, member._id, options);
-                }
-
-                // Return the response.
-                return promise.then(null, function() {
-                  // If the retrieval failed, retain the reference.
-                  return Kinvey.Defer.resolve(member);
-                });
-              });
-
-              // Return the response.
-              return Kinvey.Defer.all(promises).then(function(responses) {
-                // Replace the references in the document with the relations.
-                nested(document, property, isArrayRelation ? responses : responses[0]);
-              });
-            });
-            return Kinvey.Defer.all(promises);
+            if(index === relationLength - 1) {
+              mapping.resolve = true;
+            }
           });
         });
+
+
+        //Recursively process relationships
+        var resolveRelationships = function(entity, relationMapping) {
+          var error;
+
+          if(relationMapping.keys) {
+            var relationshipPromises = [];
+
+            Object.keys(relationMapping.keys).forEach(function(key) {
+              var relationLevel = relationMapping.keys[key];
+              if(relationLevel.resolve) {
+                // Retrieve the relation(s) in parallel.
+                var isKeyArray = isArray(entity[key]);
+                var promises = (isKeyArray ? entity[key] : [entity[key]]).map(function(member) {
+                  // Do not retrieve if the property is not a reference, or it is
+                  // explicitly excluded.
+                  if(null == member || 'KinveyRef' !== member._type) {
+                    return Kinvey.Defer.resolve(member);
+                  }
+
+                  // Check member for property _id
+                  if(member._id == null) {
+                    error = new Kinvey.Error('Member does not have _id property defined. ' +
+                      'It is required to resolve the relationship.');
+                    return Kinvey.Defer.reject(error);
+                  }
+
+                  // Forward to the `Kinvey.User` or `Kinvey.DataStore` namespace.
+                  var promise;
+                  if(USERS === member._collection) {
+                    promise = Kinvey.User.get(member._id, options);
+                  }
+                  else {
+                    promise = Kinvey.DataStore.get(member._collection, member._id, options);
+                  }
+
+                  // Return the response.
+                  return promise.then(function(resolvedMember) {
+                    return resolveRelationships(resolvedMember, relationLevel).then(function() {
+                      return resolvedMember;
+                    }, function() {
+                      return resolvedMember;
+                    });
+                  }, function() {
+                    // If the retrieval failed, retain the reference.
+                    return Kinvey.Defer.resolve(member);
+                  });
+                });
+
+
+                relationshipPromises.push(
+                  Kinvey.Defer.all(promises)
+                  .then(function(relationshipEntities) {
+                    //Once finished we need to update the original entity with our results
+                    if(isKeyArray) {
+                      entity[key] = relationshipEntities;
+                    }
+                    else {
+                      entity[key] = relationshipEntities[0];
+                    }
+                  })
+                );
+              }
+              else {
+                relationshipPromises.push(resolveRelationships(entity[key], relationLevel));
+              }
+            });
+
+            return Kinvey.Defer.all(relationshipPromises);
+          }
+          else {
+            return Kinvey.Defer.resolve();
+          }
+        };
+
+        var promise = resolveRelationships(document, relationMapping);
 
         // All documents are retrieved.
         return promise.then(function() {
@@ -5191,6 +6532,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           options.success = success;
           return Kinvey.Defer.reject(reason);
         });
+
       },
 
       /**
@@ -5212,7 +6554,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // If a list of documents was passed in, retrieve all relations in parallel.
         if(isArray(document)) {
           var promises = document.map(function(member) {
-            return KinveyReference.save(collection, member, options);
+            return KinveyReference.save(collection, member, clone(options));
           });
           return Kinvey.Defer.all(promises);
         }
@@ -5355,6 +6697,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       }
     };
 
+
     // Persistence.
     // ------------
 
@@ -5427,6 +6770,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Array|Object} data List of objects.
        * @param {integer} [maxAge] Maximum age (optional).
        * @returns {boolean|Object} Status, or object if refresh is needed.
+       * @throws {Kinvey.Error} The item does not have _kmd defined as a property.
+       *                        It is required to get the maxAge status.
        */
       status: function(data, maxAge) {
         var needsRefresh = false;
@@ -5436,6 +6781,14 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var now = new Date().getTime();
         for(var i = 0; i < length; i += 1) {
           var item = response[i];
+
+          // Check if item has property _kmd
+          if(item._kmd == null) {
+            var error = new Kinvey.Error('The item does not have _kmd defined as a property.' +
+              'It is required to get the maxAge status.');
+            throw error;
+          }
+
           if(null != item && null != item._kmd && null != item._kmd.lastRefreshedAt) {
             var itemMaxAge = (maxAge || item._kmd.maxAge) * 1000; // Milliseconds.
             var lastRefreshedAt = fromISO(item._kmd.lastRefreshedAt).getTime();
@@ -5744,6 +7097,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
      * @property {boolean}      [local.res]  The response is persistable locally.
      */
 
+
     // Database.
     // ---------
 
@@ -5927,7 +7281,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Cast arguments.
         options = options || {};
 
-        // Normalize “collections” of the user namespace.
+        // Normalize â€œcollectionsâ€ of the user namespace.
         var collection = USERS === request.namespace ? USERS : request.collection;
 
         // The create request can be an aggregation, or (batch) save of documents.
@@ -5968,6 +7322,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The response.
        */
       read: function(request, options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Initiating a read request.', arguments);
@@ -5976,7 +7332,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Cast arguments.
         options = options || {};
 
-        // Normalize “collections” of the user namespace.
+        // Normalize â€œcollectionsâ€ of the user namespace.
         var collection = USERS === request.namespace ? USERS : request.collection;
 
         // The read request can be a count, me, query, or simple get. Neither
@@ -5989,6 +7345,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // If there is an active user, attempt to retrieve its details.
           var user = Kinvey.getActiveUser();
           if(null !== user) {
+            // Check user for property _id
+            if(user._id == null) {
+              error = new Kinvey.Error('Active user does not have the _id property defined. ' +
+                'Unable to retrieve information about the user.');
+              return Kinvey.Defer.reject(error);
+            }
+
             return Database.get(collection, user._id, options).then(null, function(error) {
               // If `ENTITY_NOT_FOUND`, return all we know about the active user.
               if(error.name === Kinvey.Error.ENTITY_NOT_FOUND) {
@@ -5997,7 +7360,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
               return Kinvey.Defer.reject(error);
             });
           }
-          var error = clientError(Kinvey.Error.NO_ACTIVE_USER);
+
+          error = clientError(Kinvey.Error.NO_ACTIVE_USER);
           return Kinvey.Defer.reject(error);
         }
 
@@ -6058,7 +7422,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Cast arguments.
         options = options || {};
 
-        // Normalize “collections” of the user namespace.
+        // Normalize â€œcollectionsâ€ of the user namespace.
         var collection = USERS === request.namespace ? USERS : request.collection;
 
         // Add maxAge metadata.
@@ -6100,7 +7464,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Cast arguments.
         options = options || {};
 
-        // Normalize “collections” of the user namespace.
+        // Normalize â€œcollectionsâ€ of the user namespace.
         var collection = USERS === request.namespace ? USERS : request.collection;
 
         // The delete request can be a clean or destroy of documents. Both change
@@ -6129,6 +7493,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         });
       }
     };
+
 
     // Network persistence.
     // --------------------
@@ -6262,46 +7627,48 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {Request} request The request.
        * @param {string} request.method The request method.
        * @param {Options} options Options.
-       * @throws {Kinvey.Error} * `request` must contain: `method`.
-       *                         * `request` must contain: `namespace`.
-       *                         * `request` must contain: `auth`.
        * @returns {Promise}
        */
       _request: function(request, options) {
+        var error;
+
         // Validate arguments.
         if(null == request.method) {
-          throw new Kinvey.Error('request argument must contain: method.');
+          error = new Kinvey.Error('request argument must contain: method.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
         if(null == request.namespace) {
-          throw new Kinvey.Error('request argument must contain: namespace.');
+          error = new Kinvey.Error('request argument must contain: namespace.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
         if(null == request.auth) {
-          throw new Kinvey.Error('request argument must contain: auth.');
+          error = new Kinvey.Error('request argument must contain: auth.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Validate preconditions.
-        var error;
         if(null == Kinvey.appKey && Auth.None !== request.auth) {
           error = clientError(Kinvey.Error.MISSING_APP_CREDENTIALS);
-          return Kinvey.Defer.reject(error);
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
         if(null == Kinvey.masterSecret && options.skipBL) {
           error = clientError(Kinvey.Error.MISSING_MASTER_CREDENTIALS);
-          return Kinvey.Defer.reject(error);
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
         }
 
         // Cast arguments.
         options.trace = options.trace || (KINVEY_DEBUG && false !== options.trace);
+        options.attemptMICRefresh = false === options.attemptMICRefresh ? false : true;
 
         // Build, escape, and join URL segments.
-        // Format: <API_ENDPOINT>/<namespace>[/<Kinvey.appKey>][/<collection>][/<id>]
+        // Format: <APIHostName>/<namespace>[/<Kinvey.appKey>][/<collection>][/<id>]
         var segments = [request.namespace, Kinvey.appKey, request.collection, request.id];
         segments = segments.filter(function(value) {
           // Exclude empty optional segment. Note the required namespace cannot be
           // empty at this point (enforced above).
           return null != value;
         }).map(Kinvey.Persistence.Net.encode);
-        var url = [Kinvey.API_ENDPOINT].concat(segments).join('/') + '/';
+        var url = [Kinvey.APIHostName].concat(segments).join('/') + '/';
 
         // Build query string.
         var flags = request.flags || {};
@@ -6357,6 +7724,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         };
 
         // Append optional headers.
+        options.clientAppVersion = options.clientAppVersion || Kinvey.ClientAppVersion.stringValue();
+        if(options.clientAppVersion != null) {
+          headers['X-Kinvey-Client-App-Version'] = (options.clientAppVersion + '');
+        }
         if(null != request.data) {
           headers['Content-Type'] = 'application/json; charset=utf-8';
         }
@@ -6370,6 +7741,41 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           headers['X-Kinvey-Include-Headers-In-Response'] = 'X-Kinvey-Request-Id';
           headers['X-Kinvey-ResponseWrapper'] = 'true';
         }
+
+        // Set the custom request properties for the request defaulting to an
+        // empty object.
+        options.customRequestProperties = options.customRequestProperties || {};
+
+        // Get globally set custom request properties.
+        var customRequestProperties = Kinvey.CustomRequestProperties.properties();
+
+        // If any custom request properties exist globally, merge them into the
+        // custom request properties for this request. Only global custom request
+        // properties that don't already exist for this request will be added.
+        // Global request properties do NOT overwrite existing custom request
+        // properties for the request.
+        if(customRequestProperties != null) {
+          Object.keys(customRequestProperties).forEach(function(name) {
+            if(!options.customRequestProperties.hasOwnProperty(name)) {
+              options.customRequestProperties[name] = customRequestProperties[name];
+            }
+          });
+        }
+
+        // Set X-Kinvey-Custom-Request-Properties to the JSON string of the custom
+        // request properties for the request. Checks to make sure the JSON string of
+        // the custom request properties is less then the max bytes allowed for custom
+        // request properties otherwise throws an error.
+        var customRequestPropertiesHeader = JSON.stringify(options.customRequestProperties);
+        var customRequestPropertiesByteCount = getByteCount(customRequestPropertiesHeader);
+        if(customRequestPropertiesByteCount >= CRP_MAX_BYTES) {
+          error = new Kinvey.Error('Custom request properties is ' + customRequestPropertiesByteCount +
+            '. It must be less then ' + CRP_MAX_BYTES + ' bytes.');
+          return wrapCallbacks(Kinvey.Defer.reject(error), options);
+        }
+
+        // Set the custom request properties header.
+        headers['X-Kinvey-Custom-Request-Properties'] = customRequestPropertiesHeader;
 
         // Debug.
         if(KINVEY_DEBUG) {
@@ -6393,6 +7799,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
         // Invoke the network layer.
         return promise.then(function() {
+          // Store the original request
+          options._originalRequest = request;
+
+          // Send the request
           var response = Kinvey.Persistence.Net.request(
             request.method,
             url,
@@ -6409,6 +7819,29 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             // Debug.
             if(KINVEY_DEBUG && options.trace && isObject(response)) {
               log('Obtained the request ID.', response.headers['X-Kinvey-Request-Id']);
+            }
+
+            // Check response to GET request that we receive a
+            // single entity if one is expected or an array of entities
+            // if they are expected. Thrown error will reject the promise.
+            if(request.method === 'GET' &&
+              request.collection != null &&
+              request.namespace === 'appdata') {
+              var expectSingleEntity = request.id != null ? true : false;
+              var error;
+
+              if(isArray(response) && expectSingleEntity) {
+                error = new Kinvey.Error('Expected a single entity as a response to ' +
+                  request.method + ' ' + url + '. Received an array ' +
+                  'of entities instead.');
+                throw error;
+              }
+              else if(!isArray(response) && !expectSingleEntity) {
+                error = new Kinvey.Error('Expected an array of entities as a response to ' +
+                  request.method + ' ' + url + '. Received a single ' +
+                  'entity instead.');
+                throw error;
+              }
             }
 
             return options.trace && isObject(response) ? response.result : response;
@@ -6474,12 +7907,25 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
               }
             }
             else if(Kinvey.Error.INVALID_CREDENTIALS === error.name) {
+              var activeUser = Kinvey.getActiveUser();
+
               // Add a descriptive message to `InvalidCredentials` error so the user
-              // knows what’s going on.
-              error.debug += ' It is possible the tokens used to execute the ' +
-                'request are expired. In that case, please run ' +
-                '`Kinvey.User.logout({ force: true })`, and then log back in ' +
-                ' using`Kinvey.User.login(username, password)` to solve this issue.';
+              // knows whatâ€™s going on.
+              if(activeUser != null && activeUser._socialIdentity != null && activeUser._socialIdentity[MIC.AUTH_PROVIDER] != null) {
+                error.debug += ' It is possible the tokens used to execute the ' +
+                  'request are expired. In that case, please execute ' +
+                  '`Kinvey.User.logout({ force: true })`, and then log back in ' +
+                  'using `Kinvey.User.MIC.loginWithAuthorizationCodeLoginPage(redirectUri)` or ' +
+                  '`Kinvey.User.MIC.loginWithAuthorizationCodeAPI(username, password, redirectUri)` ' +
+                  'to solve this issue.';
+              }
+              else {
+                error.debug += ' It is possible the tokens used to execute the ' +
+                  'request are expired. In that case, please execute ' +
+                  '`Kinvey.User.logout({ force: true })`, and then log back in ' +
+                  'using `Kinvey.User.login(username, password)` ' +
+                  'to solve this issue.';
+              }
             }
             return Kinvey.Defer.reject(error);
           });
@@ -6530,6 +7976,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       use: use(['base64', 'encode', 'request'])
     };
+
 
     // Synchronization.
     // ----------------
@@ -6629,6 +8076,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The promise.
        */
       notify: function(collection, documents, options) {
+        var error;
+
         // Update the metadata for the provided collection in a single transaction.
         return Database.findAndModify(Sync.system, collection, function(metadata) {
           // Cast arguments.
@@ -6641,11 +8090,45 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // Add each document to the metadata ( id => timestamp ).
           documents.forEach(function(document) {
+            // Check document for property _id. Thrown error will reject promise.
+            if(document._id == null) {
+              error = new Kinvey.Error('Document does not have _id property defined. ' +
+                'It is required to do proper synchronization.');
+              throw error;
+            }
+
             if(!metadata.documents.hasOwnProperty(document._id)) {
               metadata.size += 1;
             }
+
+            // Get metadata for the doucment.
             var timestamp = null != document._kmd ? document._kmd.lmt : null;
-            metadata.documents[document._id] = timestamp || null;
+            var clientAppVersion = options.clientAppVersion || Kinvey.ClientAppVersion.stringValue(),
+              customRequestProperties = options.customRequestProperties || {};
+
+            // Get globally set custom request properties.
+            var globalCustomRequestProperties = Kinvey.CustomRequestProperties.properties();
+
+            // If any custom request properties exist globally, merge them into the
+            // custom request properties for this document. Only global custom request
+            // properties that don't already exist for this document will be added.
+            // Global request properties do NOT overwrite existing custom request
+            // properties for the document.
+            if(globalCustomRequestProperties != null) {
+              Object.keys(globalCustomRequestProperties).forEach(function(name) {
+                // If the property is not already set then set it
+                if(!customRequestProperties.hasOwnProperty(name)) {
+                  customRequestProperties[name] = globalCustomRequestProperties[name];
+                }
+              });
+            }
+
+            // Store the metadata.
+            metadata.documents[document._id] = {
+              timestamp: timestamp,
+              clientAppVersion: clientAppVersion,
+              customRequestProperties: customRequestProperties
+            };
           });
 
           // Return the new metadata.
@@ -6672,41 +8155,18 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           success: [],
           error: []
         };
-
-        // Obtain the actual documents from local and net.
         var identifiers = Object.keys(documents);
-        var request = {
-          namespace: USERS === collection ? USERS : DATA_STORE,
-          collection: USERS === collection ? null : collection,
-          query: new Kinvey.Query().contains('_id', identifiers),
-          auth: Auth.Default
-        };
 
-        // Step 1: obtain the documents from local and net.
-        var promises = [
-          Kinvey.Persistence.Local.read(request, options),
-          Kinvey.Persistence.Net.read(request, options)
-        ];
-        return Kinvey.Defer.all(promises).then(function(responses) {
-          // `responses` is a list of documents. Re-format as object
-          // ( id => document ).
-          var response = {
-            local: {},
-            net: {}
-          };
-          responses[0].forEach(function(document) {
-            response.local[document._id] = document;
-          });
-          responses[1].forEach(function(document) {
-            response.net[document._id] = document;
-          });
-          return response;
-        }).then(function(response) {
+        // Read the documents
+        return Sync._read(collection, documents, options).then(function(response) {
           // Step 2: categorize the documents in the collection.
           var promises = identifiers.map(function(id) {
+            var document = documents[id];
             var metadata = {
               id: id,
-              timestamp: documents[id]
+              timestamp: document.timestamp,
+              clientAppVersion: document.clientAppVersion,
+              customRequestProperties: document.customRequestProperties
             };
             return Sync._document(
               collection,
@@ -6756,8 +8216,89 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             return metadata;
           }, options);
         }).then(function() {
+          //console.log(result);
           // Step 5: return the synchronization result.
           return result;
+        });
+      },
+
+      /**
+       * Reads the provided documents using both local and network persistence.
+       *
+       * @private
+       * @param {string} collection The collection.
+       * @param {Array} documents List of documents.
+       * @param {Options} [options] Options.
+       * @returns {Promise} The response.
+       */
+      _read: function(collection, documents, options) {
+        var identifiers = Object.keys(documents);
+        var promises = identifiers.map(function(id) {
+          var metadata = documents[id];
+          var requestOptions = options || {};
+
+          // Set options.clientAppVersion based on the metadata for the document
+          requestOptions.clientAppVersion = metadata.clientAppVersion != null ? metadata.clientAppVersion : null;
+
+          // Set options.customRequestProperties based on the metadata
+          // for the document
+          requestOptions.customRequestProperties = metadata.customRequestProperties != null ?
+            metadata.customRequestProperties : null;
+
+          // Build the request.
+          var request = {
+            namespace: USERS === collection ? USERS : DATA_STORE,
+            collection: USERS === collection ? null : collection,
+            query: new Kinvey.Query().contains('_id', [id]),
+            auth: Auth.Default
+          };
+
+          // Read from local and net in parallel.
+          return Kinvey.Defer.all([
+            Kinvey.Persistence.Local.read(request, requestOptions),
+            Kinvey.Persistence.Net.read(request, requestOptions)
+          ]).then(function(responses) {
+            return {
+              local: responses[0],
+              net: responses[1]
+            };
+          });
+        });
+
+        return Kinvey.Defer.all(promises).then(function(responses) {
+          var response = {
+            local: {},
+            net: {}
+          };
+          var error;
+
+          responses.forEach(function(composite) {
+            var locals = composite.local;
+            var nets = composite.net;
+
+            locals.forEach(function(document) {
+              // Check document for property _id. Thrown error will reject promise.
+              if(document._id == null) {
+                error = new Kinvey.Error('Document does not have _id property defined. ' +
+                  'It is required to do proper synchronization.');
+                throw error;
+              }
+
+              response.local[document._id] = document;
+            });
+            nets.forEach(function(document) {
+              // Check document for property _id. Thrown error will reject promise.
+              if(document._id == null) {
+                error = new Kinvey.Error('Document does not have _id property defined. ' +
+                  'It is required to do proper synchronization.');
+                throw error;
+              }
+
+              response.net[document._id] = document;
+            });
+          });
+
+          return response;
         });
       },
 
@@ -6771,43 +8312,60 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Array} List of document ids.
        */
       _destroy: function(collection, documents, options) {
-        // Cast arguments.
-        documents = documents.map(function(composite) {
-          return composite.id;
+        var promises = documents.map(function(composite) {
+          var id = composite.id;
+          var metadata = composite.metadata;
+          var requestOptions = options || {};
+
+          // Set options.clientAppVersion based on the metadata for the document
+          requestOptions.clientAppVersion = metadata.clientAppVersion != null ? metadata.clientAppVersion : null;
+
+          // Set options.customRequestProperties based on the metadata
+          // for the document
+          requestOptions.customRequestProperties = metadata.customRequestProperties != null ?
+            metadata.customRequestProperties : null;
+
+          // Build the request.
+          var request = {
+            namespace: USERS === collection ? USERS : DATA_STORE,
+            collection: USERS === collection ? null : collection,
+            query: new Kinvey.Query().contains('_id', [id]),
+            auth: Auth.Default
+          };
+
+          // Delete from local and net in parallel. Deletion is an atomic action,
+          // therefore the documents will either all be part of `success` or `error`.
+          var promises = [
+            Kinvey.Persistence.Local.destroy(request, requestOptions),
+            Kinvey.Persistence.Net.destroy(request, requestOptions)
+          ];
+
+          return Kinvey.Defer.all(promises).then(function() {
+            return {
+              success: [id],
+              error: []
+            };
+          }, function() {
+            return {
+              success: [],
+              error: [id]
+            };
+          });
         });
 
-        // If there are no documents to delete, resolve immediately.
-        if(0 === documents.length) {
-          return Kinvey.Defer.resolve({
+        // Return one result for all the delete requests
+        return Kinvey.Defer.all(promises).then(function(responses) {
+          var result = {
             success: [],
             error: []
+          };
+
+          responses.forEach(function(response) {
+            result.success = result.success.concat(response.success);
+            result.error = result.error.concat(response.error);
           });
-        }
 
-        // Build the request.
-        var request = {
-          namespace: USERS === collection ? USERS : DATA_STORE,
-          collection: USERS === collection ? null : collection,
-          query: new Kinvey.Query().contains('_id', documents),
-          auth: Auth.Default
-        };
-
-        // Delete from local and net in parallel. Deletion is an atomic action,
-        // therefore the documents will either all be part of `success` or `error`.
-        var promises = [
-          Kinvey.Persistence.Local.destroy(request, options),
-          Kinvey.Persistence.Net.destroy(request, options)
-        ];
-        return Kinvey.Defer.all(promises).then(function() {
-          return {
-            success: documents,
-            error: []
-          };
-        }, function() {
-          return {
-            success: [],
-            error: documents
-          };
+          return result;
         });
       },
 
@@ -6824,12 +8382,48 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Promise} The response.
        */
       _document: function(collection, metadata, local, net, options) {
+        var error;
+
+        // Check if metadata is provided
+        if(metadata == null) {
+          error = new Kinvey.Error('Missing required metadata for the document in collection ' +
+            collection + '. This is required to properly sync.');
+          return Kinvey.Defer.reject(error);
+        }
+
+        // Check if metadata has id property.
+        if(metadata.id == null) {
+          error = new Kinvey.Error('Metadata does not have id defined. This is ' +
+            'required to properly sync the document in collection ' +
+            collection + '.');
+          return Kinvey.Defer.reject(error);
+        }
+
+        if(net != null) {
+          // Check if net has property _kmd
+          if(net._kmd == null) {
+            error = new Kinvey.Error('The server entity does not have _kmd defined as a property. ' +
+              'This is required to properly sync server entity _id ' +
+              net._id + ' in collection ' + collection + '.');
+            return Kinvey.Defer.reject(error);
+          }
+
+          // Check if net has property _kmd.lmt.
+          if(net._kmd.lmt == null) {
+            error = new Kinvey.Error('The server entity does not have _kmd.lmt defined as a ' +
+              'property. This is required to properly sync servery entity ' +
+              '_id ' + net._id + ' in collection ' + collection + '.');
+            return Kinvey.Defer.reject(error);
+          }
+        }
+
         // Resolve if the remote copy does not exist or if both timestamps match.
         // Reject otherwise.
         if(null === net || (null != net._kmd && metadata.timestamp === net._kmd.lmt)) {
           return Kinvey.Defer.resolve({
             id: metadata.id,
-            document: local
+            document: local,
+            metadata: metadata
           });
         }
 
@@ -6841,18 +8435,21 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           return options.conflict(collection, local, net).then(function(document) {
             return {
               id: metadata.id,
-              document: document
+              document: document,
+              metadata: metadata
             };
           }, function() {
             return Kinvey.Defer.reject({
               id: metadata.id,
-              document: [local, net]
+              document: [local, net],
+              metadata: metadata
             });
           });
         }
         return Kinvey.Defer.reject({
           id: metadata.id,
-          document: [local, net]
+          document: [local, net],
+          metadata: metadata
         });
       },
 
@@ -6866,21 +8463,28 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @returns {Array} List of document ids.
        */
       _save: function(collection, documents, options) {
-        // Cast arguments.
-        documents = documents.map(function(composite) {
-          return composite.document;
-        });
-
         // Save documents on net.
         var error = []; // Track errors of individual update operations.
-        var promises = documents.map(function(document) {
+        var promises = documents.map(function(composite) {
+          var document = composite.document;
+          var metadata = composite.metadata;
+          var requestOptions = options || {};
+
+          // Set requestOptions.appVersion based on the metadata for the document
+          requestOptions.clientAppVersion = metadata.clientAppVersion != null ? metadata.clientAppVersion : null;
+
+          // Set requestOptions.customRequestProperties based on the metadata
+          // for the document
+          requestOptions.customRequestProperties = metadata.customRequestProperties != null ?
+            metadata.customRequestProperties : null;
+
           return Kinvey.Persistence.Net.update({
             namespace: USERS === collection ? USERS : DATA_STORE,
             collection: USERS === collection ? null : collection,
             id: document._id,
             data: document,
             auth: Auth.Default
-          }, options).then(null, function() {
+          }, requestOptions).then(null, function() {
             // Rejection should not break the entire synchronization. Instead,
             // append the document id to `error`, and resolve.
             error.push(document._id);
@@ -7024,7 +8628,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // Prepare the response.
           promise = Kinvey.User.login(options.user).then(function() {
             // The user is now logged in. Re-start the synchronization operation.
-            delete options.user; // We don’t need this anymore.
+            delete options.user; // We donâ€™t need this anymore.
             return Kinvey.Sync.execute(options);
           });
 
@@ -7185,6 +8789,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         return Kinvey.Defer.resolve(net);
       }
     };
+
 
     // Use `promiscuous` as `Kinvey.Defer` adapter.
     if('undefined' !== typeof root.Promise) {
@@ -7425,6 +9030,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @augments {Database.clean}
        */
       clean: function(collection, query, options) {
+        var error;
+
         // Deleting should not take the query sort, limit, and skip into account.
         if(null != query) { // Reset.
           query.sort(null).limit(null).skip(0);
@@ -7443,6 +9050,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // Build the query.
           var infix = [];
           var parameters = documents.map(function(document) {
+            // Check document for property _id. Thrown error will reject promise.
+            if(document._id == null) {
+              error = new Kinvey.Error('Document does not have _id property defined. ' +
+                'Unable to clean database.');
+              throw error;
+            }
+
             infix.push('?'); // Add placeholder.
             return document._id;
           });
@@ -7735,6 +9349,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       });
     }
 
+
     /* jshint evil: true */
 
     // `Database` adapter for [IndexedDB](http://www.w3.org/TR/IndexedDB/).
@@ -7801,7 +9416,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
       /**
        * Obtains a transaction handle to the provided collection.
-       * NOTE IndexedDB automatically commits transactions that haven’t been used
+       * NOTE IndexedDB automatically commits transactions that havenâ€™t been used
        * in an event loop tick. Therefore, deferreds cannot be used. See
        * https://github.com/promises-aplus/promises-spec/issues/45.
        *
@@ -7980,6 +9595,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @augments {Database.clean}
        */
       clean: function(collection, query, options) {
+        var error;
+
         // Deleting should not take the query sort, limit, and skip into account.
         if(null != query) { // Reset.
           query.sort(null).limit(null).skip(0);
@@ -8004,6 +9621,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             // `success` event, bind to the `complete` event.
             var request = store.transaction;
             documents.forEach(function(document) {
+              // Check document for property _id. Thrown error will reject promise.
+              if(document._id == null) {
+                error = new Kinvey.Error('Document does not have _id property defined. ' +
+                  'Unable to clean database.');
+                throw error;
+              }
+
               store['delete'](document._id);
             });
             request.oncomplete = function() {
@@ -8366,6 +9990,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         });
       });
     }
+
 
     // `Social` adapter for performing the OAuth flow.
     var SocialAdapter = {
@@ -8752,7 +10377,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // ----------
 
       // Helper function to translate a `Kinvey.Defer` to a Backbone compatible
-      // promise. This helper is necessary because jQuery “promises” are
+      // promise. This helper is necessary because jQuery â€œpromisesâ€ are
       // [not really](http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/)
       // promises. If Backbone relies on Zepto, return the Kinvey promise as Zepto
       // does not have the concept of deferreds.
@@ -8786,10 +10411,10 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // -----------
 
       // Expose a `Kinvey.Backbone` model and collection mixin which can be used to
-      // extend Backbone’s model and collection. Mixins follow the
+      // extend Backboneâ€™s model and collection. Mixins follow the
       // [mixin](http://ricostacruz.com/backbone-patterns/#mixins) pattern.
 
-      // Define the model mixin. It preseeds the models’ `id`, as well as its `sync`
+      // Define the model mixin. It preseeds the modelsâ€™ `id`, as well as its `sync`
       // function.
 
       /**
@@ -8799,7 +10424,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       Kinvey.Backbone.ModelMixin = _.extend({}, SyncMixin, /** @lends Kinvey.Backbone.ModelMixin */ {
         /**
-         * The models’ unique key.
+         * The modelsâ€™ unique key.
          * See [Backbone.js.](http://backbonejs.org/#Model-idAttribute).
          *
          * @default
@@ -8808,7 +10433,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         idAttribute: '_id',
 
         /**
-         * List of the models’ relations.
+         * List of the modelsâ€™ relations.
          *
          * @default
          * @type {Array}
@@ -8829,7 +10454,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         /** @lends Kinvey.Backbone.CollectionMixin */
         {
           /**
-           * The collections’ query, applied to the clean and fetch methods.
+           * The collectionsâ€™ query, applied to the clean and fetch methods.
            *
            * @type {Kinvey.Query}
            */
@@ -8919,7 +10544,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // The `Kinvey.Metadata` methods are mixed into Backbone models. To maintain
       // the correct context, keep a `_metadata` property. Internally, the metadata
       // (and ACL) operate on the models `attributes` property.
-      // NOTE Modifying the metadata (including the ACL) won’t emit `change` events.
+      // NOTE Modifying the metadata (including the ACL) wonâ€™t emit `change` events.
 
       // Helper function to lazy-initialize the metadata instance.
       var backboneWrapMetadata = function(fn) {
@@ -8937,7 +10562,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // `Kinvey.Backbone.UserMixin`.
 
         /**
-         * The models’ metadata.
+         * The modelsâ€™ metadata.
          *
          * @private
          * @type {Kinvey.Metadata}
@@ -8945,7 +10570,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         _metadata: null,
 
         /**
-         * Returns the models’ ACL.
+         * Returns the modelsâ€™ ACL.
          *
          * @method
          * @returns {Kinvey.Acl}
@@ -8969,7 +10594,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         getLastModified: backboneWrapMetadata(Kinvey.Metadata.prototype.getLastModified),
 
         /**
-         * Sets the models’ ACL.
+         * Sets the modelsâ€™ ACL.
          *
          * @param {Kinvey.Acl} acl The acl.
          * @returns {Backbone.Model} The model.
@@ -8984,7 +10609,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       // ------
 
       // Expose a `Kinvey.Backbone` user model and user collection mixin can be used
-      // to extend Backbone’s model and collection.
+      // to extend Backboneâ€™s model and collection.
 
       // Define the general user mixin. It preseeds the `url`.
       /**
@@ -8993,7 +10618,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       var UserMixin = /** @lends UserMixin */ {
         /**
-         * The models’ resource location.
+         * The modelsâ€™ resource location.
          * See [Backbone.js](http://backbonejs.org/#Model-url).
          *
          * @default
@@ -9297,7 +10922,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             continue;
           }
 
-          // Obtain the relations’ prototype (if any).
+          // Obtain the relationsâ€™ prototype (if any).
           var relatedModel = null;
           if(relation.relatedModel) {
             // `relatedModel` is either a string resolving to a global scope object,
@@ -9342,7 +10967,6 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {?string} id The document id (if any).
        * @param {?Object} document The document (if any).
        * @param {Object} options Options.
-       * @throws {Kinvey.Error} `id` must not be null.
        * @returns {Promise} The response.
        */
       var backboneToKinveyCRUD = function(method, collection, id, data, options) {
@@ -9386,10 +11010,11 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @param {string} method The CRUD method.
        * @param {Object} model The model to be saved, or the collection to be read.
        * @param {Object} options Callbacks, and request options.
-       * @throws {Kinvey.Error} `model` or `options` must contain: url.
        * @returns {Promise} The response.
        */
       Kinvey.Backbone.Sync = function(method, model, options) {
+        var error;
+
         // Cast and validate arguments.
         options.query = options.query || model.query; // Attach a (optional) query.
         options.subject = model; // Used by the persistence layer.
@@ -9412,7 +11037,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var data = options.attrs || model.toJSON(options);
         var url = options.url || _.result(model, 'url');
         if(null == url) {
-          throw new Kinvey.Error('model or options argument must contain: url.');
+          error = new Kinvey.Error('model or options argument must contain: url.');
+          return kinveyToBackbonePromise(Kinvey.Defer.reject(error), options);
         }
 
         // Strip the leading slash (if any).
@@ -9438,6 +11064,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         var promise = backboneToKinveyCRUD(method, collection, id, data, options);
         return kinveyToBackbonePromise(promise, options);
       };
+
 
       // Export.
 
@@ -9512,7 +11139,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
             }
             this.query = options.query;
 
-            // Return the parent’s response.
+            // Return the parentâ€™s response.
             return result;
           }
         })
@@ -9646,6 +11273,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @throws {Kinvey.Error} `options` must contain: `appId`.
        */
       facebook: function(options) {
+        var error;
+
         // Debug.
         if(KINVEY_DEBUG) {
           log('Initiating the Facebook OAuth2.0 flow.', arguments);
@@ -9654,7 +11283,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
         // Validate arguments.
         options = options || {};
         if(null == options.appId) {
-          throw new Kinvey.Error('options argument must contain: appId.');
+          error = new Kinvey.Error('options argument must contain: appId.');
+          return Kinvey.Defer.reject(error);
         }
 
         // Prepare the response.
@@ -9749,6 +11379,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
     // Apply the adapter.
     Social.use(TiSocialAdapter);
 
+
     // `Storage` adapter for Titanium.
 
     // The storage methods are executed in the background. Therefore, implement a
@@ -9802,7 +11433,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
     /* jshint evil: true */
 
-    // `Database` adapter for Titaniums’
+    // `Database` adapter for Titaniumsâ€™
     // [Database](http://docs.appcelerator.com/titanium/latest/#!/api/Titanium.Database).
     // This works for native platforms only, mobileweb can *not* use this.
     var TiDatabaseAdapter = {
@@ -9980,6 +11611,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        * @augments {Database.clean}
        */
       clean: function(collection, query, options) {
+        var error;
+
         // Deleting should not take the query sort, limit, and skip into account.
         if(null != query) { // Reset.
           query.sort(null).limit(null).skip(0);
@@ -9998,6 +11631,13 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
           // Build the query.
           var infix = [];
           var parameters = documents.map(function(document) {
+            // Check document for property _id. Thrown error will reject promise.
+            if(document._id == null) {
+              error = new Kinvey.Error('Document does not have _id property defined. ' +
+                'Unable to clean database.');
+              throw error;
+            }
+
             infix.push('?'); // Add placeholder.
             return document._id;
           });
@@ -10288,7 +11928,8 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
       });
     }
 
-    // `Kinvey.Persistence.Net` adapter for Titaniums’
+
+    // `Kinvey.Persistence.Net` adapter for Titaniumsâ€™
     // [HTTPClient](http://docs.appcelerator.com/titanium/latest/#!/api/Titanium.Network.HTTPClient).
     var TiHttp = {
       /**
@@ -10310,129 +11951,149 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
        */
       request: function(method, url, body, headers, options) {
         // Cast arguments.
-        body = body || null;
         headers = headers || {};
         options = options || {};
+        options.attemptMICRefresh = false === options.attemptMICRefresh ? false : true;
 
         // Prepare the response.
+
         var deferred = Kinvey.Defer.deferred();
+        var xhr;
+        if(isObject(body) && !isFunction(body.getLength)) {
+        // Stringify if not Titanium.Blob.
+          body = JSON.stringify(body);
+        }
 
         // Create the request.
-        var request = options.xhr = Titanium.Network.createHTTPClient();
-        request.open(method, url);
+        if(isMobileWeb) {
+          // Use browser XHR on mobile web. Easier binary/header handling.
+          xhr = new XMLHttpRequest();
 
-        // Set the TLS version (iOS only).
-        if(isFunction(request.setTlsVersion) && Titanium.Network.TLS_VERSION_1_2) {
-          request.setTlsVersion(Titanium.Network.TLS_VERSION_1_2);
+          // Getting a file. Binary response.
+          xhr.responseType = options.file ? 'blob' : '';
+
+          if(body instanceof Titanium.Blob) {
+            body = body._data;
+          }
+
+          xhr.ontimeout = function() {
+            deferred.reject('timeout');
+          };
         }
+        else {
+          xhr = Titanium.Network.createHTTPClient();
 
-        // Apply options.
-        if(0 < options.timeout) {
-          request.timeout = options.timeout;
-        }
+          // Set the TLS version (iOS only).
+          if(isFunction(xhr.setTlsVersion) && Titanium.Network.TLS_VERSION_1_2) {
+            xhr.setTlsVersion(Titanium.Network.TLS_VERSION_1_2);
+          }
 
-        // Append request headers.
-        for(var name in headers) {
-          if(headers.hasOwnProperty(name)) {
-            request.setRequestHeader(name, headers[name]);
+          // Prevent Titanium from defaulting Content-Type on file download.
+          // GCS signature is validated with Content-Type header.
+          if(method === 'GET' && options.file) {
+            headers['Content-Type'] = '';
           }
         }
 
-        // For mobile web, setting an explicit mime type is required to obtain
-        // binary data.
-        if(isMobileWeb && options.file) {
-          request._xhr.overrideMimeType('text/plain; charset=x-user-defined');
-        }
-
-        // Timeouts do not invoke the error handler on mobileweb. Patch here.
-        if(isMobileWeb) {
-          var abort = request.abort;
-          request.abort = function() {
-            if(request.DONE > request.readyState) {
-              request.onerror({
-                type: 'timeout'
-              });
-              request.onerror = function() {}; // Avoid multiple invocations.
-            }
-            return abort.apply(request, arguments);
-          };
-        }
+        xhr.timeout = options.timeout || 0;
 
         // Listen for request completion.
-        request.onerror = request.onload = function(event) {
+        xhr.onerror = xhr.onload = function(e) {
           // Debug.
           if(KINVEY_DEBUG) {
-            log('The network request completed.', request);
+            log('The network request completed.', this);
           }
 
           // Titanium does not provide a clear error code on timeout. Patch here.
-          event = event || {};
-          if(isString(event.error) && -1 !== event.error.toLowerCase().indexOf('timed out')) {
-            event.type = 'timeout';
+          e = e || {};
+          if(isString(e.error) && -1 !== e.error.toLowerCase().indexOf('timed out')) {
+            e.type = 'timeout';
           }
 
           // Success implicates 2xx (Successful), or 304 (Not Modified).
-          var status = 'timeout' === event.type ? 0 : request.status;
-          if(2 === parseInt(status / 100, 10) || 304 === status) {
-            // Parse the response.
-            var response = !isMobileWeb && options.file ? request.responseData : request.responseText;
+          var status = 'timeout' === e.type ? 0 : this.status;
 
-            // Get binary response data on Titanium mobileweb.
-            if(isMobileWeb && options.file && null != response && null != root.ArrayBuffer) {
-              var buffer = new root.ArrayBuffer(response.length);
-              var bufView = new root.Uint8Array(buffer);
-              for(var i = 0, length = response.length; i < length; i += 1) {
-                bufView[i] = response.charCodeAt(i);
+          if(2 === parseInt(status / 100, 10) || 304 === this.status) {
+            var response;
+
+            // Mobile web response.
+            if(isMobileWeb) {
+              var isBinary = this.responseType === 'blob';
+
+              response = new Titanium.Blob({
+                data: isBinary ? this.response : this.responseText,
+                length: isBinary ? this.response.size : this.responseText.length,
+                mimeType: this.getResponseHeader('Content-Type')
+              });
+            }
+            else {
+              response = options.file ? this.responseData : this.responseText;
+            }
+
+            // Check `Content-Type` header for application/json
+            if(!options.file && response != null && 204 !== this.status) {
+              var responseContentType = this.getResponseHeader('Content-Type');
+              var error;
+
+              if(responseContentType == null) {
+                error = new Kinvey.Error('Content-Type header missing in response. Please add ' +
+                  'Content-Type header to response with value ' +
+                  'application/json.');
+              }
+              else if(responseContentType.indexOf('application/json') === -1) {
+                error = new Kinvey.Error('Response Content-Type header is set to ' +
+                  responseContentType + '. Expected it to be set ' +
+                  'to application/json.');
               }
 
-              // Cast the response to a new Titanium.Blob object.
-              // NOTE The `toString` method remains broken. Use `FileReader` if you want to obtain the Data URL.
-              response = new Titanium.Blob({
-                data: bufView,
-                length: bufView.length,
-                mimeType: options.file
-              });
+              if(error) {
+                return deferred.reject(error);
+              }
             }
 
             // Return the response.
             deferred.resolve(response || null);
           }
           else { // Failure.
-            deferred.reject(request.responseText || event.type || null);
+            var promise;
+            var originalRequest = options._originalRequest;
+
+            if(401 === this.status && options.attemptMICRefresh) {
+              promise = MIC.refresh(options);
+            }
+            else {
+              promise = Kinvey.Defer.reject();
+            }
+
+            return promise.then(function() {
+              // Don't refresh MIC again
+              options.attemptMICRefresh = false;
+              // Resend original request
+              return Kinvey.Persistence.Net._request(originalRequest, options);
+            }).then(function(response) {
+              deferred.resolve(response);
+            }, function() {
+              deferred.reject(this.responseText || e.type || null);
+            });
           }
         };
+
+        xhr.open(method, url);
+
+        // Append request headers.
+        for(var name in headers) {
+          if(headers.hasOwnProperty(name)) {
+            xhr.setRequestHeader(name, headers[name]);
+          }
+        }
 
         // Debug.
         if(KINVEY_DEBUG) {
           log('Initiating a network request.', method, url, body, headers, options);
         }
 
-        // Patch Titanium mobileweb.
-        if(isMobileWeb) {
-          // Prevent Titanium from appending an incorrect Content-Type header.
-          // Also, GCS does not CORS allow the X-Titanium-Id header.
-          var setHeader = request._xhr.setRequestHeader;
-          request._xhr.setRequestHeader = function(name) {
-            if('Content-Type' === name || 'X-Titanium-Id' === name) {
-              return null;
-            }
-            return setHeader.apply(request._xhr, arguments);
-          };
-
-          // Prevent Titanium from URL encoding blobs.
-          if(body instanceof Titanium.Blob) {
-            var send = request._xhr.send;
-            request._xhr.send = function() {
-              return send.call(request._xhr, body._data);
-            };
-          }
-        }
-
         // Initiate the request.
-        if(isObject(body) && !isFunction(body.getLength)) {
-          body = JSON.stringify(body);
-        }
-        request.send(body);
+        xhr.send(body);
 
         // Trigger the `request` event on the subject. The subject should be a
         // Backbone model or collection.
@@ -10443,7 +12104,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
           // Trigger the `request` event if the subject has a `trigger` method.
           if(isFunction(subject.trigger)) {
-            subject.trigger('request', subject, request, options);
+            subject.trigger('request', subject, xhr, options);
           }
         }
 
@@ -10454,6 +12115,7 @@ var exports=exports||this;exports.Google=function(){function e(){var e=this,t=th
 
     // Use Titanium adapter.
     Kinvey.Persistence.Net.use(TiHttp);
+
 
     // Return the copy.
     return Kinvey;

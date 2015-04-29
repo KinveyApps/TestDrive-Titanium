@@ -12,7 +12,7 @@ if(Ti.version < '3.0') {
 }
 
 // Import the Kinvey module.
-var Kinvey = require('kinvey-titanium-1.1.8');
+var Kinvey = require('kinvey-titanium-1.3.1');
 
 // Initialize Kinvey.
 Kinvey.init({
